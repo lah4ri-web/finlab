@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>FINMODEL LAB · Company Builder V4</title>
+<style>
+:root{
+  --bg:#0c0f14;--panel:#131821;--panel2:#181f2a;--text:#eef2f7;--muted:#96a0af;
+  --line:#283142;--good:#64d98b;--warn:#f1c75b;--bad:#ff7b7b;--accent:#88aaff;--accent2:#b99cff;
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit} .app{max-width:1480px;margin:auto;padding:24px}
+.hero{padding:26px 0 18px}.eyebrow{font-size:12px;letter-spacing:.16em;color:var(--accent);font-weight:800}
+h1{margin:6px 0 4px;font-size:34px}.sub{color:var(--muted);max-width:820px;line-height:1.5}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;position:sticky;top:0;background:rgba(12,15,20,.92);backdrop-filter:blur(10px);padding:10px 0;z-index:4}
+.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:10px 13px;border-radius:10px;cursor:pointer}
+.tab.active{color:white;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.panel{display:none;margin-top:18px}.panel.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{grid-column:span 4;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card.wide{grid-column:span 12}.card.half{grid-column:span 6}.card h3{margin:0 0 12px;font-size:15px}
+.small{font-size:12px;color:var(--muted);line-height:1.5}
+.inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.field{display:grid;gap:5px}.field label{font-size:12px;color:var(--muted)} input,select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:#0e131b;color:var(--text)}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.kpi .value{font-size:24px;font-weight:760;margin-top:5px}
+table{width:100%;border-collapse:collapse;font-size:12px}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:10px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}th{position:sticky;top:0;background:#111721;color:#bbc5d4}
+.status{display:inline-flex;align-items:center;gap:7px;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:800}.ok{background:rgba(100,217,139,.12);color:var(--good)}.warn{background:rgba(241,199,91,.12);color:var(--warn)}.bad{background:rgba(255,123,123,.12);color:var(--bad)}
+.scenarios{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#111721;color:var(--text);padding:9px 12px;border-radius:9px;cursor:pointer}.btn:hover{border-color:var(--accent)}.btn.primary{background:linear-gradient(135deg,#536ee8,#7458db);border:0}
+.diff{font-variant-numeric:tabular-nums}.pos{color:var(--good)}.neg{color:var(--bad)}
+.heat td{min-width:95px}.heat1{background:rgba(255,123,123,.20)}.heat2{background:rgba(241,199,91,.15)}.heat3{background:rgba(136,170,255,.10)}.heat4{background:rgba(100,217,139,.13)}.heat5{background:rgba(100,217,139,.23)}
+.barrow{display:grid;grid-template-columns:120px 1fr 80px;gap:10px;align-items:center;margin:9px 0}.bar{height:12px;background:#0d1219;border-radius:99px;overflow:hidden}.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px}
+.memo{white-space:pre-wrap;line-height:1.55;background:#0e131b;border:1px solid var(--line);padding:16px;border-radius:10px}.sectiontitle{font-size:20px;margin:0 0 12px}
+.note{border-left:3px solid var(--accent);padding:10px 12px;background:rgba(136,170,255,.07);color:#cdd6e4;font-size:12px}
+.footer{color:var(--muted);font-size:11px;padding:28px 0}
+@media(max-width:980px){.card,.card.half{grid-column:span 12}.kpis{grid-template-columns:repeat(2,1fr)}} @media(max-width:620px){.inputs{grid-template-columns:1fr}.kpis{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero">
+    <div class="eyebrow">FINMODEL LAB · COMPANY BUILDER V4</div>
+    <h1>Structured financial modeling system</h1>
+    <div class="sub">Operating schedules, working capital, CapEx, debt, three-statement integrity, scenario diffing, sensitivity, valuation, and investment memo output—all driven from one timeline state.</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="inputs">Inputs</button>
+    <button class="tab" data-tab="operating">Operating Model</button>
+    <button class="tab" data-tab="financing">Financing</button>
+    <button class="tab" data-tab="outputs">Outputs</button>
+    <button class="tab" data-tab="scenarios">Scenarios</button>
+    <button class="tab" data-tab="sensitivity">Sensitivity</button>
+  </div>
+
+  <section class="panel active" id="inputs">
+    <div class="grid">
+      <div class="card"><h3>01 / Business Profile</h3><div class="inputs">
+        <div class="field"><label>Industry</label><select id="industry"><option>Enterprise SaaS</option><option>Consumer Technology</option><option>Fintech</option><option>Marketplace</option><option>Industrial</option><option>Retail</option></select></div>
+        <div class="field"><label>Revenue Model</label><select id="revenueModel"><option>Recurring subscription</option><option>Transaction-based</option><option>Usage-based</option><option>Product sales</option><option>Hybrid</option></select></div>
+        <div class="field"><label>Starting Revenue ($m)</label><input id="startingRevenue" type="number" value="100" step="1"></div>
+        <div class="field"><label>Starting Cash ($m)</label><input id="startingCash" type="number" value="20" step="1"></div>
+        <div class="field"><label>Existing Debt ($m)</label><input id="existingDebt" type="number" value="45" step="1"></div>
+        <div class="field"><label>Forecast Period (years)</label><input id="forecastPeriod" type="number" value="5" min="3" max="10"></div>
+        <div class="field"><label>Inflation</label><input id="inflation" type="number" value="2.5" step=".1"></div>
+      </div></div>
+
+      <div class="card"><h3>02 / Growth Engine</h3><div class="inputs">
+        <div class="field"><label>Initial Growth</label><input id="initialGrowth" type="number" value="18" step=".5"></div>
+        <div class="field"><label>Annual Growth Decay</label><input id="growthDecay" type="number" value="2.5" step=".5"></div>
+        <div class="field"><label>Market Size / Ceiling ($m)</label><input id="marketSize" type="number" value="900" step="10"></div>
+        <div class="field"><label>Annual Churn</label><input id="churn" type="number" value="8" step=".5"></div>
+        <div class="field"><label>Price Increase</label><input id="priceIncrease" type="number" value="3" step=".5"></div>
+        <div class="field"><label>Customer Acquisition Efficiency</label><input id="acqEfficiency" type="number" value="1.3" step=".1"></div>
+        <div class="field"><label>Reinvestment Rate</label><input id="reinvestmentRate" type="number" value="55" step="1"></div>
+        <div class="field"><label>R&D as % Revenue</label><input id="rndPct" type="number" value="12" step=".5"></div>
+        <div class="field"><label>Sales & Marketing % Revenue</label><input id="smPct" type="number" value="18" step=".5"></div>
+      </div></div>
+
+      <div class="card"><h3>03 / Unit Economics</h3><div class="inputs">
+        <div class="field"><label>Gross Margin</label><input id="grossMargin" type="number" value="72" step=".5"></div>
+        <div class="field"><label>Other Operating Costs % Revenue</label><input id="otherOpCosts" type="number" value="20" step=".5"></div>
+        <div class="field"><label>Working Capital Drag % Revenue</label><input id="wcDrag" type="number" value="1" step=".25"></div>
+        <div class="field"><label>Interest Rate</label><input id="interestRate" type="number" value="7" step=".25"></div>
+        <div class="field"><label>Debt Paydown / Year ($m)</label><input id="debtPaydown" type="number" value="8" step="1"></div>
+        <div class="field"><label>Tax Rate</label><input id="taxRate" type="number" value="25" step=".5"></div>
+        <div class="field"><label>Exit EBITDA Multiple</label><input id="exitMultiple" type="number" value="10" step=".5"></div>
+        <div class="field"><label>Discount Rate / WACC</label><input id="discountRate" type="number" value="11" step=".5"></div>
+        <div class="field"><label>Terminal Growth</label><input id="terminalGrowth" type="number" value="2.5" step=".25"></div>
+      </div></div>
+
+      <div class="card"><h3>04 / Operating Detail</h3><div class="inputs">
+        <div class="field"><label>Starting Customers</label><input id="startingCustomers" type="number" value="10000" step="100"></div>
+        <div class="field"><label>Customer Growth (gross adds)</label><input id="customerGrowth" type="number" value="24" step=".5"></div>
+        <div class="field"><label>Average Revenue / Customer ($)</label><input id="arpc" type="number" value="10000" step="100"></div>
+        <div class="field"><label>DSO — Receivables</label><input id="dso" type="number" value="45" step="1"></div>
+        <div class="field"><label>DPO — Payables</label><input id="dpo" type="number" value="30" step="1"></div>
+        <div class="field"><label>Inventory Days</label><input id="inventoryDays" type="number" value="10" step="1"></div>
+        <div class="field"><label>Maintenance CapEx % Revenue</label><input id="maintenanceCapex" type="number" value="2" step=".25"></div>
+        <div class="field"><label>Growth CapEx % Incremental Revenue</label><input id="growthCapex" type="number" value="8" step=".5"></div>
+        <div class="field"><label>Useful Life (years)</label><input id="usefulLife" type="number" value="5" min="2" max="15"></div>
+      </div></div>
+
+      <div class="card"><h3>05 / Financing & Covenants</h3><div class="inputs">
+        <div class="field"><label>Revolver Capacity ($m)</label><input id="revolverCapacity" type="number" value="30" step="1"></div>
+        <div class="field"><label>Term Loan Rate</label><input id="termLoanRate" type="number" value="7.5" step=".25"></div>
+        <div class="field"><label>Cash Sweep % Excess Cash</label><input id="cashSweep" type="number" value="50" step="5"></div>
+        <div class="field"><label>Max Net Debt / EBITDA</label><input id="maxLeverage" type="number" value="4.5" step=".25"></div>
+        <div class="field"><label>Minimum Interest Coverage</label><input id="minCoverage" type="number" value="2" step=".25"></div>
+        <div class="field"><label>Minimum Cash ($m)</label><input id="minimumCash" type="number" value="10" step="1"></div>
+        <div class="field"><label>Entry EBITDA Multiple</label><input id="entryMultiple" type="number" value="9" step=".5"></div>
+        <div class="field"><label>Transaction Fees % EV</label><input id="transactionFees" type="number" value="2" step=".25"></div>
+        <div class="field"><label>Sponsor Equity %</label><input id="sponsorEquityPct" type="number" value="100" step="5"></div>
+      </div></div>
+
+      <div class="card"><h3>V4 / Stress Lock</h3><div class="inputs">
+        <div class="field"><label>Lock Assumption</label><select id="lockAssumption"><option value="none">None</option><option value="initialGrowth">Initial Growth</option><option value="grossMargin">Gross Margin</option><option value="exitMultiple">Exit Multiple</option></select></div>
+        <div class="field"><label>Target MOIC</label><input id="targetMoic" type="number" value="2.0" step=".1"></div>
+      </div><p class="small">Scenario presets will not overwrite the locked assumption. “Solve target” goal-seeks another key driver to reach the selected MOIC.</p><button class="btn primary" id="solveTarget">Solve target</button><div id="solveResult" class="small" style="margin-top:8px"></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="operating">
+    <h2 class="sectiontitle">Operating Model</h2>
+    <div class="kpis" id="operatingKpis"></div>
+    <div class="grid" style="margin-top:14px">
+      <div class="card wide"><h3>09 / Operating Forecast</h3><div id="operatingTable"></div></div>
+      <div class="card wide"><h3>06 / Three-Statement Integrity</h3><div id="threeStatementTable"></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="financing">
+    <h2 class="sectiontitle">Financing</h2>
+    <div class="grid">
+      <div class="card wide"><h3>Debt Schedule</h3><div id="debtTable"></div></div>
+      <div class="card wide"><h3>07 / Model Checks</h3><div id="checks"></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="outputs">
+    <h2 class="sectiontitle">Outputs</h2>
+    <div class="kpis" id="outputKpis"></div>
+    <div class="grid" style="margin-top:14px">
+      <div class="card half"><h3>10 / Valuation & Returns</h3><div id="valuation"></div></div>
+      <div class="card half"><h3>12 / Investment Committee Readout</h3><div id="memo" class="memo"></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="scenarios">
+    <h2 class="sectiontitle">Scenario Lab</h2>
+    <div class="scenarios">
+      <button class="btn scenario" data-scenario="distress">Distress</button>
+      <button class="btn scenario" data-scenario="slow">Slow Growth</button>
+      <button class="btn scenario" data-scenario="base">Base Case</button>
+      <button class="btn scenario" data-scenario="hyper">Hypergrowth</button>
+      <button class="btn scenario" data-scenario="compounder">Compounder</button>
+    </div>
+    <div class="note" style="margin:12px 0">Presets now create comparison snapshots instead of destroying your working case. The active model remains editable; each click stores a scenario for side-by-side diffing.</div>
+    <div class="grid"><div class="card wide"><h3>Scenario Comparison</h3><div id="scenarioDiff"></div></div></div>
+  </section>
+
+  <section class="panel" id="sensitivity">
+    <h2 class="sectiontitle">11 / Sensitivity Matrix</h2>
+    <div class="grid">
+      <div class="card wide"><h3>MOIC Sensitivity — Revenue Growth × Exit Multiple</h3><div id="sensitivityTable"></div></div>
+      <div class="card wide"><h3>Tornado — Impact on Enterprise Value</h3><div id="tornado"></div></div>
+    </div>
+  </section>
+
+  <div class="footer">FINMODEL LAB · Educational financial modeling project · All figures are illustrative. This tool is not investment advice.</div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const pct = v => Number(v)/100;
+const money = v => Number.isFinite(v) ? '$'+v.toFixed(1)+'m' : '—';
+const fmt = v => Number.isFinite(v) ? v.toFixed(1) : '—';
+const pfmt = v => Number.isFinite(v) ? (v*100).toFixed(1)+'%' : '—';
+const mult = v => Number.isFinite(v) ? v.toFixed(2)+'x' : '—';
+
+const inputIds = ['startingRevenue','startingCash','existingDebt','forecastPeriod','inflation','initialGrowth','growthDecay','marketSize','churn','priceIncrease','acqEfficiency','reinvestmentRate','rndPct','smPct','grossMargin','otherOpCosts','wcDrag','interestRate','debtPaydown','taxRate','exitMultiple','discountRate','terminalGrowth','startingCustomers','customerGrowth','arpc','dso','dpo','inventoryDays','maintenanceCapex','growthCapex','usefulLife','revolverCapacity','termLoanRate','cashSweep','maxLeverage','minCoverage','minimumCash','entryMultiple','transactionFees','sponsorEquityPct'];
+
+function readInputs(){
+  const a={industry:$('industry').value,revenueModel:$('revenueModel').value};
+  inputIds.forEach(id=>a[id]=Number($(id).value)||0);
+  return a;
+}
+
+// ----- Modular financial engines -----
+function revenueEngine(a, prior, yearIndex){
+  const inflation = pct(a.inflation), churn = pct(a.churn), priceIncrease = pct(a.priceIncrease);
+  const grossCustGrowth = Math.max(0,pct(a.customerGrowth) - yearIndex*pct(a.growthDecay)*0.25);
+  const beginCustomers = prior ? prior.endCustomers : a.startingCustomers;
+  const churned = beginCustomers*churn;
+  const grossAdds = beginCustomers*grossCustGrowth*Math.max(.25,a.acqEfficiency);
+  let endCustomers = Math.max(0,beginCustomers + grossAdds - churned);
+  const beginARPC = prior ? prior.endARPC : a.arpc;
+  const endARPC = beginARPC*(1+priceIncrease+inflation*0.15);
+  const avgCustomers = (beginCustomers+endCustomers)/2;
+  const avgARPC = (beginARPC+endARPC)/2;
+
+  // Blend explicit top-down growth with bottom-up customer/pricing economics.
+  const topDownGrowth = Math.max(-.95,pct(a.initialGrowth)-yearIndex*pct(a.growthDecay));
+  const priorRevenue = prior ? prior.revenue : a.startingRevenue;
+  const topDownRevenue = priorRevenue*(1+topDownGrowth);
+  const bottomUpRevenue = avgCustomers*avgARPC/1e6;
+  let revenue = Math.min(a.marketSize || Infinity, 0.35*topDownRevenue+0.65*bottomUpRevenue);
+  if(!Number.isFinite(revenue)) revenue=0;
+  const growth = prior ? revenue/prior.revenue-1 : revenue/a.startingRevenue-1;
+  return {beginCustomers,churned,grossAdds,endCustomers,beginARPC,endARPC,revenue,growth};
+}
+
+function costEngine(a, rev){
+  const cogs = rev.revenue*(1-pct(a.grossMargin));
+  const grossProfit = rev.revenue-cogs;
+  const rnd = rev.revenue*pct(a.rndPct);
+  const sm = rev.revenue*pct(a.smPct);
+  const otherOpex = rev.revenue*pct(a.otherOpCosts);
+  const ebitda = grossProfit-rnd-sm-otherOpex;
+  return {cogs,grossProfit,rnd,sm,otherOpex,ebitda,ebitdaMargin: rev.revenue ? ebitda/rev.revenue : 0};
+}
+
+function workingCapitalEngine(a, rev, cost, prior){
+  const ar = rev.revenue/365*a.dso;
+  const inventory = cost.cogs/365*a.inventoryDays;
+  const ap = cost.cogs/365*a.dpo;
+  const otherNwc = rev.revenue*pct(a.wcDrag);
+  const nwc = ar+inventory-ap+otherNwc;
+  const priorNwc = prior ? prior.nwc : (a.startingRevenue/365*a.dso + (a.startingRevenue*(1-pct(a.grossMargin)))/365*a.inventoryDays - (a.startingRevenue*(1-pct(a.grossMargin)))/365*a.dpo + a.startingRevenue*pct(a.wcDrag));
+  return {ar,inventory,ap,otherNwc,nwc,deltaNwc:nwc-priorNwc};
+}
+
+function capexEngine(a, rev, priorRevenue, yearIndex, capexHistory){
+  const maintenance = rev.revenue*pct(a.maintenanceCapex);
+  const incrementalRevenue = Math.max(0,rev.revenue-priorRevenue);
+  let growth = incrementalRevenue*pct(a.growthCapex);
+  // Lumpy deployment: growth projects cluster every other year instead of a smooth percentage.
+  const lumpFactor = yearIndex%2===0 ? 1.25 : 0.75;
+  growth *= lumpFactor;
+  const capex = maintenance+growth;
+  const usefulLife=Math.max(1,Math.round(a.usefulLife));
+  const updated=[...capexHistory,{capex}];
+  let depreciation=0;
+  updated.forEach(v=>depreciation += v.capex/usefulLife);
+  return {maintenance,growth,capex,depreciation,history:updated};
+}
+
+function debtEngine(a, op, prior){
+  const beginningTermDebt = prior ? prior.termDebt : a.existingDebt;
+  const beginningRevolver = prior ? prior.revolver : 0;
+  const beginningCash = prior ? prior.cash : a.startingCash;
+  const totalBeginningDebt = beginningTermDebt+beginningRevolver;
+
+  // First-pass interest on beginning debt. Cash/debt sweep follows after cash earnings are known.
+  const termInterest = beginningTermDebt*pct(a.termLoanRate);
+  const revolverInterest = beginningRevolver*pct(a.interestRate);
+  const interest = termInterest+revolverInterest;
+  const ebt = op.ebit-interest;
+  const taxes = Math.max(0,ebt*pct(a.taxRate)); // no tax benefit modeled from NOLs
+  const netIncome = ebt-taxes;
+  const cfo = netIncome+op.depreciation-op.deltaNwc;
+  const fcfBeforeFinancing = cfo-op.capex;
+  let preFinCash = beginningCash+fcfBeforeFinancing;
+
+  let revolver=beginningRevolver, termDebt=beginningTermDebt, draw=0, mandatoryPaydown=0, sweep=0;
+  if(preFinCash < a.minimumCash){
+    draw=Math.min(a.revolverCapacity-revolver, a.minimumCash-preFinCash);
+    draw=Math.max(0,draw);
+    revolver+=draw; preFinCash+=draw;
+  }
+
+  const mandatoryCapacity=Math.max(0,preFinCash-a.minimumCash);
+  mandatoryPaydown=Math.min(a.debtPaydown,termDebt,mandatoryCapacity);
+  termDebt-=mandatoryPaydown; preFinCash-=mandatoryPaydown;
+
+  // Revolver repays first from excess cash, then optional cash sweep to term debt.
+  const excess1=Math.max(0,preFinCash-a.minimumCash);
+  const revolverRepay=Math.min(revolver,excess1);
+  revolver-=revolverRepay; preFinCash-=revolverRepay;
+  const excess2=Math.max(0,preFinCash-a.minimumCash);
+  sweep=Math.min(termDebt, excess2*pct(a.cashSweep));
+  termDebt-=sweep; preFinCash-=sweep;
+
+  const cash=preFinCash;
+  const debt=termDebt+revolver;
+  const netDebt=debt-cash;
+  return {beginningCash,beginningTermDebt,beginningRevolver,interest,taxes,netIncome,cfo,fcfBeforeFinancing,draw,revolverRepay,mandatoryPaydown,sweep,termDebt,revolver,debt,cash,netDebt};
+}
+
+function buildState(a){
+  const years=[]; let capexHistory=[];
+  for(let i=0;i<a.forecastPeriod;i++){
+    const prior=years[i-1];
+    const rev=revenueEngine(a,prior,i);
+    const cost=costEngine(a,rev);
+    const wc=workingCapitalEngine(a,rev,cost,prior);
+    const cap=capexEngine(a,rev,prior?prior.revenue:a.startingRevenue,i,capexHistory); capexHistory=cap.history;
+    const ebit=cost.ebitda-cap.depreciation;
+    const op={...rev,...cost,...wc,...cap,ebit};
+    const debt=debtEngine(a,op,prior);
+    const leverage=cost.ebitda>0?debt.netDebt/cost.ebitda:Infinity;
+    const interestCoverage=debt.interest>0?cost.ebitda/debt.interest:Infinity;
+    const assets = debt.cash + wc.ar + wc.inventory; // simplified operating balance sheet
+    const liabilities = debt.debt + wc.ap;
+    const retained = assets-liabilities; // balancing equity account in simplified model
+    const bsCheck = assets-(liabilities+retained);
+    years.push({year:i+1,...op,...debt,leverage,interestCoverage,assets,liabilities,retained,bsCheck});
+  }
+  return {years};
+}
+
+function valuationEngine(a,state){
+  const ys=state.years, last=ys[ys.length-1], first=ys[0];
+  const exitEV=Math.max(0,last.ebitda*a.exitMultiple);
+  const exitEquity=Math.max(0,exitEV-last.netDebt);
+  const entryEBITDA=Math.max(0.01,first.ebitda);
+  const entryEV=entryEBITDA*a.entryMultiple;
+  const fees=entryEV*pct(a.transactionFees);
+  const currentEquity=Math.max(0.01,entryEV-a.existingDebt+a.startingCash+fees);
+  const sponsorInvested=currentEquity*pct(a.sponsorEquityPct);
+  const moic=sponsorInvested>0?exitEquity/sponsorInvested:NaN;
+  const irr=moic>0?Math.pow(moic,1/a.forecastPeriod)-1:NaN;
+
+  const r=pct(a.discountRate), g=pct(a.terminalGrowth);
+  let pv=0; ys.forEach((y,i)=>pv+=y.fcfBeforeFinancing/Math.pow(1+r,i+1));
+  let tv=0;
+  if(r>g) tv=last.fcfBeforeFinancing*(1+g)/(r-g);
+  const dcfEV=pv+tv/Math.pow(1+r,a.forecastPeriod);
+  const dcfEquity=dcfEV-a.existingDebt+a.startingCash;
+  return {exitEV,exitEquity,entryEV,fees,currentEquity,sponsorInvested,moic,irr,dcfEV,dcfEquity,dcfVsExit:exitEV?dcfEV/exitEV-1:0};
+}
+
+function reportingEngine(a,state,val){
+  const ys=state.years,last=ys[ys.length-1];
+  const checks={
+    balance:ys.every(y=>Math.abs(y.bsCheck)<0.0001),
+    liquidity:ys.every(y=>y.cash+1e-6>=a.minimumCash || (y.revolver>=a.revolverCapacity-1e-6)),
+    covenant:ys.every(y=>y.leverage<=a.maxLeverage && y.interestCoverage>=a.minCoverage)
+  };
+  const risks=[];
+  if(last.ebitdaMargin<.1) risks.push('Thin terminal EBITDA margin');
+  if(ys.some(y=>y.cash<a.minimumCash-1e-6)) risks.push('Minimum cash breach');
+  if(ys.some(y=>y.revolver>=a.revolverCapacity-.01)) risks.push('Revolver capacity pressure');
+  if(ys.some(y=>y.leverage>a.maxLeverage)) risks.push('Leverage covenant breach');
+  if(ys.some(y=>y.interestCoverage<a.minCoverage)) risks.push('Interest coverage breach');
+  if(val.dcfVsExit<-.2) risks.push('Exit-multiple valuation materially exceeds DCF');
+  if(last.growth<0) risks.push('Revenue contracts in terminal year');
+  if(!risks.length) risks.push('No major mechanical breach in the selected case');
+
+  const thesis = val.moic>=2 && val.irr>=.15 ? 'The case supports an attractive return profile under the selected assumptions.' :
+                 val.moic>=1.5 ? 'The case is investable but relies on disciplined execution and/or valuation support.' :
+                 'The case does not currently generate a compelling equity return.';
+  const memo =
+`THESIS SUMMARY
+${thesis}
+
+KEY DRIVERS
+• Revenue reaches ${money(last.revenue)} by Year ${last.year}, with ${pfmt(last.growth)} terminal growth.
+• EBITDA reaches ${money(last.ebitda)} at a ${pfmt(last.ebitdaMargin)} margin.
+• Free cash flow before financing is ${money(last.fcfBeforeFinancing)} in the final year.
+• Net debt ends at ${money(last.netDebt)}, or ${mult(last.leverage)} net leverage.
+
+RETURNS
+• Exit enterprise value: ${money(val.exitEV)}
+• Exit equity value: ${money(val.exitEquity)}
+• Sponsor MOIC: ${mult(val.moic)}
+• Sponsor IRR: ${pfmt(val.irr)}
+• DCF enterprise value: ${money(val.dcfEV)}
+
+KEY RISKS
+${risks.map(x=>'• '+x).join('\n')}
+
+WHY IT WORKS / FAILS
+The model creates value when customer growth and pricing outpace churn, gross profit funds operating investment, working-capital and CapEx needs remain financeable, and deleveraging leaves more enterprise value for equity. It fails when growth decays faster than the cost base adjusts, cash conversion deteriorates, or leverage prevents the business from absorbing operating volatility.
+
+BREAK-EVEN CONDITIONS
+At the current operating case, the equity thesis needs roughly ${a.exitMultiple.toFixed(1)}x exit EBITDA and a terminal EBITDA margin near ${pfmt(last.ebitdaMargin)}. Use the sensitivity tab to test how much multiple or growth compression the return can absorb.`;
+  return {checks,risks,memo};
+}
+
+function model(a=readInputs()){ const state=buildState(a); const val=valuationEngine(a,state); const report=reportingEngine(a,state,val); return {a,state,val,report}; }
+
+// ----- Rendering -----
+function table(headers,rows,cls=''){return `<div class="tablewrap"><table class="${cls}"><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+function status(ok,label,detail){return `<div style="display:flex;justify-content:space-between;gap:18px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)"><div><b>${label}</b><div class="small">${detail}</div></div><span class="status ${ok?'ok':'bad'}">${ok?'OK':'FLAG'}</span></div>`}
+
+let comparisons={};
+function render(){
+  const m=model(), ys=m.state.years, last=ys.at(-1), v=m.val;
+  $('operatingKpis').innerHTML=[
+    ['Ending Revenue',money(last.revenue)],['EBITDA',money(last.ebitda)],['EBITDA Margin',pfmt(last.ebitdaMargin)],['FCF',money(last.fcfBeforeFinancing)],['Net Debt',money(last.netDebt)]
+  ].map(x=>`<div class="kpi"><div class="label">${x[0]}</div><div class="value">${x[1]}</div></div>`).join('');
+
+  $('operatingTable').innerHTML=table(['Year','Revenue','Growth','Gross Profit','EBITDA','EBITDA Margin','FCF','Net Debt'],ys.map(y=>[
+    'Year '+y.year,money(y.revenue),pfmt(y.growth),money(y.grossProfit),money(y.ebitda),pfmt(y.ebitdaMargin),money(y.fcfBeforeFinancing),money(y.netDebt)
+  ]));
+
+  $('threeStatementTable').innerHTML=table(['Year','Revenue','EBITDA','D&A','EBIT','Interest','Taxes','Net Income','CapEx','Δ NWC','CFO','FCF','Cash','Debt','Net Debt','Leverage'],ys.map(y=>[
+    'Year '+y.year,money(y.revenue),money(y.ebitda),money(y.depreciation),money(y.ebit),money(y.interest),money(y.taxes),money(y.netIncome),money(y.capex),money(y.deltaNwc),money(y.cfo),money(y.fcfBeforeFinancing),money(y.cash),money(y.debt),money(y.netDebt),mult(y.leverage)
+  ]));
+
+  $('debtTable').innerHTML=table(['Year','Beg. Term','Beg. Revolver','Interest','Revolver Draw','Mandatory Paydown','Revolver Repay','Cash Sweep','End Term','End Revolver','Ending Cash'],ys.map(y=>[
+    'Year '+y.year,money(y.beginningTermDebt),money(y.beginningRevolver),money(y.interest),money(y.draw),money(y.mandatoryPaydown),money(y.revolverRepay),money(y.sweep),money(y.termDebt),money(y.revolver),money(y.cash)
+  ]));
+
+  $('checks').innerHTML=
+    status(m.report.checks.balance,'Balance Sheet Check','Simplified balance-sheet identity is forced through a retained-equity balancing account; this confirms schedule integrity, not a full GAAP balance sheet.')+
+    status(m.report.checks.liquidity,'Liquidity Check','Flags years where cash cannot be restored to minimum cash because the revolver is exhausted.')+
+    status(m.report.checks.covenant,'Covenant Check','Tests net debt / EBITDA and EBITDA / cash interest against the selected thresholds.');
+
+  $('outputKpis').innerHTML=[
+    ['Enterprise Value',money(v.exitEV)],['Equity Value',money(v.exitEquity)],['MOIC',mult(v.moic)],['IRR',pfmt(v.irr)],['DCF EV',money(v.dcfEV)]
+  ].map(x=>`<div class="kpi"><div class="label">${x[0]}</div><div class="value">${x[1]}</div></div>`).join('');
+
+  $('valuation').innerHTML=`<div class="tablewrap"><table><tbody>
+    <tr><td>Exit EBITDA</td><td>${money(last.ebitda)}</td></tr>
+    <tr><td>Exit multiple</td><td>${aNum(m.a.exitMultiple)}x</td></tr>
+    <tr><td>Enterprise value</td><td>${money(v.exitEV)}</td></tr>
+    <tr><td>Less: net debt</td><td>${money(last.netDebt)}</td></tr>
+    <tr><td><b>Equity value</b></td><td><b>${money(v.exitEquity)}</b></td></tr>
+    <tr><td>Sponsor invested equity</td><td>${money(v.sponsorInvested)}</td></tr>
+    <tr><td><b>MOIC</b></td><td><b>${mult(v.moic)}</b></td></tr>
+    <tr><td><b>IRR</b></td><td><b>${pfmt(v.irr)}</b></td></tr>
+    <tr><td>DCF enterprise value</td><td>${money(v.dcfEV)}</td></tr>
+    <tr><td>DCF vs. exit multiple</td><td>${pfmt(v.dcfVsExit)}</td></tr>
+  </tbody></table></div><p class="small">DCF discounts unlevered proxy FCF before financing and uses a Gordon Growth terminal value. This is a cross-check, not a full valuation opinion.</p>`;
+
+  $('memo').textContent=m.report.memo;
+  renderSensitivity(m);
+  renderScenarioDiff();
+}
+function aNum(v){return Number(v).toFixed(1)}
+
+function renderScenarioDiff(){
+  const names=Object.keys(comparisons);
+  if(!names.length){$('scenarioDiff').innerHTML='<div class="small">Click a scenario preset to store comparison cases.</div>';return}
+  const base=comparisons['Base Case']||model();
+  const rows=names.map(n=>{
+    const m=comparisons[n], y=m.state.years.at(-1), b=base.state.years.at(-1);
+    const diff=(x)=>`<span class="${x>=0?'pos':'neg'}">${x>=0?'+':''}${x.toFixed(1)}</span>`;
+    return [n,money(y.revenue),diff(y.revenue-b.revenue),money(y.ebitda),diff(y.ebitda-b.ebitda),mult(m.val.moic),diff(m.val.moic-base.val.moic)+'x',pfmt(m.val.irr)];
+  });
+  $('scenarioDiff').innerHTML=table(['Scenario','Revenue','Δ Rev','EBITDA','Δ EBITDA','MOIC','Δ MOIC','IRR'],rows);
+}
+
+function scenarioAssumptions(name){
+  const base=readInputs(), sets={
+    distress:{initialGrowth:-8,growthDecay:1,churn:18,grossMargin:58,smPct:20,exitMultiple:6,customerGrowth:5},
+    slow:{initialGrowth:7,growthDecay:1.5,churn:11,grossMargin:65,smPct:18,exitMultiple:8,customerGrowth:13},
+    base:{initialGrowth:18,growthDecay:2.5,churn:8,grossMargin:72,smPct:18,exitMultiple:10,customerGrowth:24},
+    hyper:{initialGrowth:40,growthDecay:4,churn:7,grossMargin:74,smPct:27,exitMultiple:12,customerGrowth:48,growthCapex:12},
+    compounder:{initialGrowth:20,growthDecay:1,churn:5,grossMargin:80,smPct:15,exitMultiple:13,customerGrowth:24,priceIncrease:4}
+  };
+  const out={...base,...sets[name]};
+  const lock=$('lockAssumption').value;
+  if(lock!=='none') out[lock]=base[lock];
+  return out;
+}
+document.querySelectorAll('.scenario').forEach(b=>b.addEventListener('click',()=>{
+  const labels={distress:'Distress',slow:'Slow Growth',base:'Base Case',hyper:'Hypergrowth',compounder:'Compounder'};
+  const a=scenarioAssumptions(b.dataset.scenario); comparisons[labels[b.dataset.scenario]]=model(a); renderScenarioDiff();
+}));
+
+function renderSensitivity(baseModel){
+  const a={...baseModel.a}, growthShifts=[-10,-5,0,5,10], multShifts=[-2,-1,0,1,2];
+  const vals=[];
+  multShifts.forEach(ms=>{
+    const row=[(a.exitMultiple+ms).toFixed(1)+'x'];
+    growthShifts.forEach(gs=>{const t={...a,exitMultiple:Math.max(1,a.exitMultiple+ms),initialGrowth:a.initialGrowth+gs};row.push(model(t).val.moic)});
+    vals.push(row);
+  });
+  const all=vals.flatMap(r=>r.slice(1)).filter(Number.isFinite), min=Math.min(...all),max=Math.max(...all);
+  const rows=vals.map(r=>[r[0],...r.slice(1).map(v=>{
+    const z=max>min?(v-min)/(max-min):.5; const c=z<.2?'heat1':z<.4?'heat2':z<.6?'heat3':z<.8?'heat4':'heat5';
+    return `<span class="${c}" style="display:block;margin:-9px -10px;padding:9px 10px">${mult(v)}</span>`;
+  })]);
+  $('sensitivityTable').innerHTML=table(['Exit \\ Growth',...growthShifts.map(g=>(a.initialGrowth+g).toFixed(0)+'%')],rows,'heat');
+
+  const drivers=[
+    ['Growth', impact(a,'initialGrowth',5)],
+    ['Gross Margin', impact(a,'grossMargin',5)],
+    ['Exit Multiple', impact(a,'exitMultiple',1)],
+    ['CapEx', Math.abs(impact(a,'growthCapex',3))],
+    ['Churn', Math.abs(impact(a,'churn',3))]
+  ].sort((x,y)=>y[1]-x[1]);
+  const maxImp=Math.max(...drivers.map(d=>d[1]),.0001);
+  $('tornado').innerHTML=drivers.map(d=>`<div class="barrow"><div>${d[0]}</div><div class="bar"><i style="width:${Math.min(100,d[1]/maxImp*100)}%"></i></div><div>${money(d[1])}</div></div>`).join('')+'<div class="small">Bars show absolute change in exit enterprise value from a practical one-step stress to each driver.</div>';
+}
+function impact(a,key,delta){const b=model(a).val.exitEV;const t={...a,[key]:a[key]+delta};return Math.abs(model(t).val.exitEV-b)}
+
+$('solveTarget').addEventListener('click',()=>{
+  const lock=$('lockAssumption').value,target=Number($('targetMoic').value);
+  if(lock==='none'){$('solveResult').textContent='Choose an assumption to lock first.';return}
+  const a=readInputs();
+  const solveKey=lock==='initialGrowth'?'exitMultiple':lock==='exitMultiple'?'initialGrowth':'exitMultiple';
+  let lo=solveKey==='exitMultiple'?1:-30, hi=solveKey==='exitMultiple'?30:100, mid;
+  for(let i=0;i<60;i++){mid=(lo+hi)/2;const t={...a,[solveKey]:mid};const moic=model(t).val.moic;if(moic<target)lo=mid;else hi=mid}
+  $(solveKey).value=mid.toFixed(2);
+  $('solveResult').textContent=`Locked ${labelFor(lock)}. Solved ${labelFor(solveKey)} to ${mid.toFixed(2)} for approximately ${target.toFixed(2)}x MOIC.`;
+  render();
+});
+function labelFor(k){return ({initialGrowth:'Initial Growth',grossMargin:'Gross Margin',exitMultiple:'Exit Multiple'})[k]||k}
+
+document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',()=>{ if(el.id!=='targetMoic'&&el.id!=='lockAssumption') render()}));
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');$(t.dataset.tab).classList.add('active');
+}));
+
+render();
+comparisons['Base Case']=model(scenarioAssumptions('base'));
+renderScenarioDiff();
+</script>
+</body>
+</html>
