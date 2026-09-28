@@ -27,23 +27,6 @@
   box-sizing: border-box;
 }
 
-:root[data-theme="light"] {
-  --bg: #f4f1ea;
-  --bg-subtle: transparent;
-  --bg-elevated: rgba(235, 230, 220, 0.5);
-  --text: #1a1c23;
-  --mut: #686e79;
-  --line: rgba(143, 106, 31, 0.22);
-  --line-subtle: rgba(0, 0, 0, 0.06);
-  --gold: #8f6a1f;
-  --gold-dark: #5c4210;
-  --gold-light: #b88d3b;
-  --gold-muted: rgba(143, 106, 31, 0.18);
-  --gold-line-subtle: rgba(143, 106, 31, 0.4);
-  --red: #b83d32;
-  --grn: #2b7a4f;
-}
-
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -65,7 +48,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: -0.01em;
-  transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-x: hidden;
   scroll-behavior: smooth;
 }
@@ -155,24 +137,6 @@ kbd {
   opacity: 0.7;
 }
 
-.tb {
-  background: transparent;
-  border: 1px solid var(--line);
-  color: var(--text);
-  border-radius: 2px;
-  padding: 6px 12px;
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.tb:hover {
-  border-color: var(--gold);
-  color: var(--gold);
-}
-
 /* Main Container */
 main {
   position: relative;
@@ -182,7 +146,7 @@ main {
   padding: 80px 24px 60px;
 }
 
-/* iOS/iPhone-Style Blur View Transitions */
+/* Seamless View Transitions (Applied to ALL pages) */
 .view {
   display: none;
   opacity: 0;
@@ -198,10 +162,6 @@ main {
   opacity: 1;
   transform: scale(1) translateY(0);
   filter: blur(0px);
-}
-
-/* Initial Homepage Opening Blur-In Animation */
-#v_home.home-intro {
   animation: appleBlurIn 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -274,7 +234,9 @@ main {
 }
 
 .hero-left h1 span {
-  color: var(--mut);
+  display: block;
+  color: var(--text);
+  margin-top: 4px;
 }
 
 .lede {
@@ -398,7 +360,7 @@ main {
   line-height: 1.5;
 }
 
-/* Fully Transparent & Restrained Cards */
+/* Cards */
 .card {
   background: transparent;
   border: 1px solid var(--line);
@@ -414,7 +376,7 @@ main {
   letter-spacing: -0.01em;
 }
 
-/* Tabs System with iOS Blur Transition */
+/* Tabs System */
 .tabs {
   display: flex;
   gap: 0;
@@ -569,7 +531,7 @@ select:focus, input[type=number]:focus {
   background: var(--gold-muted);
 }
 
-/* Transparent KPI Grid */
+/* KPI Grid */
 .kp {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -715,8 +677,21 @@ footer {
   font-size: 12px;
   border-top: 1px solid var(--line);
   display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-row {
+  display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.disclaimer {
+  font-size: 11px;
+  color: var(--mut);
+  opacity: 0.8;
+  letter-spacing: -0.01em;
 }
 
 @media(max-width: 1024px) {
@@ -736,13 +711,12 @@ footer {
   <div class="nb">
     <a class="logo" href="#/home"><i></i>finmodel</a>
     <div class="nt" id="nt"></div>
-    <button class="tb" id="th">Theme</button>
   </div>
 </nav>
 
 <main>
   <!-- HOME VIEW -->
-  <div class="view home-intro" id="v_home">
+  <div class="view" id="v_home">
     <div class="hero-grid">
       <div class="hero-left">
         <div class="tag">finmodel / three statements, LBO & DCF</div>
@@ -880,8 +854,13 @@ footer {
 </main>
 
 <footer>
-  <span>Finmodel Project — Integrated Financial Architecture</span>
-  <span>Press 1–6 to navigate</span>
+  <div class="footer-row">
+    <span>Finmodel Project — Integrated Financial Architecture</span>
+    <span>Press 1–6 to navigate</span>
+  </div>
+  <div class="disclaimer">
+    Disclaimer: This financial model and web interface are provided for informational and educational purposes only and do not constitute financial, investment, legal, or tax advice. Do not use this tool for actual investment decisions or capital allocation.
+  </div>
 </footer>
 
 <script>
@@ -890,25 +869,6 @@ const N = (x, d = 1) => Number.isFinite(x) ? x.toFixed(d) : 'n/a';
 const M = v => (v < 0 ? '(' : '') + '$' + N(Math.abs(v)) + 'm' + (v < 0 ? ')' : '');
 const P = v => N(v * 100) + '%';
 const X = v => N(v, 2) + 'x';
-
-/* 1. REFINED LIGHT/DARK SYSTEM THEME */
-function applySystemTheme() {
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  document.documentElement.dataset.theme = prefersDark ? 'dark' : 'light';
-  $('th').textContent = prefersDark ? 'Light' : 'Dark';
-}
-applySystemTheme();
-
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-  document.documentElement.dataset.theme = e.matches ? 'dark' : 'light';
-  $('th').textContent = e.matches ? 'Dark' : 'Light';
-});
-
-$('th').onclick = () => {
-  const isDark = document.documentElement.dataset.theme === 'dark';
-  document.documentElement.dataset.theme = isDark ? 'light' : 'dark';
-  $('th').textContent = isDark ? 'Dark' : 'Light';
-};
 
 const G = [
   ['Growth engine', [
@@ -1052,7 +1012,6 @@ function tbl(ys, rows) {
   return `<table><thead><tr><th>Metric</th>${ys.map(y => `<th>Year ${y.year}</th>`).join('')}</tr></thead><tbody>${rows.map(([l, f, fm, t]) => `<tr class="${t ? 't' : ''}"><td>${l}</td>${ys.map(y => `<td>${(fm || M)(typeof f === 'string' ? y[f] : f(y))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
-/* 2. REBUILT GRAPH WITH Y-AXIS & OUTLINE BARS */
 function chart(ys) {
   const W = 820, H = 280, pdL = 60, pdR = 30, pdT = 36, pdB = 40, n = ys.length;
   const vs = ys.flatMap(y => [y.revenue, y.ebitda, y.fcf]);
@@ -1063,7 +1022,6 @@ function chart(ys) {
   const bw = (W - pdL - pdR) / n;
   const sx = i => pdL + bw * i + bw / 2;
   
-  // Y-Axis Tick Generation
   const ticks = 4;
   const step = (maxV - minV) / ticks;
   const yTicks = Array.from({length: ticks + 1}, (_, i) => minV + step * i);
@@ -1078,16 +1036,13 @@ function chart(ys) {
   };
 
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="background:transparent; font-family:var(--font-sans);">
-  <!-- Horizontal Gridlines & Y-Axis Labels -->
   ${yTicks.map(tv => `
     <line x1="${pdL}" x2="${W - pdR}" y1="${sy(tv)}" y2="${sy(tv)}" stroke="var(--line-subtle)" stroke-width="1"/>
     <text x="${pdL - 10}" y="${sy(tv) + 3}" text-anchor="end" fill="var(--mut)" font-size="10" font-variant-numeric="tabular-nums">$${Math.round(tv)}m</text>
   `).join('')}
   
-  <!-- Zero Line -->
   <line x1="${pdL}" x2="${W - pdR}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--line)" stroke-width="1"/>
   
-  <!-- Outline-Only Bars for Revenue -->
   ${ys.map((y, i) => {
     const barH = Math.max(1, Math.abs(sy(y.revenue) - sy(0)));
     const yPos = sy(Math.max(y.revenue, 0));
@@ -1097,11 +1052,9 @@ function chart(ys) {
     `;
   }).join('')}
   
-  <!-- EBITDA & Free Cash Flow Lines -->
   ${drawLine('ebitda', lineGoldLight)}
   ${drawLine('fcf', lineGoldDark, true)}
   
-  <!-- Minimalist Legend -->
   <g font-size="11" fill="var(--mut)" font-weight="500">
     <rect x="${pdL}" y="14" width="10" height="10" fill="none" stroke="var(--gold-line-subtle)" stroke-width="1"/>
     <text x="${pdL + 16}" y="23">Revenue (Outline)</text>
@@ -1148,7 +1101,7 @@ function render() {
   const ck = (ok, t, d) => `<div class="chk"><div>${t}<small>${d}</small></div>${c(ok ? 'Pass' : 'Flag', ok)}</div>`;
   $('chks').innerHTML = ck(bal, 'Balance Sheet Integrity', 'Assets equal liabilities plus equity across all forecast years.') + ck(liq, 'Liquidity Buffer', 'Cash balances satisfy minimum operational cash constraints.') + ck(cov, 'Credit Covenants', 'Leverage ratio and interest coverage stay within bounds.');
 
-  $('val').innerHTML = `<table><tbody>${[['Entry EBITDA', M(v.ltm)], ['Entry Enterprise Value', M(v.entryEV)], ['Fees', M(v.fees)], ['Sponsor Equity Invested', M(v.eqIn)], ['Exit EBITDA', M(L.ebitda)], ['Exit Enterprise Value', M(v.exitEV)], ['Net Debt at Exit', M(L.netDebt)], ['Exit Equity Value', M(v.exitEq)], ['DCF Enterprise Value', M(v.dcf)], ['Terminal Value Share', P(v.tvShare)]].map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table>`;
+  $('val').innerHTML = `<table><tbody>${[['Entry EBITDA', M(v.ltm)], ['Entry Enterprise Value', M(v.entryEV)], ['Fees', M(v.fees)], ['Sponsor Equity Invested', M(v.eqIn)], ['Exit EBITDA', M(L.ebitda)], ['Exit Enterprise Value', M(v.exitEV)], ['Net Debt at Exit', M(L.netDebt)], ['Exit Equity Value', M(L.exitEq)], ['DCF Enterprise Value', M(v.dcf)], ['Terminal Value Share', P(v.tvShare)]].map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table>`;
 
   const risks = [];
   if (L.margin < .1) risks.push('EBITDA margin compresses below 10%');
@@ -1195,7 +1148,6 @@ $('solve').addEventListener('click', () => {
 
 document.addEventListener('input', e => { if (e.target.type === 'range') requestAnimationFrame(render); });
 
-/* Navigation & iOS Transition Routing */
 const VIEWS = [['home', 'Home'], ['model', 'Model'], ['statements', 'Statements'], ['financing', 'Financing'], ['returns', 'Returns'], ['scenarios', 'Scenarios']];
 $('nt').innerHTML = VIEWS.map(([k, l], i) => `<a href="#/${k}" data-v="${k}">${l} <kbd>${i + 1}</kbd></a>`).join('');
 
@@ -1218,7 +1170,6 @@ addEventListener('keydown', e => {
   if (n >= 1 && n <= VIEWS.length) location.hash = '#/' + VIEWS[n - 1][0];
 });
 
-/* Tabs with Blur Animation */
 document.querySelectorAll('.pg').forEach(pg => {
   const ps = [...pg.children].filter(c => c.classList.contains('pane')), bar = document.createElement('div');
   bar.className = 'tabs'; bar.setAttribute('role', 'tablist');
@@ -1238,7 +1189,6 @@ render = function() {
   $('lv').innerHTML = [['Sponsor MOIC', 'h1v'], ['Sponsor IRR', 'h2v'], ['Revenue CAGR', 'h3v'], ['Rule of 40', 'h4v']].map(([l, i]) => `<div><span>${l}</span><b>${$(i).textContent}</b></div>`).join('');
 };
 
-/* 3. LOWLIGHTER-STYLE ASCII FIELD & CIRCULAR SWIRL DISPLACEMENT */
 const cv = $('cv'), cx = cv.getContext('2d');
 let COLS = 110, ROWS = 54;
 let animTime = 0;
@@ -1252,7 +1202,6 @@ let cursor = {
   targetActive: 0
 };
 
-// Rothko-like high-density character set
 const DENSE_CHARS = ' .·:;+*#%@█▓▒░';
 
 function resizeCanvas() {
@@ -1290,7 +1239,6 @@ function renderASCII() {
 
   animTime += 0.018;
 
-  // Smooth cursor tracking
   cursor.x += (cursor.targetX - cursor.x) * 0.08;
   cursor.y += (cursor.targetY - cursor.y) * 0.08;
   cursor.active += (cursor.targetActive - cursor.active) * 0.05;
@@ -1304,17 +1252,13 @@ function renderASCII() {
   cx.textAlign = 'center';
   cx.textBaseline = 'middle';
 
-  const isLight = document.documentElement.dataset.theme === 'light';
-
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
-      // 1. Subtle ASCII background grid texture
       if ((c % 4 === 0) && (r % 4 === 0)) {
-        cx.fillStyle = isLight ? 'rgba(143, 106, 31, 0.08)' : 'rgba(212, 175, 106, 0.08)';
+        cx.fillStyle = 'rgba(212, 175, 106, 0.08)';
         cx.fillText('·', (c + 0.5) * cw, (r + 0.5) * ch);
       }
 
-      // 2. Heavy Rothko-style continuous field
       let nx = c / COLS * 3.5;
       let ny = r / ROWS * 3.5;
 
@@ -1322,43 +1266,38 @@ function renderASCII() {
       let v2 = Math.sin(Math.sqrt(nx * nx + ny * ny) * 2.2 - animTime * 1.1);
       let noiseField = (v1 + v2 + 2.0) / 4.0;
 
-      // 3. Circular Swirl & Flow Distortion (Invisible Influence Circle)
+      // Perfectly Circular Influence with Higher Strength
       const dx = c - cursor.x;
       const dy = r - cursor.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      const swirlRadius = 14.0;
+      const swirlRadius = 18.0; // Increased radius for stronger circular influence
 
       let drawX = (c + 0.5) * cw;
       let drawY = (r + 0.5) * ch;
 
       if (dist < swirlRadius && cursor.active > 0.001) {
-        const factor = Math.pow(1 - dist / swirlRadius, 2) * cursor.active;
-        
-        // Circular Swirl force (perpendicular tangent vector)
+        const factor = Math.pow(1 - dist / swirlRadius, 1.5) * cursor.active;
         const angle = Math.atan2(dy, dx) + Math.PI / 2;
-        const swirlMag = factor * cw * 2.2;
+        const swirlMag = factor * cw * 3.2; // Increased strength
         
         drawX += Math.cos(angle) * swirlMag;
         drawY += Math.sin(angle) * swirlMag;
 
-        // Smooth density shift
-        noiseField = Math.min(1, Math.max(0, noiseField + Math.sin(dist * 0.5 - animTime * 2) * factor * 0.3));
+        noiseField = Math.min(1, Math.max(0, noiseField + Math.sin(dist * 0.5 - animTime * 2) * factor * 0.45));
       }
 
-      // Render character only if density warrants
       if (noiseField > 0.18) {
         const charIdx = Math.floor(noiseField * (DENSE_CHARS.length - 1));
         const char = DENSE_CHARS[charIdx] || ' ';
 
         const alpha = (0.1 + noiseField * 0.85).toFixed(2);
-        cx.fillStyle = isLight ? `rgba(143, 106, 31, ${alpha})` : `rgba(212, 175, 106, ${alpha})`;
+        cx.fillStyle = `rgba(212, 175, 106, ${alpha})`;
         cx.fillText(char, drawX, drawY);
       }
     }
   }
 }
 
-/* Run App */
 go();
 resizeCanvas();
 renderASCII();
