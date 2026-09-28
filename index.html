@@ -3,542 +3,497 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LUXURY AUTOMOBILI</title>
+  <title>Apple & Dynamic ASCII Experience</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap');
-
-    :root {
-      /* Deepened Midnight Blue & Restrained Champagne Gold */
-      --bg-color: #03060d;
-      --panel-bg: #070d18;
-      --border-color: #121c2d;
-      --text-main: #f0f4f8;
-      --text-muted: #627288;
-      --gold-accent: #e5c158;
-      --gold-glow: rgba(229, 193, 88, 0.12);
-      
-      /* Apple System Font Stack & Elegant Cursive Stack */
-      --font-apple: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-      --font-cursive: "Playfair Display", Georgia, serif;
-    }
-
+    /* --------------------------------------------------
+       RESET & VARIABLES
+       -------------------------------------------------- */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    :root {
+      /* Darker Midnight Blue & Pure Dark Palette */
+      --bg-dark: #030712;
+      --panel-bg: #090d16;
+      --card-bg: rgba(15, 23, 42, 0.65);
+      --border-color: rgba(212, 175, 55, 0.25);
+      --border-thin: 1px solid rgba(212, 175, 55, 0.25);
+      
+      /* Readable Champagne Gold Palette */
+      --gold-primary: #F3E5AB;
+      --gold-light: #FFF8DC;
+      --gold-accent: #D4AF37;
+      --text-muted: #94A3B8;
+      
+      /* Strictly Permitted Fonts */
+      --font-apple: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+      --font-cursive: "Snell Roundhand", "Brush Script MT", "Caveat", "Great Vibes", cursive;
     }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
+      background-color: var(--bg-dark);
+      color: var(--gold-primary);
       font-family: var(--font-apple);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
     }
 
-    /* Grid Layout with Ultra-Thin Connected Boundaries */
-    .app-container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      border: 1px solid var(--border-color);
-    }
-
-    /* Navigation Header */
+    /* --------------------------------------------------
+       NAVIGATION & HEADER
+       -------------------------------------------------- */
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem 2.5rem;
-      border-bottom: 1px solid var(--border-color);
-      background: var(--panel-bg);
-      z-index: 10;
-    }
-
-    .brand-logo {
-      font-family: var(--font-cursive);
-      font-style: italic;
-      font-size: 1.8rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      color: var(--gold-accent);
-      text-decoration: none;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: var(--border-thin);
     }
 
     nav {
+      max-width: 1400px;
+      margin: 0 auto;
       display: flex;
-      gap: 2rem;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+
+    .brand-title {
+      font-family: var(--font-cursive);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      text-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
     }
 
     .nav-btn {
-      background: none;
-      border: none;
-      color: var(--text-muted);
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--gold-primary);
       font-family: var(--font-apple);
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
+      padding: 0.6rem 1.2rem;
       cursor: pointer;
-      padding: 0.5rem 0;
-      position: relative;
-      transition: color 0.4s ease;
+      border-radius: 999px;
+      transition: all 0.3s ease;
+      letter-spacing: -0.01em;
     }
 
-    .nav-btn:hover, .nav-btn.active {
-      color: var(--gold-accent);
+    .nav-btn:hover {
+      border-color: var(--border-color);
+      background: rgba(212, 175, 55, 0.08);
+      color: var(--gold-light);
     }
 
-    .nav-btn.active::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background-color: var(--gold-accent);
+    .nav-btn.active {
+      background: var(--gold-accent);
+      color: var(--bg-dark);
+      font-weight: 600;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
     }
 
-    /* Main View Container with iPhone Duo Blur Transition */
+    /* --------------------------------------------------
+       IPHONE DUO BLUR TRANSITION CONTAINER
+       -------------------------------------------------- */
     main {
       flex: 1;
       position: relative;
+      width: 100%;
       display: flex;
-      flex-direction: column;
     }
 
     .tab-content {
+      width: 100%;
+      min-height: calc(100vh - 73px);
       display: none;
       opacity: 0;
-      filter: blur(16px);
+      filter: blur(20px);
       transform: scale(0.98);
-      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-                  filter 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-                  transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      flex: 1;
-      width: 100%;
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .tab-content.active {
       display: flex;
-      flex-direction: column;
-    }
-
-    .tab-content.visible {
       opacity: 1;
       filter: blur(0px);
       transform: scale(1);
     }
 
-    /* HOMESCREEN: 50/50 Split & Fully Connected Squares */
-    .hero-split {
-      display: flex;
-      flex: 1;
+    /* --------------------------------------------------
+       GRID & DIVIDER STRUCTURE (Connected Thin-Line Squares)
+       -------------------------------------------------- */
+    .grid-container {
+      display: grid;
       width: 100%;
-      min-height: calc(100vh - 80px);
+      border-collapse: collapse;
     }
 
-    .hero-title-box {
-      flex: 1;
+    .grid-square {
+      border: var(--border-thin);
+      background: var(--panel-bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* --------------------------------------------------
+       HOME TAB (50/50 Split Grid)
+       -------------------------------------------------- */
+    #home {
+      display: none; /* Controlled via JS active state */
+      width: 100%;
+    }
+
+    #home.active {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-title-section {
+      padding: 4rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 4rem 5rem;
-      border-right: 1px solid var(--border-color);
-      background: var(--bg-color);
+      align-items: flex-start;
+      border-right: var(--border-thin);
+      background: radial-gradient(circle at top left, rgba(212, 175, 55, 0.05), transparent 70%);
     }
 
     .hero-subtitle {
-      font-family: var(--font-apple);
-      font-size: 0.8rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--gold-accent);
-      margin-bottom: 1.5rem;
+      font-family: var(--font-cursive);
+      font-size: 2.8rem;
+      color: var(--gold-light);
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
     }
 
-    .hero-title {
-      font-family: var(--font-cursive);
-      font-style: italic;
+    .hero-main-title {
+      font-family: var(--font-apple);
       font-size: 4.5rem;
-      line-height: 1.1;
-      font-weight: 400;
-      margin-bottom: 2rem;
-      color: var(--text-main);
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
     }
 
     .hero-description {
       font-family: var(--font-apple);
-      font-size: 1rem;
-      line-height: 1.7;
+      font-size: 1.2rem;
       color: var(--text-muted);
-      max-width: 480px;
-      margin-bottom: 3rem;
-      font-weight: 300;
+      line-height: 1.6;
+      max-width: 500px;
+      margin-bottom: 2rem;
     }
 
-    .cta-btn {
-      align-self: flex-start;
-      padding: 1rem 2.5rem;
-      border: 1px solid var(--gold-accent);
-      background: transparent;
-      color: var(--gold-accent);
-      font-family: var(--font-apple);
-      font-size: 0.8rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.4s ease;
-    }
-
-    .cta-btn:hover {
-      background: var(--gold-accent);
-      color: var(--bg-color);
-      box-shadow: 0 0 25px var(--gold-glow);
-    }
-
-    .hero-ascii-box {
-      flex: 1;
-      background: var(--panel-bg);
+    /* ASCII Container Takes Up Full Square */
+    .ascii-square {
+      width: 100%;
+      height: 100%;
+      min-height: 500px;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      background: #010308;
       position: relative;
       cursor: crosshair;
     }
 
-    /* Interactive Non-3D Line Graphic Canvas */
-    #ascii-canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
+    pre.ascii-canvas {
+      font-family: monospace;
+      font-size: 11px;
+      line-height: 11px;
+      color: var(--gold-primary);
+      user-select: none;
+      white-space: pre;
+      text-align: center;
+      transition: color 0.2s ease;
     }
 
-    /* MODEL PAGE: Clean Structured Layout */
-    .models-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    /* --------------------------------------------------
+       MODELS TAB (Clean Structured Grid)
+       -------------------------------------------------- */
+    #models {
+      display: none;
       width: 100%;
-      flex: 1;
+      flex-direction: column;
+    }
+
+    #models.active {
+      display: flex;
+    }
+
+    .models-header {
+      padding: 3rem 4rem;
+      border-bottom: var(--border-thin);
+      background: var(--panel-bg);
+    }
+
+    .models-header h1 {
+      font-family: var(--font-cursive);
+      font-size: 3rem;
+      color: var(--gold-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .models-header p {
+      font-family: var(--font-apple);
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .models-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      width: 100%;
     }
 
     .model-card {
-      border-right: 1px solid var(--border-color);
-      border-bottom: 1px solid var(--border-color);
-      background: var(--panel-bg);
-      padding: 3.5rem 3rem;
+      border-right: var(--border-thin);
+      border-bottom: var(--border-thin);
+      padding: 2.5rem;
+      background: var(--card-bg);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: background 0.4s ease;
+      transition: background 0.3s ease;
     }
 
     .model-card:hover {
-      background: rgba(18, 28, 45, 0.4);
+      background: rgba(212, 175, 55, 0.04);
     }
 
-    .model-header {
-      margin-bottom: 2.5rem;
-    }
-
-    .model-series {
+    .model-tag {
       font-family: var(--font-apple);
       font-size: 0.75rem;
-      letter-spacing: 0.25em;
       text-transform: uppercase;
+      letter-spacing: 0.1em;
       color: var(--gold-accent);
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
     }
 
     .model-name {
       font-family: var(--font-cursive);
-      font-style: italic;
-      font-size: 2.5rem;
-      font-weight: 400;
-      color: var(--text-main);
+      font-size: 2.2rem;
+      color: var(--gold-light);
+      margin-bottom: 1rem;
+    }
+
+    .model-desc {
+      font-family: var(--font-apple);
+      font-size: 0.98rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 2rem;
     }
 
     .model-specs {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-      margin-bottom: 3rem;
-      border-top: 1px solid var(--border-color);
-      padding-top: 2rem;
-    }
-
-    .spec-row {
+      border-top: var(--border-thin);
+      padding-top: 1.5rem;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      font-size: 0.85rem;
+      color: var(--gold-primary);
     }
 
-    .spec-label {
-      font-family: var(--font-apple);
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-    }
-
-    .spec-value {
-      font-family: var(--font-apple);
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: var(--text-main);
-    }
-
-    /* Responsive Adjustments */
+    /* --------------------------------------------------
+       MEDIA QUERIES
+       -------------------------------------------------- */
     @media (max-width: 900px) {
-      .hero-split {
-        flex-direction: column;
+      #home.active {
+        grid-template-columns: 1fr;
       }
-      .hero-title-box {
+      .hero-title-section {
         border-right: none;
-        border-bottom: 1px solid var(--border-color);
-        padding: 3rem 2rem;
+        border-bottom: var(--border-thin);
+        padding: 2.5rem;
       }
-      .hero-title {
+      .hero-main-title {
         font-size: 3rem;
-      }
-      .hero-ascii-box {
-        min-height: 400px;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="app-container">
-    <header>
-      <a href="#" class="brand-logo" onclick="switchTab('home')">Veloce</a>
-      <nav>
-        <button class="nav-btn active" onclick="switchTab('home')">Home</button>
-        <button class="nav-btn" onclick="switchTab('models')">Models</button>
-      </nav>
-    </header>
+  <!-- HEADER / NAV -->
+  <header>
+    <nav>
+      <div class="brand-title">Aesthetic Tech</div>
+      <ul class="nav-links">
+        <li><button class="nav-btn active" onclick="switchTab('home')">Overview</button></li>
+        <li><button class="nav-btn" onclick="switchTab('models')">Models</button></li>
+      </ul>
+    </nav>
+  </header>
 
-    <main>
-      <!-- HOMESCREEN TAB -->
-      <section id="tab-home" class="tab-content active visible">
-        <div class="hero-split">
-          <div class="hero-title-box">
-            <span class="hero-subtitle">Engineering Perfection</span>
-            <h1 class="hero-title">The Art of Pure Motion</h1>
-            <p class="hero-description">
-              An uncompromised synthesis of high-end aerodynamic precision and timeless automotive elegance. Crafted for those who command distinction.
+  <!-- MAIN CONTENT CONTAINER -->
+  <main>
+    
+    <!-- HOME TAB: 50/50 SPLIT -->
+    <section id="home" class="tab-content active">
+      <div class="hero-title-section">
+        <div class="hero-subtitle">Elegance in Engineering</div>
+        <h1 class="hero-main-title">Next-Gen Intelligence.</h1>
+        <p class="hero-description">
+          Experience ultra-refined computational design. Crafted with structural symmetry, midnight depth, and fluid responsiveness.
+        </p>
+      </div>
+      
+      <!-- Full-square ASCII Container -->
+      <div class="ascii-square" id="asciiContainer">
+        <pre class="ascii-canvas" id="asciiCanvas"></pre>
+      </div>
+    </section>
+
+    <!-- MODELS TAB: CLEAN CONNECTED SQUARE GRID -->
+    <section id="models" class="tab-content">
+      <div class="models-header">
+        <h1>Model Architecture</h1>
+        <p>Explore high-performance configurations built with ultra-precision.</p>
+      </div>
+
+      <div class="models-grid">
+        <div class="model-card">
+          <div>
+            <div class="model-tag">Neural Core</div>
+            <div class="model-name">Aura Sovereign</div>
+            <p class="model-desc">
+              Designed for complex mathematical analysis and real-time interactive rendering with minimal power draw.
             </p>
-            <button class="cta-btn" onclick="switchTab('models')">Explore Models</button>
           </div>
-          <div class="hero-ascii-box" id="ascii-container">
-            <canvas id="ascii-canvas"></canvas>
-          </div>
-        </div>
-      </section>
-
-      <!-- MODELS TAB -->
-      <section id="tab-models" class="tab-content">
-        <div class="models-container">
-          <!-- Model 1 -->
-          <div class="model-card">
-            <div class="model-header">
-              <div class="model-series">V8 Twin-Turbo</div>
-              <h2 class="model-name">Monaco GT</h2>
-            </div>
-            <div class="model-specs">
-              <div class="spec-row">
-                <span class="spec-label">Power Output</span>
-                <span class="spec-value">710 HP</span>
-              </div>
-              <div class="spec-row">
-                <span class="spec-label">0 – 100 km/h</span>
-                <span class="spec-value">2.9 s</span>
-              </div>
-              <div class="spec-row">
-                <span class="spec-label">Top Speed</span>
-                <span class="spec-value">341 km/h</span>
-              </div>
-              <div class="spec-row">
-                <span class="spec-label">Chassis</span>
-                <span class="spec-value">Carbon Monocoque</span>
-              </div>
-            </div>
-            <button class="cta-btn" style="width: 100%; text-align: center;">Configure</button>
-          </div>
-
-          <!-- Model 2 -->
-          <div class="model-card">
-            <div class="model-header">
-              <div class="model-series">Naturally Aspirated V12</div>
-              <h2 class="model-name">Aethelgard</h2>
-            </div>
-            <div class="model-specs">
-              <div class="spec-row">
-                <span class="spec-label">Power Output</span>
-                <span class="spec-value">830 HP</span>
-              </div>
-              <div class="spec-row">
-                <span class="spec-label">0 – 100 km/h</span>
-                <span class="spec-value">2.7 s</span>
-              </div>
-              <div class="spec-row">
-                <span class="spec-label">Top Speed</span>
-                <span class="spec-value">355 km/h</span>
-              </div>
-              <div class="spec-row">
-                <span class="spec-label">Chassis</span>
-                <span class="spec-value">Titanium-Carbon</span>
-              </div>
-            </div>
-            <button class="cta-btn" style="width: 100%; text-align: center;">Configure</button>
-          </div>
-
-          <!-- Model 3 -->
-          <div class="model-card">
-            <div class="model-header">
-              <div class="model-series">Quad-Motor EV</div>
-              <h2 class="model-name">Nero EV</h2>
-            </div>
-            <div class="model-specs">
-              <div class="spec-row">
-                <span class="spec-label">Power Output</span>
-                <span class="spec-value">1,020 HP</span>
-              </div>
-              <div class="spec-row">
-                <span class="spec-label">0 – 100 km/h</span>
-                <span class="spec-value">2.1 s</span>
-              </div>
-              <div class="spec-row">
-                <span class="spec-label">Top Speed</span>
-                <span class="spec-value">320 km/h</span>
-              </div>
-              <div class="spec-row">
-                <span class="spec-label">Battery Range</span>
-                <span class="spec-value">580 km</span>
-              </div>
-            </div>
-            <button class="cta-btn" style="width: 100%; text-align: center;">Configure</button>
+          <div class="model-specs">
+            <span>Latency: 1.2ms</span>
+            <span>Precision: FP16</span>
           </div>
         </div>
-      </section>
-    </main>
-  </div>
+
+        <div class="model-card">
+          <div>
+            <div class="model-tag">Language Synthesis</div>
+            <div class="model-name">Lumina Cursive</div>
+            <p class="model-desc">
+              Optimized for expressive contextual prose, stylistic typography adaptation, and aesthetic generation.
+            </p>
+          </div>
+          <div class="model-specs">
+            <span>Context: 128k</span>
+            <span>Speed: 180 t/s</span>
+          </div>
+        </div>
+
+        <div class="model-card">
+          <div>
+            <div class="model-tag">Vision Matrix</div>
+            <div class="model-name">Spectra Motion</div>
+            <p class="model-desc">
+              Multi-layered optical visualizer designed to convert spatial vector movement into dynamic ASCII landscapes.
+            </p>
+          </div>
+          <div class="model-specs">
+            <span>FPS: 60 Hz</span>
+            <span>Mode: Interactive</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
 
   <script>
-    /* Tab Navigation with iPhone Duo Style Blur Effect */
+    /* --------------------------------------------------
+       TAB SWITCHING (iPhone Duo Blur Transition)
+       -------------------------------------------------- */
     function switchTab(tabId) {
-      const activeTab = document.querySelector('.tab-content.active');
-      const targetTab = document.getElementById('tab-' + tabId);
-      const navButtons = document.querySelectorAll('.nav-btn');
+      const contents = document.querySelectorAll('.tab-content');
+      const buttons = document.querySelectorAll('.nav-btn');
 
-      if (activeTab === targetTab) return;
-
-      // Update Nav Buttons
-      navButtons.forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('onclick').includes(tabId));
+      contents.forEach(content => {
+        if (content.id === tabId) {
+          content.classList.add('active');
+        } else {
+          content.classList.remove('active');
+        }
       });
 
-      // Blur Out Active Tab
-      if (activeTab) {
-        activeTab.classList.remove('visible');
-        setTimeout(() => {
-          activeTab.classList.remove('active');
-          
-          // Blur In Target Tab
-          targetTab.classList.add('active');
-          setTimeout(() => {
-            targetTab.classList.add('visible');
-          }, 50);
-        }, 400);
-      }
+      buttons.forEach(btn => {
+        if (btn.getAttribute('onclick').includes(tabId)) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
     }
 
-    /* Interactive 2D Line-Art Graphic Rendering (Flat Elegant Silhouette Mesh) */
-    const canvas = document.getElementById('ascii-canvas');
-    const ctx = canvas.getContext('2d');
-    const container = document.getElementById('ascii-container');
+    /* --------------------------------------------------
+       INTERACTIVE ASCII LANDSCAPE (Site-Style Surface Visual)
+       -------------------------------------------------- */
+    const asciiCanvas = document.getElementById('asciiCanvas');
+    const container = document.getElementById('asciiContainer');
 
-    let width, height;
-    let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+    const width = 64;
+    const height = 32;
+    let mouseX = 0.5;
+    let mouseY = 0.5;
+    let time = 0;
 
-    function resizeCanvas() {
-      width = container.clientWidth;
-      height = container.clientHeight;
-      canvas.width = width;
-      canvas.height = height;
-    }
-
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
+    // Track mouse interaction inside full ASCII container
     container.addEventListener('mousemove', (e) => {
       const rect = container.getBoundingClientRect();
-      mouse.targetX = (e.clientX - rect.left - width / 2) / (width / 2);
-      mouse.targetY = (e.clientY - rect.top - height / 2) / (height / 2);
+      mouseX = (e.clientX - rect.left) / rect.width;
+      mouseY = (e.clientY - rect.top) / rect.height;
     });
 
-    container.addEventListener('mouseleave', () => {
-      mouse.targetX = 0;
-      mouse.targetY = 0;
-    });
+    const chars = " .:-=+*#%@";
 
-    let frame = 0;
+    function renderASCII() {
+      time += 0.04;
+      let output = "";
 
-    function drawGraphic() {
-      frame++;
-      
-      // Smooth Mouse Interpolation
-      mouse.x += (mouse.targetX - mouse.x) * 0.05;
-      mouse.y += (mouse.targetY - mouse.y) * 0.05;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          // Normalize coordinates
+          let nx = (x / width) - 0.5;
+          let ny = (y / height) - 0.5;
 
-      ctx.clearRect(0, 0, width, height);
+          // Interactive dynamic wave equation (2D surface waves)
+          let wave1 = Math.sin(nx * 10 + time + mouseX * 5);
+          let wave2 = Math.cos(ny * 10 + time + mouseY * 5);
+          let dist = Math.sqrt(nx * nx + ny * ny);
+          let wave3 = Math.sin(dist * 12 - time * 2);
 
-      ctx.save();
-      ctx.translate(width / 2 + mouse.x * 20, height / 2 + mouse.y * 20);
-
-      const numLines = 36;
-      const radius = Math.min(width, height) * 0.28;
-      
-      ctx.strokeStyle = '#e5c158';
-      ctx.lineWidth = 1;
-
-      for (let i = 0; i < numLines; i++) {
-        const angle = (i / numLines) * Math.PI * 2 + (frame * 0.002);
-        const wave = Math.sin(frame * 0.03 + i * 0.2) * 15;
-        
-        const x1 = Math.cos(angle) * (radius + wave);
-        const y1 = Math.sin(angle) * (radius * 0.4 + wave * 0.5);
-        
-        const x2 = Math.cos(angle + Math.PI * 0.8) * (radius * 0.6);
-        const y2 = Math.sin(angle + Math.PI * 0.8) * (radius * 0.25);
-
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.strokeStyle = `rgba(229, 193, 88, ${0.15 + (i / numLines) * 0.35})`;
-        ctx.stroke();
+          let val = (wave1 + wave2 + wave3) / 3; // Value between -1 and 1
+          let charIndex = Math.floor(((val + 1) / 2) * (chars.length - 1));
+          
+          charIndex = Math.max(0, Math.min(chars.length - 1, charIndex));
+          output += chars[charIndex];
+        }
+        output += "\n";
       }
 
-      // Dynamic Flow Line Overlay
-      ctx.beginPath();
-      for (let x = -radius * 1.4; x <= radius * 1.4; x += 10) {
-        const y = Math.sin(x * 0.015 + frame * 0.02 + mouse.x) * 35 * Math.cos(x * 0.005);
-        if (x === -radius * 1.4) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = 'rgba(240, 244, 248, 0.4)';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      ctx.restore();
-
-      requestAnimationFrame(drawGraphic);
+      asciiCanvas.textContent = output;
+      requestAnimationFrame(renderASCII);
     }
 
-    drawGraphic();
+    renderASCII();
   </script>
 </body>
 </html>
