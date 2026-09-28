@@ -8,8 +8,8 @@
 <style>
 :root {
   --bg: #02040a;
-  --bg-subtle: rgba(6, 9, 19, 0.65);
-  --bg-elevated: rgba(10, 14, 26, 0.7);
+  --bg-subtle: rgba(6, 9, 19, 0.25);
+  --bg-elevated: rgba(10, 14, 26, 0.4);
   --text: #f4f1ea;
   --mut: #828792;
   --line: rgba(212, 175, 106, 0.12);
@@ -17,8 +17,8 @@
   --gold: #d4af6a;
   --gold-dark: #8a6d3b;
   --gold-light: #f2e3bd;
-  --gold-muted: rgba(212, 175, 106, 0.25);
-  --gold-line-subtle: rgba(212, 175, 106, 0.4);
+  --gold-muted: rgba(212, 175, 106, 0.2);
+  --gold-line-subtle: rgba(212, 175, 106, 0.35);
   --red: #d9675d;
   --grn: #7fc4a0;
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
@@ -28,18 +28,18 @@
 }
 
 :root[data-theme="light"] {
-  --bg: #f5f3ef;
-  --bg-subtle: rgba(234, 230, 221, 0.65);
-  --bg-elevated: rgba(255, 255, 255, 0.85);
-  --text: #111318;
-  --mut: #686e79;
-  --line: rgba(143, 106, 31, 0.2);
-  --line-subtle: rgba(0, 0, 0, 0.07);
+  --bg: #f2f0eb;
+  --bg-subtle: rgba(230, 226, 218, 0.3);
+  --bg-elevated: rgba(255, 255, 255, 0.5);
+  --text: #1a1917;
+  --mut: #686660;
+  --line: rgba(143, 106, 31, 0.18);
+  --line-subtle: rgba(0, 0, 0, 0.06);
   --gold: #8f6a1f;
   --gold-dark: #5c4210;
-  --gold-light: #3d2a08;
-  --gold-muted: rgba(143, 106, 31, 0.25);
-  --gold-line-subtle: rgba(143, 106, 31, 0.4);
+  --gold-light: #ab822b;
+  --gold-muted: rgba(143, 106, 31, 0.18);
+  --gold-line-subtle: rgba(143, 106, 31, 0.35);
   --red: #b83d32;
   --grn: #2b7a4f;
 }
@@ -67,39 +67,22 @@ body {
   overflow-x: hidden;
 }
 
-/* Homepage Intro Reveal Curtain */
-#intro-curtain {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: var(--bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+/* 3. HOMEPAGE BLUR-IN ANIMATION */
+body.home-init main {
+  animation: homepageBlurIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-#intro-curtain.hide {
-  opacity: 0;
+@keyframes homepageBlurIn {
+  0% {
+    filter: blur(16px);
+    opacity: 0;
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1;
+  }
 }
 
-.intro-line {
-  width: 48px;
-  height: 1px;
-  background: var(--gold);
-  transform: scaleX(0);
-  animation: introExpand 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes introExpand {
-  0% { transform: scaleX(0); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: scaleX(2.5); opacity: 0; }
-}
-
-/* Serif Accent Utility */
 .editorial {
   font-family: var(--font-serif);
   font-style: italic;
@@ -115,8 +98,8 @@ nav {
   right: 0;
   z-index: 100;
   background: color-mix(in srgb, var(--bg) 85%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--line);
 }
 
@@ -203,7 +186,7 @@ kbd {
   color: var(--gold);
 }
 
-/* Layout Container */
+/* Main Layout Container */
 main {
   position: relative;
   z-index: 1;
@@ -212,18 +195,23 @@ main {
   padding: 80px 24px 60px;
 }
 
-/* View Switcher & Transitions */
+/* 2. iOS-STYLE BLUR TRANSITION BETWEEN VIEWS & TABS */
 .view {
   display: none;
   opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: blur(12px);
+  transform: scale(0.99);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, filter, transform;
 }
 
 .view.on {
   display: block;
   opacity: 1;
-  transform: translateY(0);
+  filter: blur(0px);
+  transform: scale(1);
 }
 
 /* Structural Header */
@@ -405,9 +393,9 @@ main {
   line-height: 1.5;
 }
 
-/* CARDS & CONTAINERS — TRANSPARENT & SUBTLE */
+/* 8. FEATURE CONTAINERS — STRICTLY TRANSPARENT */
 .card {
-  background: var(--bg-subtle);
+  background: transparent;
   border: 1px solid var(--line);
   border-radius: 0px;
   padding: 24px;
@@ -421,7 +409,7 @@ main {
   letter-spacing: -0.01em;
 }
 
-/* TAB NAVIGATION SYSTEM */
+/* TAB NAVIGATION SYSTEM WITH iOS BLUR TRANSITION */
 .tabs {
   display: flex;
   gap: 0;
@@ -455,14 +443,19 @@ main {
 .pane {
   display: none;
   opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  filter: blur(8px);
+  transform: scale(0.995);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, filter, transform;
 }
 
 .pane.on {
   display: block;
   opacity: 1;
-  transform: translateY(0);
+  filter: blur(0px);
+  transform: scale(1);
 }
 
 /* GRID SPLITS */
@@ -542,7 +535,7 @@ select, input[type=number] {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid var(--line);
-  background: var(--bg-elevated);
+  background: transparent;
   color: var(--text);
   font-family: var(--font-sans);
   font-size: 13px;
@@ -581,7 +574,7 @@ select:focus, input[type=number]:focus {
 }
 
 .kp div {
-  background: var(--bg-subtle);
+  background: transparent;
   border: 1px solid var(--line);
   padding: 16px;
 }
@@ -733,9 +726,7 @@ footer {
 }
 </style>
 </head>
-<body>
-
-<div id="intro-curtain"><div class="intro-line"></div></div>
+<body class="home-init">
 
 <nav>
   <div class="nb">
@@ -896,7 +887,7 @@ const M = v => (v < 0 ? '(' : '') + '$' + N(Math.abs(v)) + 'm' + (v < 0 ? ')' : 
 const P = v => N(v * 100) + '%';
 const X = v => N(v, 2) + 'x';
 
-/* 1. INITIALIZE SYSTEM THEME PREFERENCE */
+/* 1 & 7. SYSTEM THEME DETECTION & REFINED LIGHT/DARK SYSTEM */
 function applySystemTheme() {
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   document.documentElement.dataset.theme = prefersDark ? 'dark' : 'light';
@@ -906,7 +897,7 @@ applySystemTheme();
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
   document.documentElement.dataset.theme = e.matches ? 'dark' : 'light';
-  $('th').textContent = e.matches ? 'Light' : 'Dark';
+  $('th').textContent = e.matches ? 'Dark' : 'Light';
 });
 
 $('th').onclick = () => {
@@ -915,15 +906,11 @@ $('th').onclick = () => {
   $('th').textContent = isDark ? 'Dark' : 'Light';
 };
 
-/* 2. HOMEPAGE REVEAL INTRO ANIMATION */
+/* 3. HOMEPAGE SIMPLE BLUR-IN ANIMATION TIMING */
 window.addEventListener('DOMContentLoaded', () => {
-  const curtain = $('intro-curtain');
-  if (curtain) {
-    setTimeout(() => {
-      curtain.classList.add('hide');
-      setTimeout(() => curtain.style.display = 'none', 850);
-    }, 450);
-  }
+  setTimeout(() => {
+    document.body.classList.remove('home-init');
+  }, 1200);
 });
 
 const G = [
@@ -1068,29 +1055,76 @@ function tbl(ys, rows) {
   return `<table><thead><tr><th>Metric</th>${ys.map(y => `<th>Year ${y.year}</th>`).join('')}</tr></thead><tbody>${rows.map(([l, f, fm, t]) => `<tr class="${t ? 't' : ''}"><td>${l}</td>${ys.map(y => `<td>${(fm || M)(typeof f === 'string' ? y[f] : f(y))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
-/* 3. APPLE DESIGN SYSTEM REBUILT CHARTS */
+/* 9, 10 & 11. REBUILT GRAPH & CLEANED DATA VISUALIZATION */
 function chart(ys) {
-  const W = 760, H = 260, pd = 36, n = ys.length, vs = ys.flatMap(y => [y.revenue, y.ebitda, y.fcf]), mx = Math.max(...vs) * 1.1, mn = Math.min(0, ...vs) * 1.1, sy = v => H - pd - (v - mn) / (mx - mn) * (H - 2 * pd), bw = (W - 2 * pd) / n, sx = i => pd + bw * i + bw / 2;
+  const W = 800, H = 280, padL = 50, padR = 20, padT = 36, padB = 36;
+  const n = ys.length;
   
-  // Refined Champagne Colors
-  const lineGoldLight = "var(--gold-light)";
-  const lineGoldDark = "var(--gold-dark)";
+  // Clean Y-axis scale calculation
+  const vs = ys.flatMap(y => [y.revenue, y.ebitda, y.fcf]);
+  const maxRaw = Math.max(...vs, 10);
+  const minRaw = Math.min(0, ...vs);
+  const yTicksCount = 4;
+  const step = Math.ceil(maxRaw / yTicksCount / 50) * 50;
+  const yMax = step * yTicksCount;
+  const yMin = minRaw < 0 ? Math.floor(minRaw / 50) * 50 : 0;
   
-  const line = (k, c, dash = false) => `<path d="${ys.map((y, i) => (i ? 'L' : 'M') + sx(i) + ' ' + sy(y[k])).join('')}" fill="none" stroke="${c}" stroke-width="1.75" ${dash ? 'stroke-dasharray="3 3"' : ''} stroke-linecap="square"/>` + ys.map((y, i) => `<rect x="${sx(i) - 2}" y="${sy(y[k]) - 2}" width="4" height="4" fill="${c}"/>`).join('');
+  const sy = v => H - padB - ((v - yMin) / (yMax - yMin)) * (H - padT - padB);
+  const bw = (W - padL - padR) / n;
+  const sx = i => padL + bw * i + bw / 2;
   
-  return `<svg viewBox="0 0 ${W} ${H + 24}" width="100%" role="img" style="background:transparent; font-family:var(--font-sans);">
-  <line x1="${pd}" x2="${W - pd}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--line)" stroke-width="1"/>
-  ${ys.map((y, i) => `
-    <rect x="${sx(i) - bw * .22}" y="${sy(Math.max(y.revenue, 0))}" width="${bw * .44}" height="${Math.max(1, Math.abs(sy(y.revenue) - sy(0)))}" fill="none" stroke="var(--gold-line-subtle)" stroke-width="1"/>
-    <text x="${sx(i)}" y="${H + 10}" text-anchor="middle" fill="var(--mut)" font-size="11" font-weight="500">Y${y.year}</text>
-  `).join('')}
-  ${line('ebitda', lineGoldLight)}
-  ${line('fcf', lineGoldDark, true)}
-  <g font-size="11" fill="var(--mut)" font-weight="500">
-    <text x="${pd}" y="16">Outlines: Revenue</text>
-    <text x="${pd + 130}" y="16" fill="${lineGoldLight}">Solid: EBITDA</text>
-    <text x="${pd + 240}" y="16" fill="${lineGoldDark}">Dashed: Free Cash Flow</text>
-  </g></svg>`;
+  // Champagne gold tones
+  const lineGold1 = "var(--gold)";
+  const lineGold2 = "var(--gold-dark)";
+  
+  const drawLine = (key, color, dash = false) => {
+    const pathD = ys.map((y, i) => (i === 0 ? 'M' : 'L') + sx(i) + ' ' + sy(y[key])).join(' ');
+    return `<path d="${pathD}" fill="none" stroke="${color}" stroke-width="2" ${dash ? 'stroke-dasharray="4 4"' : ''} stroke-linecap="square"/>` +
+           ys.map((y, i) => `<circle cx="${sx(i)}" cy="${sy(y[key])}" r="3" fill="var(--bg)" stroke="${color}" stroke-width="1.5"/>`).join('');
+  };
+  
+  // Clean Y-axis Ticks
+  let yAxisGrid = '';
+  for (let i = 0; i <= yTicksCount; i++) {
+    const val = yMin + (yMax - yMin) * (i / yTicksCount);
+    const yPos = sy(val);
+    yAxisGrid += `
+      <line x1="${padL}" x2="${W - padR}" y1="${yPos}" y2="${yPos}" stroke="var(--line-subtle)" stroke-width="1"/>
+      <text x="${padL - 8}" y="${yPos + 4}" text-anchor="end" fill="var(--mut)" font-size="10" font-family="var(--font-sans)">$${val}m</text>
+    `;
+  }
+  
+  return `
+  <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" style="background:transparent; font-family:var(--font-sans); display:block;">
+    ${yAxisGrid}
+    
+    <!-- Outline-only Revenue Bars -->
+    ${ys.map((y, i) => {
+      const barH = Math.max(1, Math.abs(sy(y.revenue) - sy(0)));
+      const barY = sy(Math.max(y.revenue, 0));
+      return `
+        <rect x="${sx(i) - bw * 0.22}" y="${barY}" width="${bw * 0.44}" height="${barH}" 
+              fill="transparent" stroke="var(--gold-line-subtle)" stroke-width="1.2"/>
+        <text x="${sx(i)}" y="${H - 12}" text-anchor="middle" fill="var(--mut)" font-size="11" font-weight="500">Year ${y.year}</text>
+      `;
+    }).join('')}
+    
+    <!-- Distinct Champagne Gold Lines -->
+    ${drawLine('ebitda', lineGold1)}
+    ${drawLine('fcf', lineGold2, true)}
+    
+    <!-- Legend -->
+    <g font-size="11" font-weight="500" transform="translate(${padL}, 16)">
+      <rect x="0" y="-8" width="10" height="10" fill="transparent" stroke="var(--gold-line-subtle)" stroke-width="1.2"/>
+      <text x="16" y="0" fill="var(--mut)">Revenue (Outline)</text>
+      
+      <line x1="140" y1="-3" x2="156" y2="-3" stroke="${lineGold1}" stroke-width="2"/>
+      <text x="162" y="0" fill="var(--text)">EBITDA</text>
+      
+      <line x1="230" y1="-3" x2="246" y2="-3" stroke="${lineGold2}" stroke-width="2" stroke-dasharray="3 3"/>
+      <text x="252" y="0" fill="var(--mut)">Free Cash Flow</text>
+    </g>
+  </svg>`;
 }
 
 let seed = 7;
@@ -1196,7 +1230,7 @@ addEventListener('keydown', e => {
   if (n >= 1 && n <= VIEWS.length) location.hash = '#/' + VIEWS[n - 1][0];
 });
 
-/* Tab System */
+/* Tab System with iOS Blur Transition */
 document.querySelectorAll('.pg').forEach(pg => {
   const ps = [...pg.children].filter(c => c.classList.contains('pane')), bar = document.createElement('div');
   bar.className = 'tabs'; bar.setAttribute('role', 'tablist');
@@ -1216,23 +1250,23 @@ render = function() {
   $('lv').innerHTML = [['Sponsor MOIC', 'h1v'], ['Sponsor IRR', 'h2v'], ['Revenue CAGR', 'h3v'], ['Rule of 40', 'h4v']].map(([l, i]) => `<div><span>${l}</span><b>${$(i).textContent}</b></div>`).join('');
 };
 
-/* 4. ASCII ENGINE — PHYSICAL CHARACTER FIELD DISPLACEMENT */
+/* 4, 5 & 6. HEAVY ROTHKO-LIKE ATMOSPHERIC ASCII + INVISIBLE CIRCULAR SWIRL DISPLACEMENT + CHARACTER BACKGROUND GRID */
 const cv = $('cv'), cx = cv.getContext('2d');
-let COLS = 60, ROWS = 36;
-let densityGrid = [];
+let COLS = 64, ROWS = 42;
 let animTime = 0;
 
 // Cursor physical field tracker
 let cursorState = {
-  currentX: -999,
-  currentY: -999,
-  targetX: -999,
-  targetY: -999,
+  currentPixelX: -9999,
+  currentPixelY: -9999,
+  targetPixelX: -9999,
+  targetPixelY: -9999,
   intensity: 0,
   targetIntensity: 0
 };
 
-const CHAR_MAP = ' .:-=+*#%@';
+// High density Rothko-style character gradient mapping
+const DENSE_CHARS = ' .:-=+*#%@█▓▒░░▒▓█';
 
 function resizeCanvas() {
   const parent = cv.parentElement;
@@ -1243,9 +1277,8 @@ function resizeCanvas() {
   cv.height = rect.height * dpr;
   cx.setTransform(dpr, 0, 0, dpr, 0, 0);
   
-  COLS = Math.floor(rect.width / 11);
-  ROWS = Math.floor(rect.height / 18);
-  densityGrid = new Float32Array(COLS * ROWS);
+  COLS = Math.floor(rect.width / 10);
+  ROWS = Math.floor(rect.height / 14);
 }
 
 addEventListener('resize', resizeCanvas);
@@ -1254,8 +1287,8 @@ const ascContainer = document.querySelector('.asc-container');
 if (ascContainer) {
   ascContainer.addEventListener('pointermove', e => {
     const rect = ascContainer.getBoundingClientRect();
-    cursorState.targetX = (e.clientX - rect.left) / rect.width * COLS;
-    cursorState.targetY = (e.clientY - rect.top) / rect.height * ROWS;
+    cursorState.targetPixelX = e.clientX - rect.left;
+    cursorState.targetPixelY = e.clientY - rect.top;
     cursorState.targetIntensity = 1.0;
   });
   
@@ -1268,11 +1301,11 @@ function renderASCII() {
   requestAnimationFrame(renderASCII);
   if (cur !== 'home') return;
 
-  animTime += 0.02;
+  animTime += 0.015;
 
-  // Smooth physical cursor interpolation
-  cursorState.currentX += (cursorState.targetX - cursorState.currentX) * 0.1;
-  cursorState.currentY += (cursorState.targetY - cursorState.currentY) * 0.1;
+  // Smooth spatial cursor interpolation
+  cursorState.currentPixelX += (cursorState.targetPixelX - cursorState.currentPixelX) * 0.08;
+  cursorState.currentPixelY += (cursorState.targetPixelY - cursorState.currentPixelY) * 0.08;
   cursorState.intensity += (cursorState.targetIntensity - cursorState.intensity) * 0.05;
 
   const pRect = cv.parentElement.getBoundingClientRect();
@@ -1280,49 +1313,63 @@ function renderASCII() {
   const ch = pRect.height / ROWS;
 
   cx.clearRect(0, 0, pRect.width, pRect.height);
-  cx.font = `${Math.floor(ch * 0.85)}px ui-monospace, "SF Mono", monospace`;
+  cx.font = `${Math.floor(ch * 0.9)}px ${getComputedStyle(document.body).getPropertyValue('--font-mono')}`;
   cx.textAlign = 'center';
   cx.textBaseline = 'middle';
 
   const isLight = document.documentElement.dataset.theme === 'light';
 
+  // True isotropic circular influence radius in pixels
+  const influenceRadius = 140;
+
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
-      const idx = r * COLS + c;
-      const nx = c / COLS - 0.5;
-      const ny = r / ROWS - 0.5;
-
-      // Base Wave Structure
-      let w1 = Math.sin(nx * 6.0 + animTime * 1.2) * Math.cos(ny * 6.0 + animTime * 0.8);
-      let w2 = Math.sin(Math.sqrt(nx * nx + ny * ny) * 12.0 - animTime * 1.5);
-      let baseVal = (w1 + w2 * 0.5 + 1.5) / 3.0;
-
-      // Displacement & Character Physical Dispersion
       let posX = (c + 0.5) * cw;
       let posY = (r + 0.5) * ch;
 
-      const dx = c - cursorState.currentX;
-      const dy = r - cursorState.currentY;
+      // 6. Character-based Background Texture (Tiny subtle dots throughout)
+      const bgChar = (c % 4 === 0 && r % 4 === 0) ? '·' : ' ';
+
+      // 5. Rothko-style atmospheric masses (deep organic continuous fields)
+      const nx = c / COLS;
+      const ny = r / ROWS;
+      
+      let m1 = Math.sin(nx * 3.5 + animTime * 0.5) * Math.cos(ny * 2.8 + animTime * 0.4);
+      let m2 = Math.cos(Math.sqrt((nx - 0.5) ** 2 + (ny - 0.5) ** 2) * 5.0 - animTime * 0.7);
+      let m3 = Math.sin(nx * 8.0 - ny * 6.0 + animTime * 0.9) * 0.25;
+      
+      let density = (m1 + m2 + m3 + 1.8) / 3.6;
+      density = Math.pow(Math.min(1, Math.max(0, density)), 0.85); // Heavy atmospheric mass
+
+      // 4. Circular Physical Swirl Interaction
+      const dx = posX - cursorState.currentPixelX;
+      const dy = posY - cursorState.currentPixelY;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      const fieldRadius = 10.0;
 
-      if (dist < fieldRadius && cursorState.intensity > 0.01) {
-        const falloff = Math.pow(1 - dist / fieldRadius, 2) * cursorState.intensity;
-        
-        // Push characters away physically along the gradient vector
+      if (dist < influenceRadius && cursorState.intensity > 0.001) {
+        const falloff = Math.pow(1 - dist / influenceRadius, 2) * cursorState.intensity;
         const angle = Math.atan2(dy, dx);
-        const push = falloff * cw * 1.8;
-        posX += Math.cos(angle) * push;
-        posY += Math.sin(angle) * push;
+        
+        // Swirl offset perpendicular to radius
+        const swirlAngle = angle + Math.PI / 2 + falloff * 1.5;
+        const swirlDist = falloff * 32.0;
 
-        // Density modulation
-        baseVal = Math.min(1, Math.max(0, baseVal + Math.sin(dist - animTime * 3.0) * falloff * 0.4));
+        posX += Math.cos(swirlAngle) * swirlDist;
+        posY += Math.sin(swirlAngle) * swirlDist;
+        
+        // Modulate density organically along swirl field
+        density = Math.min(1, Math.max(0, density + Math.sin(dist * 0.08 - animTime * 2.0) * falloff * 0.35));
       }
 
-      const charIdx = Math.floor(baseVal * (CHAR_MAP.length - 1));
-      const char = CHAR_MAP[charIdx] || ' ';
+      // Character selection
+      let char = bgChar;
+      if (density > 0.12) {
+        const charIdx = Math.floor(density * (DENSE_CHARS.length - 1));
+        char = DENSE_CHARS[charIdx] || ' ';
+      }
 
-      let alpha = 0.15 + baseVal * 0.75;
+      // Color and opacity blending
+      let alpha = density <= 0.12 ? 0.08 : (0.25 + density * 0.7);
       if (isLight) {
         cx.fillStyle = `rgba(143, 106, 31, ${alpha.toFixed(2)})`;
       } else {
