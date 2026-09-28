@@ -1,1356 +1,621 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" class="dark">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#050811">
-<title>finmodel — High-Precision Financial Engineering</title>
-<style>
-:root {
-  --bg: #050811;
-  --bg-subtle: #090c15;
-  --card: #0d111c;
-  --text: #f0ece1;
-  --mut: #7c8290;
-  --line: rgba(212, 175, 106, 0.14);
-  --line-strong: rgba(212, 175, 106, 0.32);
-  --gold: #d4af6a;
-  --gold-bright: #f2e3bd;
-  --gold-dark: #8c703b;
-  --gold-dim: rgba(212, 175, 106, 0.08);
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Helvetica Neue", sans-serif;
-  --font-serif: "EB Garamond", "Times New Roman", Georgia, serif;
-  --font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-  box-sizing: border-box;
-}
-
-:root[data-theme="light"] {
-  --bg: #f5f3ef;
-  --bg-subtle: #ece8e1;
-  --card: #ffffff;
-  --text: #121316;
-  --mut: #686e7b;
-  --line: rgba(143, 106, 31, 0.16);
-  --line-strong: rgba(143, 106, 31, 0.38);
-  --gold: #8f6a1f;
-  --gold-bright: #5c4210;
-  --gold-dark: #b88d32;
-  --gold-dim: rgba(143, 106, 31, 0.06);
-}
-
-*, *::before, *::after { box-sizing: inherit; }
-
-body {
-  margin: 0;
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
-  letter-spacing: -0.011em;
-  transition: background-color 0.4s ease, color 0.4s ease;
-  overflow-x: hidden;
-}
-
-/* Structural Divider Grid */
-.grid-frame {
-  border-left: 1px solid var(--line);
-  border-right: 1px solid var(--line);
-}
-
-/* Header & Nav */
-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  background: color-mix(in srgb, var(--bg) 82%, transparent);
-  backdrop-filter: saturate(180%) blur(16px);
-  -webkit-backdrop-filter: saturate(180%) blur(16px);
-  border-bottom: 1px solid var(--line);
-}
-
-.nb {
-  max-width: 1280px;
-  margin: 0 auto;
-  height: 54px;
-  display: flex;
-  align-items: center;
-  padding: 0 24px;
-}
-
-.logo {
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--text);
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-right: 40px;
-  letter-spacing: -0.02em;
-}
-
-.logo span.icon {
-  width: 8px;
-  height: 8px;
-  background: var(--gold);
-  transform: rotate(45deg);
-  display: inline-block;
-}
-
-.nt {
-  display: flex;
-  gap: 24px;
-  margin-right: auto;
-  overflow-x: auto;
-}
-
-.nt a {
-  color: var(--mut);
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 16px 0;
-  border-bottom: 1px solid transparent;
-  transition: color 0.2s ease, border-color 0.2s ease;
-  white-space: nowrap;
-}
-
-.nt a:hover { color: var(--text); }
-.nt a.on {
-  color: var(--gold);
-  border-bottom-color: var(--gold);
-}
-
-kbd {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--mut);
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  padding: 1px 4px;
-  margin-left: 6px;
-}
-
-.tb {
-  background: transparent;
-  border: 1px solid var(--line);
-  color: var(--text);
-  border-radius: 6px;
-  padding: 6px 14px;
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.tb:hover {
-  border-color: var(--gold);
-  color: var(--gold-bright);
-}
-
-/* View Container & Layout */
-main {
-  position: relative;
-  z-index: 1;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 54px 0 60px;
-  min-height: 100vh;
-}
-
-.view {
-  display: none;
-  padding: 40px 24px;
-}
-
-.view.on {
-  display: block;
-  animation: iosIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes iosIn {
-  from { opacity: 0; transform: translateY(8px) scale(0.995); filter: blur(4px); }
-  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-}
-
-/* Editorial Serif & Headings */
-.serif {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-}
-
-.vh {
-  margin-bottom: 32px;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 24px;
-}
-
-.vh .tag {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--gold);
-  margin-bottom: 8px;
-}
-
-.vh h2 {
-  font-size: clamp(28px, 3.5vw, 44px);
-  line-height: 1.1;
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  margin: 0 0 10px 0;
-}
-
-.vh p {
-  color: var(--mut);
-  font-size: 15px;
-  max-width: 600px;
-  margin: 0;
-}
-
-/* Homepage Hero (Strict 50/50 Split) */
-.hero-split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: calc(100vh - 180px);
-  border-bottom: 1px solid var(--line);
-}
-
-.hero-content {
-  padding: 60px 40px 60px 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-right: 1px solid var(--line);
-}
-
-.hero-content .tag {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--gold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-
-.hero-content h1 {
-  font-size: clamp(38px, 4.8vw, 68px);
-  line-height: 1.04;
-  font-weight: 500;
-  letter-spacing: -0.04em;
-  margin: 0 0 24px 0;
-}
-
-.hero-content h1 span.dim {
-  color: var(--mut);
-}
-
-.lede {
-  font-size: 17px;
-  line-height: 1.5;
-  color: var(--mut);
-  max-width: 480px;
-  margin: 0 0 36px 0;
-}
-
-.btns {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  margin-bottom: 48px;
-}
-
-.b {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 24px;
-  border-radius: 6px;
-  background: var(--gold);
-  color: #050811;
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 13px;
-  transition: all 0.25s ease;
-}
-
-.b:hover {
-  background: var(--gold-bright);
-  transform: translateY(-1px);
-}
-
-.b.g {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--line-strong);
-}
-
-.b.g:hover {
-  border-color: var(--gold);
-  color: var(--gold);
-}
-
-.ms {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  padding-top: 24px;
-  border-top: 1px solid var(--line);
-}
-
-.ms div b {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--gold-bright);
-  letter-spacing: -0.03em;
-}
-
-.ms div span {
-  font-size: 11px;
-  color: var(--mut);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-/* Structural Edge-to-Edge ASCII Canvas */
-.hero-ascii {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 450px;
-  background: var(--bg);
-  overflow: hidden;
-}
-
-.hero-ascii canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-/* Grid & Card Containers */
-.mods {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.mod {
-  padding: 28px 20px;
-  border-right: 1px solid var(--line);
-  text-decoration: none;
-  color: inherit;
-  transition: background-color 0.25s ease;
-}
-
-.mod:last-child { border-right: none; }
-.mod:hover { background: var(--gold-dim); }
-
-.mod .tag {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--gold);
-}
-
-.mod h3 {
-  margin: 12px 0 8px;
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-}
-
-.mod p {
-  margin: 0;
-  color: var(--mut);
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.card {
-  background: var(--bg-subtle);
-  border: 1px solid var(--line);
-  padding: 24px;
-  margin-bottom: 16px;
-}
-
-.card h3 {
-  margin: 0 0 18px 0;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-/* Structural Split Layouts */
-.split {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 32px;
-  align-items: start;
-}
-
-.split aside {
-  position: sticky;
-  top: 78px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.g2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.controls-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-/* Controls & Form Elements */
-.f { margin-bottom: 16px; }
-.f label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: var(--mut);
-  margin-bottom: 8px;
-}
-.f b {
-  color: var(--gold-bright);
-  font-family: var(--font-mono);
-  font-weight: 500;
-}
-
-input[type=range] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 2px;
-  background: var(--line-strong);
-  outline: none;
-}
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
-  background: var(--gold);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-input[type=range]::-webkit-slider-thumb:hover {
-  transform: scale(1.3);
-  background: var(--gold-bright);
-}
-
-select, input[type=number] {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid var(--line-strong);
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 13px;
-  outline: none;
-}
-
-select:focus, input[type=number]:focus {
-  border-color: var(--gold);
-}
-
-.btn {
-  border: 1px solid var(--gold);
-  background: transparent;
-  color: var(--gold-bright);
-  padding: 9px 16px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: 100%;
-}
-
-.btn:hover {
-  background: var(--gold-dim);
-}
-
-/* Metric KPI Blocks */
-.kp {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0;
-  border: 1px solid var(--line);
-  margin-bottom: 28px;
-}
-
-.kp div {
-  padding: 18px;
-  border-right: 1px solid var(--line);
-  background: var(--bg-subtle);
-}
-
-.kp div:last-child { border-right: none; }
-.kp span, .lv span {
-  font-size: 11px;
-  color: var(--mut);
-  text-transform: uppercase;
-}
-
-.kp b {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--gold-bright);
-  margin-top: 4px;
-}
-
-.lv div {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.lv div:last-child { border: none; }
-.lv b {
-  font-family: var(--font-mono);
-  font-size: 15px;
-  color: var(--gold-bright);
-}
-
-/* Tables & Data Sheets */
-.tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 24px;
-}
-
-.tabs button {
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  color: var(--mut);
-  padding: 10px 20px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.tabs button:hover { color: var(--text); }
-.tabs button.on {
-  color: var(--gold-bright);
-  border-bottom-color: var(--gold);
-}
-
-.pane { display: none; }
-.pane.on {
-  display: block;
-  animation: iosIn 0.35s ease forwards;
-}
-
-.tw { overflow-x: auto; }
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: var(--font-mono);
-  font-size: 12px;
-}
-
-th, td {
-  padding: 10px 14px;
-  text-align: right;
-  border-bottom: 1px solid var(--line);
-}
-
-th:first-child, td:first-child {
-  text-align: left;
-  font-family: var(--font-sans);
-  color: var(--mut);
-}
-
-th {
-  font-weight: 500;
-  color: var(--mut);
-  font-size: 11px;
-  text-transform: uppercase;
-}
-
-tr.t td {
-  color: var(--gold-bright);
-  font-weight: 600;
-  border-top: 1px solid var(--line-strong);
-}
-
-.ok { color: #5cb85c; }
-.bad { color: #d9534f; }
-
-.chk {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.chk small {
-  display: block;
-  color: var(--mut);
-  font-size: 12px;
-  margin-top: 2px;
-}
-
-.memo {
-  white-space: pre-wrap;
-  line-height: 1.6;
-  font-size: 13px;
-  color: var(--text);
-  font-family: var(--font-sans);
-}
-
-.bar {
-  display: grid;
-  grid-template-columns: 140px 1fr 60px;
-  gap: 12px;
-  align-items: center;
-  margin: 10px 0;
-  font-size: 12px;
-}
-
-.bar i {
-  display: block;
-  height: 4px;
-  background: var(--gold);
-}
-
-footer {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 40px 24px;
-  border-top: 1px solid var(--line);
-  color: var(--mut);
-  font-size: 11px;
-  display: flex;
-  justify-content: space-between;
-}
-
-@media (max-width: 960px) {
-  .hero-split { grid-template-columns: 1fr; }
-  .hero-content { border-right: none; border-bottom: 1px solid var(--line); padding-right: 0; }
-  .mods { grid-template-columns: 1fr; }
-  .mod { border-right: none; border-bottom: 1px solid var(--line); }
-  .split { grid-template-columns: 1fr; }
-  .kp { grid-template-columns: repeat(2, 1fr); }
-  .g2 { grid-template-columns: 1fr; }
-}
-</style>
-</head>
-<body>
-
-<nav>
-  <div class="nb">
-    <a class="logo" href="#/home"><span class="icon"></span>finmodel</a>
-    <div class="nt" id="nt"></div>
-    <button class="tb" id="th">Light</button>
-  </div>
-</nav>
-
-<main class="grid-frame">
-
-  <!-- HOMEPAGE VIEW -->
-  <div class="view" id="v_home" style="padding:0">
-    <div class="hero-split">
-      <div class="hero-content">
-        <div class="tag">finmodel / quantitative engine</div>
-        <h1>Model the business.<br><span class="serif dim">Price the return.</span></h1>
-        <p class="lede">A live, real-time financial modeling engine. Dynamic drivers flow seamlessly through interconnected financial statements, LBO debt schedules, and valuation simulations.</p>
-        <div class="btns">
-          <a class="b" href="#/model">Open the Model</a>
-          <a class="b g" href="#/returns">View Returns</a>
-        </div>
-        <div class="ms">
-          <div><b id="h1v">--</b><span>Sponsor MOIC</span></div>
-          <div><b id="h2v">--</b><span>Sponsor IRR</span></div>
-          <div><b id="h3v">--</b><span>Revenue CAGR</span></div>
-          <div><b id="h4v">--</b><span>Rule of 40</span></div>
-        </div>
-      </div>
-      <div class="hero-ascii" id="ascii-container">
-        <canvas id="cv"></canvas>
-      </div>
-    </div>
-
-    <div class="mods">
-      <a class="mod" href="#/model"><span class="tag">/01</span><h3>Model</h3><p>Nearly forty dynamic assumptions across growth, operating margins, and capital structure.</p></a>
-      <a class="mod" href="#/statements"><span class="tag">/02</span><h3>Statements</h3><p>Fully integrated income, cash flow, and balance sheet models that balance in real time.</p></a>
-      <a class="mod" href="#/financing"><span class="tag">/03</span><h3>Financing</h3><p>Senior debt, revolving credit facility, cash sweeps, interest rates, and leverage covenants.</p></a>
-      <a class="mod" href="#/returns"><span class="tag">/04</span><h3>Returns</h3><p>Sponsor MOIC/IRR analysis, unlevered DCF, parameter sensitivities, and Monte Carlo engine.</p></a>
-      <a class="mod" href="#/scenarios"><span class="tag">/05</span><h3>Scenarios</h3><p>Compare five predefined macroeconomic cases against your custom baseline assumptions.</p></a>
-    </div>
-  </div>
-
-  <!-- MODEL VIEW -->
-  <div class="view" id="v_model">
-    <div class="vh">
-      <div class="tag">/01 Model Drivers</div>
-      <h2>Shape the <span class="serif">business.</span></h2>
-      <p>Adjust baseline growth rates, margin structures, working capital intensity, and capital parameters.</p>
-    </div>
-    <div class="split">
-      <div id="ctl" class="controls-grid"></div>
-      <aside>
-        <div class="card lv" id="lv"></div>
-        <div class="card">
-          <h3>Goal Seek & Constraint Lock</h3>
-          <div class="f">
-            <label>Protected Parameter</label>
-            <select id="lock">
-              <option value="none">None</option>
-              <option value="initialGrowth">Initial growth</option>
-              <option value="grossMargin">Gross margin</option>
-              <option value="exitMultiple">Exit multiple</option>
-            </select>
-          </div>
-          <div class="f">
-            <label>Target MOIC</label>
-            <input id="tgt" type="number" value="2.5" step="0.1">
-          </div>
-          <button class="btn" id="solve">Solve Target</button>
-          <p class="small" id="sres" style="color:var(--mut);font-size:11px;margin-top:10px"></p>
-        </div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- STATEMENTS VIEW -->
-  <div class="view" id="v_statements">
-    <div class="vh">
-      <div class="tag">/02 Statements</div>
-      <h2>Three statements, <span class="serif">integrated.</span></h2>
-      <p>Continuous dynamic flow from revenue generation down to balance sheet working capital and retained equity.</p>
-    </div>
-    <div class="kp" id="kp1"></div>
-    <div class="pg">
-      <div class="pane" data-label="Performance Chart">
-        <div class="card"><div id="chart"></div></div>
-      </div>
-      <div class="pane" data-label="Income Statement">
-        <div class="card tw" id="is"></div>
-      </div>
-      <div class="pane" data-label="Cash Flow Statement">
-        <div class="card tw" id="cf"></div>
-      </div>
-      <div class="pane" data-label="Balance Sheet">
-        <div class="card tw" id="bs"></div>
-      </div>
-      <div class="pane" data-label="Unit Economics">
-        <div class="card tw" id="ue"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FINANCING VIEW -->
-  <div class="view" id="v_financing">
-    <div class="vh">
-      <div class="tag">/03 Debt Architecture</div>
-      <h2>Capital structure & <span class="serif">covenants.</span></h2>
-      <p>Revolving credit facility, mandatory amortization, excess cash sweep mechanisms, and leverage limits.</p>
-    </div>
-    <div class="pg">
-      <div class="pane" data-label="Debt Schedule">
-        <div class="card tw" id="dt"></div>
-      </div>
-      <div class="pane" data-label="Model Integrity">
-        <div class="card" id="chks"></div>
-      </div>
-      <div class="pane" data-label="Risk Monitoring">
-        <div class="card" id="risks"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RETURNS VIEW -->
-  <div class="view" id="v_returns">
-    <div class="vh">
-      <div class="tag">/04 Valuation & Returns</div>
-      <h2>Investor yield & <span class="serif">valuation.</span></h2>
-      <p>Sponsor exit returns cross-referenced against an unlevered DCF, parameter sensitivity grids, and stochastic simulation.</p>
-    </div>
-    <div class="kp" id="kp2"></div>
-    <div class="pg">
-      <div class="pane" data-label="Valuation & IC Memo">
-        <div class="g2">
-          <div class="card"><h3>Valuation Bridge</h3><div class="tw" id="val"></div></div>
-          <div class="card"><h3>Investment Thesis Memo</h3><div class="memo" id="memo"></div></div>
-        </div>
-      </div>
-      <div class="pane" data-label="Sensitivity Grid">
-        <div class="g2">
-          <div class="card" style="grid-column:1/-1"><h3>MOIC Sensitivity: Growth vs. Exit Multiple</h3><div class="tw" id="sens"></div></div>
-          <div class="card"><h3>Impact Analysis (Tornado)</h3><div id="torn"></div></div>
-        </div>
-      </div>
-      <div class="pane" data-label="Monte Carlo Engine">
-        <div class="card">
-          <h3>Stochastic Return Distribution (300 Iterations)</h3>
-          <div id="mc" style="max-width:600px"></div>
-          <p class="small" id="mcs" style="color:var(--mut);font-size:12px;margin-top:12px"></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCENARIOS VIEW -->
-  <div class="view" id="v_scenarios">
-    <div class="vh">
-      <div class="tag">/05 Macro Scenarios</div>
-      <h2>Macroeconomic <span class="serif">presets.</span></h2>
-      <p>Test your thesis against predefined growth and margin regimes, then load parameter sets directly into the model engine.</p>
-    </div>
-    <div class="card tw" id="scn" style="margin-top:16px"></div>
-  </div>
-
-</main>
-
-<footer>
-  <div>finmodel — High-Precision Financial Engine</div>
-  <div>Educational & Analytical Platform</div>
-</footer>
-
-<script>
-const $ = id => document.getElementById(id);
-const N = (x, d = 1) => Number.isFinite(x) ? x.toFixed(d) : 'n/a';
-const M = v => (v < 0 ? '(' : '') + '$' + N(Math.abs(v)) + 'm' + (v < 0 ? ')' : '');
-const P = v => N(v * 100) + '%';
-const X = v => N(v, 2) + 'x';
-
-/* Model Drivers & Structure */
-const G = [
-  ['Growth Engine', [
-    ['startingRevenue', 'Starting revenue', 100, 20, 500, 5, '$m'],
-    ['initialGrowth', 'Initial growth rate', 18, -20, 60, 1, '%'],
-    ['growthDecay', 'Annual growth decay', 2.5, 0, 8, 0.5, '%'],
-    ['marketSize', 'Market cap ceiling', 900, 200, 3000, 50, '$m'],
-    ['startingCustomers', 'Starting customer base', 10000, 2000, 50000, 500, ''],
-    ['customerGrowth', 'Gross customer adds', 24, 0, 60, 1, '%'],
-    ['arpc', 'Revenue per customer', 10000, 2000, 30000, 500, '$'],
-    ['churn', 'Annual churn rate', 8, 1, 25, 0.5, '%'],
-    ['priceIncrease', 'Annual price expansion', 3, 0, 8, 0.5, '%'],
-    ['acqEfficiency', 'CAC efficiency ratio', 1.3, 0.5, 2.5, 0.1, 'x']
-  ]],
-  ['Margins & Tax Structure', [
-    ['grossMargin', 'Gross profit margin', 72, 30, 90, 1, '%'],
-    ['rndPct', 'R&D expenditure (% rev)', 12, 0, 30, 0.5, '%'],
-    ['smPct', 'Sales & Marketing (% rev)', 18, 0, 40, 0.5, '%'],
-    ['otherOpCosts', 'G&A & Other costs (% rev)', 20, 5, 40, 0.5, '%'],
-    ['taxRate', 'Corporate tax rate', 25, 0, 40, 1, '%'],
-    ['inflation', 'Inflation rate', 2.5, 0, 8, 0.1, '%']
-  ]],
-  ['Working Capital & CapEx', [
-    ['dso', 'Days sales outstanding (DSO)', 45, 10, 120, 1, 'd'],
-    ['dpo', 'Days payables outstanding (DPO)', 30, 5, 120, 1, 'd'],
-    ['inventoryDays', 'Inventory holding days', 10, 0, 90, 1, 'd'],
-    ['wcDrag', 'Other NWC (% rev)', 1, 0, 5, 0.25, '%'],
-    ['maintenanceCapex', 'Maintenance CapEx (% rev)', 2, 0, 8, 0.25, '%'],
-    ['growthCapex', 'Growth CapEx (% new rev)', 8, 0, 20, 0.5, '%'],
-    ['usefulLife', 'Asset useful life', 5, 2, 15, 1, 'y']
-  ]],
-  ['Financing & Leverage', [
-    ['startingCash', 'Beginning cash balance', 20, 0, 100, 1, '$m'],
-    ['existingDebt', 'Existing senior debt', 45, 0, 200, 1, '$m'],
-    ['termLoanRate', 'Term loan interest rate', 7.5, 2, 15, 0.25, '%'],
-    ['interestRate', 'Revolver interest rate', 7, 2, 15, 0.25, '%'],
-    ['debtPaydown', 'Mandatory debt paydown', 8, 0, 40, 1, '$m'],
-    ['cashSweep', 'Excess cash sweep %', 50, 0, 100, 5, '%'],
-    ['minimumCash', 'Minimum cash requirement', 10, 0, 50, 1, '$m'],
-    ['revolverCapacity', 'Revolver capacity', 30, 0, 100, 1, '$m'],
-    ['maxLeverage', 'Max leverage covenant', 4.5, 1, 8, 0.25, 'x'],
-    ['minCoverage', 'Min interest coverage', 2, 1, 6, 0.25, 'x']
-  ]],
-  ['Valuation Parameters', [
-    ['forecastPeriod', 'Forecast horizon', 5, 3, 10, 1, 'y'],
-    ['entryMultiple', 'Entry EBITDA multiple', 9, 4, 20, 0.5, 'x'],
-    ['exitMultiple', 'Exit EBITDA multiple', 10, 4, 25, 0.5, 'x'],
-    ['transactionFees', 'Transaction fees (% EV)', 2, 0, 5, 0.25, '%'],
-    ['discountRate', 'WACC / Discount rate', 11, 6, 20, 0.5, '%'],
-    ['terminalGrowth', 'Terminal growth rate', 2.5, 0, 5, 0.25, '%']
-  ]]
-];
-
-$('ctl').innerHTML = G.map(([t, it]) => `
-  <div class="card">
-    <h3>${t}</h3>
-    ${it.map(([id, l, v, mn, mx, st, u]) => `
-      <div class="f">
-        <label for="${id}">${l}<b id="o_${id}"></b></label>
-        <input type="range" id="${id}" min="${mn}" max="${mx}" step="${st}" value="${v}" data-u="${u}">
-      </div>
-    `).join('')}
-  </div>
-`).join('');
-
-const IDS = G.flatMap(g => g[1].map(i => i[0]));
-const disp = (v, u) => u === '$' ? '$' + v.toLocaleString() : u === '$m' ? '$' + v + 'm' : v.toLocaleString() + u;
-
-function read() {
-  const a = {};
-  IDS.forEach(i => {
-    const e = $(i);
-    a[i] = +e.value;
-    $('o_' + i).textContent = disp(+e.value, e.dataset.u);
-  });
-  return a;
-}
-
-/* Core Financial Simulation Engine */
-function run(a) {
-  const q = k => a[k] / 100, ys = [], layers = [];
-  const cg0 = a.startingRevenue * (1 - q('grossMargin'));
-  const ar0 = a.startingRevenue / 365 * a.dso;
-  const inv0 = cg0 / 365 * a.inventoryDays;
-  const ap0 = cg0 / 365 * a.dpo;
-  const on0 = a.startingRevenue * q('wcDrag');
-  const ppe0 = a.startingRevenue * 0.25;
-
-  let p = {
-    endCustomers: a.startingCustomers,
-    endARPC: a.arpc,
-    revenue: a.startingRevenue,
-    nwc: ar0 + inv0 + on0 - ap0,
-    ppe: ppe0,
-    equity: a.startingCash + ar0 + inv0 + on0 + ppe0 - ap0 - a.existingDebt,
-    termDebt: a.existingDebt,
-    revolver: 0,
-    cash: a.startingCash
-  };
-
-  const life = Math.round(a.usefulLife);
-
-  for (let i = 0; i < a.forecastPeriod; i++) {
-    const bc = p.endCustomers;
-    const adds = bc * Math.max(0, q('customerGrowth') - i * q('growthDecay') * 0.25) * a.acqEfficiency;
-    const ec = Math.max(0, bc + adds - bc * q('churn'));
-    const ea = p.endARPC * (1 + q('priceIncrease') + q('inflation') * 0.15);
-    const td = p.revenue * (1 + Math.max(-0.95, q('initialGrowth') - i * q('growthDecay')));
-    const bu = (bc + ec) / 2 * (p.endARPC + ea) / 2 / 1e6;
-    const revenue = Math.min(a.marketSize, 0.35 * td + 0.65 * bu);
-    const growth = revenue / p.revenue - 1;
-    const cogs = revenue * (1 - q('grossMargin'));
-    const gp = revenue - cogs;
-    const rnd = revenue * q('rndPct');
-    const sm = revenue * q('smPct');
-    const oth = revenue * q('otherOpCosts');
-    const ebitda = gp - rnd - sm - oth;
-    const ar = revenue / 365 * a.dso;
-    const inv = cogs / 365 * a.inventoryDays;
-    const ap = cogs / 365 * a.dpo;
-    const on = revenue * q('wcDrag');
-    const nwc = ar + inv + on - ap;
-    const dnwc = nwc - p.nwc;
-    const capex = revenue * q('maintenanceCapex') + Math.max(0, revenue - p.revenue) * q('growthCapex') * (i % 2 === 0 ? 1.25 : 0.75);
-
-    layers.push(capex);
-    let dep = i < life ? ppe0 / life : 0;
-    layers.forEach((c, j) => { if (i - j < life) dep += c / life; });
-
-    const ppe = p.ppe + capex - dep;
-    const ebit = ebitda - dep;
-    const interest = p.termDebt * q('termLoanRate') + p.revolver * q('interestRate');
-    const ebt = ebit - interest;
-    const taxes = Math.max(0, ebt * q('taxRate'));
-    const ni = ebt - taxes;
-    const cfo = ni + dep - dnwc;
-    const fcf = cfo - capex;
-    const ufcf = (ebit > 0 ? ebit * (1 - q('taxRate')) : ebit) + dep - dnwc - capex;
-
-    let cash = p.cash + fcf, rev = p.revolver, term = p.termDebt, draw = 0;
-    if (cash < a.minimumCash) {
-      draw = Math.max(0, Math.min(a.revolverCapacity - rev, a.minimumCash - cash));
-      rev += draw; cash += draw;
-    }
-
-    const mand = Math.min(a.debtPaydown, term, Math.max(0, cash - a.minimumCash));
-    term -= mand; cash -= mand;
-
-    const rep = Math.min(rev, Math.max(0, cash - a.minimumCash));
-    rev -= rep; cash -= rep;
-
-    const sweep = Math.min(term, Math.max(0, cash - a.minimumCash) * q('cashSweep'));
-    term -= sweep; cash -= sweep;
-
-    const debt = term + rev;
-    const netDebt = debt - cash;
-    const equity = p.equity + ni;
-    const assets = cash + ar + inv + on + ppe;
-    const liab = debt + ap;
-    const ltv = a.arpc * q('grossMargin') / q('churn');
-    const cac = adds > 0 ? sm * 1e6 / adds : NaN;
-
-    ys.push({
-      year: i + 1, revenue, growth, gp, ebitda, margin: ebitda / revenue, dep, ebit,
-      interest, taxes, ni, dnwc, capex, cfo, fcf, ufcf, cash, term, rev, debt, netDebt,
-      draw, mand, rep, sweep, bt: p.termDebt, br: p.revolver, ar, inv, ap, on, ppe,
-      equity, assets, liab, check: assets - liab - equity,
-      lev: ebitda > 0 ? netDebt / ebitda : Infinity,
-      cov: interest > 0 ? ebitda / interest : Infinity,
-      customers: ec, arpc: ea, ltvcac: ltv / cac, r40: growth + ebitda / revenue,
-      cA: bc, cA2: adds, cogs, rnd, sm, oth, nwc, cac, ltv
-    });
-
-    p = { endCustomers: ec, endARPC: ea, revenue, nwc, ppe, equity, termDebt: term, revolver: rev, cash };
-  }
-  return ys;
-}
-
-function value(a, ys) {
-  const L = ys.at(-1), q = k => a[k] / 100, r = q('discountRate'), g = q('terminalGrowth');
-  const ltm = a.startingRevenue * (q('grossMargin') - q('rndPct') - q('smPct') - q('otherOpCosts'));
-  const entryEV = Math.max(0.01, ltm) * a.entryMultiple;
-  const fees = entryEV * q('transactionFees');
-  const eqIn = Math.max(0.01, entryEV - a.existingDebt + a.startingCash + fees);
-  const exitEV = Math.max(0, L.ebitda * a.exitMultiple);
-  const exitEq = Math.max(0, exitEV - L.netDebt);
-  const moic = exitEq / eqIn;
-  const irr = moic > 0 ? Math.pow(moic, 1 / a.forecastPeriod) - 1 : NaN;
-
-  let pv = 0;
-  ys.forEach((y, i) => pv += y.ufcf / Math.pow(1 + r, i + 1));
-  const tv = r > g ? L.ufcf * (1 + g) / (r - g) : 0;
-  const pvtv = tv / Math.pow(1 + r, ys.length);
-  const dcf = pv + pvtv;
-
-  return {
-    ltm, entryEV, fees, eqIn, exitEV, exitEq, moic, irr, dcf, pvtv,
-    tvShare: dcf ? pvtv / dcf : NaN,
-    dcfEq: dcf - a.existingDebt + a.startingCash,
-    cagr: Math.pow(L.revenue / a.startingRevenue, 1 / ys.length) - 1
-  };
-}
-
-const model = a => { const ys = run(a); return { a, ys, v: value(a, ys) }; };
-
-/* Macro Scenario Definitions */
-const PRE = {
-  distress: ['Distress Case', { initialGrowth: -8, growthDecay: 1, churn: 18, grossMargin: 58, smPct: 20, exitMultiple: 6, customerGrowth: 5 }],
-  slow: ['Conservative Slow', { initialGrowth: 7, growthDecay: 1.5, churn: 11, grossMargin: 65, exitMultiple: 8, customerGrowth: 13 }],
-  base: ['Baseline Case', { initialGrowth: 18, growthDecay: 2.5, churn: 8, grossMargin: 72, smPct: 18, exitMultiple: 10, customerGrowth: 24 }],
-  hyper: ['Hypergrowth', { initialGrowth: 40, growthDecay: 4, churn: 7, grossMargin: 74, smPct: 27, exitMultiple: 12, customerGrowth: 48, growthCapex: 12 }],
-  comp: ['Quality Compounder', { initialGrowth: 20, growthDecay: 1, churn: 5, grossMargin: 80, smPct: 15, exitMultiple: 13, customerGrowth: 24, priceIncrease: 4 }]
-};
-
-function preset(k, a) {
-  const o = { ...a, ...PRE[k][1] }, l = $('lock').value;
-  if (l !== 'none') o[l] = a[l];
-  return o;
-}
-
-function tbl(ys, rows) {
-  return `<table><thead><tr><th>Metric</th>${ys.map(y => `<th>Year ${y.year}</th>`).join('')}</tr></thead><tbody>${rows.map(([l, f, fm, t]) => `<tr class="${t ? 't' : ''}"><td>${l}</td>${ys.map(y => `<td>${(fm || M)(typeof f === 'string' ? y[f] : f(y))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
-}
-
-function chart(ys) {
-  const W = 780, H = 260, pd = 32, n = ys.length;
-  const vs = ys.flatMap(y => [y.revenue, y.ebitda, y.fcf]);
-  const mx = Math.max(...vs) * 1.12, mn = Math.min(0, ...vs) * 1.12;
-  const sy = v => H - pd - (v - mn) / (mx - mn) * (H - 2 * pd);
-  const bw = (W - 2 * pd) / n;
-  const sx = i => pd + bw * i + bw / 2;
-
-  const line = (k, stroke) => `<path d="${ys.map((y, i) => (i ? 'L' : 'M') + sx(i) + ' ' + sy(y[k])).join(' ')}" fill="none" stroke="${stroke}" stroke-width="2.5" stroke-linecap="round"/>` + ys.map((y, i) => `<circle cx="${sx(i)}" cy="${sy(y[k])}" r="3.5" fill="${stroke}"/>`).join('');
-
-  return `<svg viewBox="0 0 ${W} ${H + 20}" width="100%" role="img"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity="0.8"/><stop offset="1" stop-color="var(--gold)" stop-opacity="0.15"/></linearGradient></defs>
-  ${ys.map((y, i) => `<rect x="${sx(i) - bw * 0.25}" y="${sy(Math.max(y.revenue, 0))}" width="${bw * 0.5}" height="${Math.abs(sy(y.revenue) - sy(0))}" fill="url(#g)"/><text x="${sx(i)}" y="${H + 8}" text-anchor="middle" fill="var(--mut)" font-size="11">Y${y.year}</text>`).join('')}
-  <line x1="${pd}" x2="${W - pd}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--line-strong)"/>${line('ebitda', '#d4af6a')}${line('fcf', '#f2e3bd')}
-  <g font-size="11" fill="var(--mut)"><text x="${pd}" y="14">Bar: Revenue</text><text x="${pd + 100}" y="14" fill="var(--gold)">Line: EBITDA</text><text x="${pd + 200}" y="14" fill="var(--gold-bright)">Line: Free Cash Flow</text></g></svg>`;
-}
-
-/* Monte Carlo Simulation */
-let seed = 7;
-const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
-const gs = () => Math.sqrt(-2 * Math.log(rnd() + 1e-9)) * Math.cos(6.2832 * rnd());
-
-function mcRender(a) {
-  seed = 7; const r = [];
-  for (let i = 0; i < 300; i++) {
-    r.push(model({
-      ...a,
-      initialGrowth: a.initialGrowth + gs() * 4,
-      grossMargin: Math.min(95, a.grossMargin + gs() * 3),
-      exitMultiple: Math.max(3, a.exitMultiple + gs() * 1.5),
-      churn: Math.max(1, a.churn + gs() * 2)
-    }).v.moic);
-  }
-  r.sort((x, y) => x - y);
-  const lo = r[0], hi = r[299], B = 16, bins = Array(B).fill(0);
-  r.forEach(v => bins[Math.min(B - 1, Math.floor((v - lo) / (hi - lo + 1e-9) * B))]++);
-  const mb = Math.max(...bins);
-
-  $('mc').innerHTML = `<svg viewBox="0 0 400 150" width="100%">${bins.map((b, i) => `<rect x="${i * 24 + 6}" y="${130 - b / mb * 120}" width="20" height="${b / mb * 120}" fill="${lo + (i + 0.5) * (hi - lo) / B < 1 ? '#d9534f' : 'var(--gold)'}" opacity="0.85"/>`).join('')}<text x="6" y="146" font-size="10" fill="var(--mut)">${X(lo)}</text><text x="390" y="146" font-size="10" text-anchor="end" fill="var(--mut)">${X(hi)}</text></svg>`;
-  const t = +$('tgt').value;
-  $('mcs').textContent = `Median Return: ${X(r[150])}. Middle 80% Range: ${X(r[30])} – ${X(r[270])}. Probability of ≥${X(t)} MOIC: ${N(r.filter(v => v >= t).length / 3, 0)}%. Downside Loss Risk (<1.0x): ${N(r.filter(v => v < 1).length / 3, 0)}%.`;
-}
-
-function render() {
-  const a = read(), m = model(a), ys = m.ys, L = ys.at(-1), v = m.v;
-  const c = (k, ok) => `<span class="${ok ? 'ok' : 'bad'}">${k}</span>`;
-  const kp = (id, arr) => $(id).innerHTML = arr.map(([l, x]) => `<div><span>${l}</span><b>${x}</b></div>`).join('');
-
-  $('h1v').textContent = X(v.moic);$('h2v').textContent = P(v.irr);
-  $('h3v').textContent = P(v.cagr);$('h4v').textContent = N(L.r40 * 100, 0);
-
-  kp('kp1', [['Final Revenue', M(L.revenue)], ['EBITDA', M(L.ebitda)], ['EBITDA Margin', P(L.margin)], ['Free Cash Flow', M(L.fcf)], ['Net Debt', M(L.netDebt)]]);
-  kp('kp2', [['Exit Enterprise Value', M(v.exitEV)], ['Exit Equity', M(v.exitEq)], ['MOIC', X(v.moic)], ['IRR', P(v.irr)], ['DCF Enterprise Value', M(v.dcf)]]);
-
-  $('chart').innerHTML = chart(ys);
-  $('is').innerHTML = tbl(ys, [['Revenue', 'revenue', M, 1], ['Growth Rate', 'growth', P], ['COGS', y => -y.cogs], ['Gross Profit', 'gp', M, 1], ['R&D', y => -y.rnd], ['Sales & Marketing', y => -y.sm], ['G&A / Other', y => -y.oth], ['EBITDA', 'ebitda', M, 1], ['Depreciation', y => -y.dep], ['EBIT', 'ebit', M], ['Interest Expense', y => -y.interest], ['Taxes', y => -y.taxes], ['Net Income', 'ni', M, 1]]);$('cf').innerHTML = tbl(ys, [['Net Income', 'ni'], ['Depreciation', 'dep'], ['Change in NWC', y => -y.dnwc], ['Operating Cash Flow', 'cfo', M, 1], ['Capital Expenditure', y => -y.capex], ['Free Cash Flow', 'fcf', M, 1], ['Unlevered FCF', 'ufcf']]);
-  $('bs').innerHTML = tbl(ys, [['Cash Balance', 'cash'], ['Accounts Receivable', 'ar'], ['Inventory', 'inv'], ['Other NWC', 'on'], ['Net PP&E', 'ppe'], ['Total Assets', 'assets', M, 1], ['Accounts Payable', 'ap'], ['Total Debt', 'debt'], ['Shareholders Equity', 'equity'], ['Imbalance Check', 'check', x => N(x, 4)]]);$('ue').innerHTML = tbl(ys, [['Active Customers', 'customers', x => Math.round(x).toLocaleString()], ['ARPC', 'arpc', x => '$' + Math.round(x).toLocaleString()], ['LTV / CAC', 'ltvcac', x => N(x) + 'x'], ['Rule of 40', 'r40', P]]);$('dt').innerHTML = tbl(ys, [['Opening Term Loan', 'bt'], ['Opening Revolver', 'br'], ['Interest', 'interest'], ['Revolver Draw', 'draw'], ['Mandatory Paydown', 'mand'], ['Revolver Repayment', 'rep'], ['Cash Sweep', 'sweep'], ['Closing Term Loan', 'term', M, 1], ['Closing Revolver', 'rev', M, 1], ['Cash', 'cash'], ['Net Leverage', 'lev', X], ['Interest Coverage', 'cov', X]]);
-
-  const bal = ys.every(y => Math.abs(y.check) < 1e-6);
-  const liq = ys.every(y => y.cash >= a.minimumCash - 1e-6 || y.rev >= a.revolverCapacity - 1e-6);
-  const cov = ys.every(y => y.lev <= a.maxLeverage && y.cov >= a.minCoverage);
-  const ck = (ok, t, d) => `<div class="chk"><div>${t}<small>${d}</small></div>${c(ok ? 'Pass' : 'Flag', ok)}</div>`;
-
-  $('chks').innerHTML = ck(bal, 'Balance Sheet Integrity', 'Assets strictly equal liabilities plus equity across all periods.') +
-                        ck(liq, 'Liquidity Floor', 'Cash remains above specified minimum threshold or revolver is utilized.') +
-                        ck(cov, 'Debt Covenants', 'Net leverage and interest coverage parameters strictly maintained.');
-
-  $('val').innerHTML = `<table><tbody>${[
-    ['Trailing EBITDA', M(v.ltm)], ['Entry Enterprise Value', M(v.entryEV)], ['Transaction Fees', M(v.fees)],
-    ['Initial Sponsor Equity', M(v.eqIn)], ['Exit EBITDA', M(L.ebitda)], ['Exit Enterprise Value', M(v.exitEV)],
-    ['Less Ending Net Debt', M(L.netDebt)], ['Exit Equity Value', M(v.exitEq)], ['DCF Implied EV', M(v.dcf)],
-    ['Terminal Value % of DCF', P(v.tvShare)], ['Exit EV vs. DCF Variance', P(v.exitEV / v.dcf - 1)]
-  ].map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table>`;
-
-  const risks = [];
-  if (L.margin < 0.1) risks.push('Terminal EBITDA margin drops below 10%');
-  if (ys.some(y => y.cash < a.minimumCash - 1e-6)) risks.push('Minimum liquidity floor breached');
-  if (ys.some(y => y.rev >= a.revolverCapacity - 0.01)) risks.push('Revolver capacity fully exhausted');
-  if (!cov) risks.push('Debt covenant breach detected');
-  if (v.exitEV > v.dcf * 1.25) risks.push('Exit valuation exceeds DCF baseline by >25% (Multiple Expansion Dependency)');
-  if (v.tvShare > 0.75) risks.push('Terminal value represents >75% of total DCF enterprise value');
-  if (!risks.length) risks.push('No structural risk flags in current parameter baseline');
-
-  $('risks').innerHTML = risks.map(r => `<div class="chk"><div>${r}</div>${c(r.startsWith('No') ? 'Pass' : 'Watch', r.startsWith('No'))}</div>`).join('');
-
-  const th = v.moic >= 2.0 && v.irr >= 0.15 ? 'Underlying thesis generates attractive risk-adjusted returns.' :
-             v.moic >= 1.5 ? 'Investment yields acceptable return but demands strict execution.' :
-             'Current profile fails to deliver target equity return profile.';
-
-  $('memo').textContent = `${th}\n\nRevenue scales from ${M(a.startingRevenue)} to ${M(L.revenue)} (${P(v.cagr)} CAGR). EBITDA reaches ${M(L.ebitda)} at a ${P(L.margin)} margin, while net leverage ends at ${X(L.lev)}.\n\nSponsor capital outlay of ${M(v.eqIn)} yields ${M(v.exitEq)} at exit, delivering ${X(v.moic)} MOIC and ${P(v.irr)} IRR. The unlevered DCF values the business at ${M(v.dcf)}.\n\nValue creation is primarily driven by expansion beyond customer churn, gross margin expansion, and steady deleveraging. Key sensitivities include customer acquisition velocity and terminal exit multiples.`;
-
-  const gs2 = [-10, -5, 0, 5, 10], ms = [-2, -1, 0, 1, 2];
-  const g = ms.map(d => gs2.map(e => model({ ...a, exitMultiple: Math.max(1, a.exitMultiple + d), initialGrowth: a.initialGrowth + e }).v.moic));
-  const f = g.flat(), lo = Math.min(...f), hi = Math.max(...f);
-
-  $('sens').innerHTML = `<table><thead><tr><th>Exit Multiple</th>${gs2.map(e => `<th>${N(a.initialGrowth + e, 0)}% Growth</th>`).join('')}</tr></thead><tbody>${g.map((r, i) => `<tr><td>${N(a.exitMultiple + ms[i])}x</td>${r.map(x => `<td style="background:${x < 1 ? 'rgba(217,83,79,0.2)' : `rgba(212,175,106,${0.08 + 0.45 * (x - lo) / (hi - lo + 1e-9)})`}">${X(x)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
-
-  const dr = [
-    ['Growth +5%', 'initialGrowth', 5], ['Gross Margin +5%', 'grossMargin', 5], ['Exit Multiple +1x', 'exitMultiple', 1],
-    ['Churn +3%', 'churn', 3], ['Growth CapEx +3%', 'growthCapex', 3], ['Entry Multiple +1x', 'entryMultiple', 1]
-  ].map(([l, k, d]) => [l, model({ ...a, [k]: a[k] + d }).v.moic - v.moic]).sort((x, y) => Math.abs(y[1]) - Math.abs(x[1]));
-  const mx = Math.max(...dr.map(d => Math.abs(d[1])), 1e-4);
-
-  $('torn').innerHTML = dr.map(d => `<div class="bar"><span>${d[0]}</span><span><i style="width:${Math.abs(d[1]) / mx * 100}%;${d[1] < 0 ? 'background:#d9534f' : ''}"></i></span><span>${d[1] >= 0 ? '+' : ''}${N(d[1], 2)}x</span></div>`).join('');
-
-  const keys = Object.keys(PRE), sm = keys.map(k => [k, model(preset(k, a))]);
-  $('scn').innerHTML = `<table><thead><tr><th>Scenario Case</th><th>Revenue</th><th>EBITDA</th><th>Leverage</th><th>MOIC</th><th>IRR</th><th>Action</th></tr></thead><tbody>${sm.map(([k, s]) => { const l = s.ys.at(-1); return `<tr><td>${PRE[k][0]}</td><td>${M(l.revenue)}</td><td>${M(l.ebitda)}</td><td>${X(l.lev)}</td><td>${X(s.v.moic)}</td><td>${P(s.v.irr)}</td><td><button class="btn" data-k="${k}">Load Case</button></td></tr>`; }).join('')}</tbody></table>`;
-
-  clearTimeout(render.t);
-  render.t = setTimeout(() => mcRender(a), 160);
-}
-
-/* Event Handlers & Navigation */
-$('scn').addEventListener('click', e => {
-  const k = e.target.dataset.k; if (!k) return;
-  const o = preset(k, read());
-  Object.keys(PRE[k][1]).forEach(i => { if ($(i))$(i).value = o[i]; });
-  render();
-});
-
-$('solve').addEventListener('click', () => {
-  const l = $('lock').value, t = +$('tgt').value;
-  if (l === 'none') { $('sres').textContent = 'Please select a protected assumption to lock.'; return; }
-  const k = l === 'initialGrowth' ? 'exitMultiple' : 'initialGrowth', a = read();
-  let lo = k === 'exitMultiple' ? 1 : -30, hi = k === 'exitMultiple' ? 30 : 100, mid;
-  for (let i = 0; i < 60; i++) {
-    mid = (lo + hi) / 2;
-    model({ ...a, [k]: mid }).v.moic < t ? lo = mid : hi = mid;
-  }
-  $(k).value = mid; render();$('sres').textContent = `Held ${l} locked. Adjusting ${k} to ${N(mid, 2)} achieves target ${X(t)} MOIC.`;
-});
-
-document.addEventListener('input', e => { if (e.target.type === 'range') requestAnimationFrame(render); });
-
-/* Shell Routing */
-const VIEWS = [['home', 'Home'], ['model', 'Model'], ['statements', 'Statements'], ['financing', 'Financing'], ['returns', 'Returns'], ['scenarios', 'Scenarios']];
-$('nt').innerHTML = VIEWS.map(([k, l], i) => `<a href="#/${k}" data-v="${k}">${l}<kbd>${i + 1}</kbd></a>`).join('');
-let cur = 'home';
-
-function go() {
-  const k = (location.hash.match(/^#\/(\w+)/) || [])[1];
-  cur = VIEWS.some(v => v[0] === k) ? k : 'home';
-  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'v_' + cur));
-  document.querySelectorAll('#nt a').forEach(a => a.classList.toggle('on', a.dataset.v === cur));
-  window.scrollTo({ top: 0, behavior: 'instant' });
-}
-
-addEventListener('hashchange', go);
-addEventListener('keydown', e => {
-  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName) || e.metaKey || e.ctrlKey) return;
-  const n = +e.key;
-  if (n >= 1 && n <= VIEWS.length) location.hash = '#/' + VIEWS[n - 1][0];
-});
-
-/* Tab System Construction */
-document.querySelectorAll('.pg').forEach(pg => {
-  const ps = [...pg.children].filter(c => c.classList.contains('pane')), bar = document.createElement('div');
-  bar.className = 'tabs';
-  bar.innerHTML = ps.map((p, i) => `<button data-i="${i}">${p.dataset.label}</button>`).join('');
-  pg.before(bar);
-  const sel = i => {
-    ps.forEach((p, j) => p.classList.toggle('on', i === j));
-    bar.querySelectorAll('button').forEach((b, j) => b.classList.toggle('on', i === j));
-  };
-  bar.onclick = e => { const b = e.target.closest('button'); if (b) sel(+b.dataset.i); };
-  sel(0);
-});
-
-const _r = render;
-render = function() {
-  _r();
-  $('lv').innerHTML = [['Sponsor MOIC', 'h1v'], ['Sponsor IRR', 'h2v'], ['Revenue CAGR', 'h3v'], ['Rule of 40', 'h4v']].map(([l, i]) => `<div><span>${l}</span><b>${$(i).textContent}</b></div>`).join('');
-};
-
-/* Theme Engine */
-$('th').onclick = () => {
-  const d = document.documentElement;
-  const isDark = d.dataset.theme === 'dark';
-  d.dataset.theme = isDark ? 'light' : 'dark';
-  $('th').textContent = isDark ? 'Dark' : 'Light';
-};
-
-/* REBUILT GENERATIVE ASCII ENGINE & FIELD INTERACTION */
-(function initAscii() {
-  const cv = $('cv'), cx = cv.getContext('2d');
-  let W = 0, H = 0, cols = 60, rows = 36;
-  const chars = " .:-=+*#%@";
-
-  let mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000, active: false };
-
-  function resize() {
-    const parent = $('ascii-container');
-    if (!parent) return;
-    W = parent.clientWidth;
-    H = parent.clientHeight;
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    cv.width = W * dpr;
-    cv.height = H * dpr;
-    cx.scale(dpr, dpr);
-    cols = Math.floor(W / 11);
-    rows = Math.floor(H / 18);
-  }
-
-  window.addEventListener('resize', resize);
-  resize();
-
-  window.addEventListener('pointermove', e => {
-    const r = cv.getBoundingClientRect();
-    if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
-      mouse.targetX = e.clientX - r.left;
-      mouse.targetY = e.clientY - r.top;
-      mouse.active = true;
-    } else {
-      mouse.active = false;
-    }
-  });
-
-  let t = 0;
-  function draw() {
-    requestAnimationFrame(draw);
-    if (cur !== 'home' || !W || !H) return;
-
-    t += 0.025;
-
-    // Smooth cursor target easing & gradual decay
-    if (mouse.active) {
-      mouse.x += (mouse.targetX - mouse.x) * 0.08;
-      mouse.y += (mouse.targetY - mouse.y) * 0.08;
-    } else {
-      mouse.x += (-1000 - mouse.x) * 0.04;
-      mouse.y += (-1000 - mouse.y) * 0.04;
-    }
-
-    cx.clearRect(0, 0, W, H);
-    cx.font = '12px "SF Mono", "JetBrains Mono", Menlo, monospace';
-    cx.textAlign = 'center';
-    cx.textBaseline = 'middle';
-
-    const cellW = W / cols;
-    const cellH = H / rows;
-
-    const isLight = document.documentElement.dataset.theme === 'light';
-    const baseColor = isLight ? '143, 106, 31' : '212, 175, 106';
-
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const x = c * cellW + cellW / 2;
-        const y = r * cellH + cellH / 2;
-
-        // Multi-frequency wave pattern composition
-        let v1 = Math.sin(c * 0.12 + t);
-        let v2 = Math.cos(r * 0.14 - t * 0.8);
-        let v3 = Math.sin((c + r) * 0.08 + t * 1.2);
-        let val = (v1 + v2 + v3 + 3) / 6;
-
-        // Organic cursor warp & propagation field
-        const dx = x - mouse.x;
-        const dy = y - mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const radius = 180;
-
-        let warpX = 0, warpY = 0;
-        if (dist < radius) {
-          const factor = Math.pow(1 - dist / radius, 2);
-          val = val * (1 - factor * 0.6) + factor * 0.95;
-          warpX = (dx / dist) * factor * 14;
-          warpY = (dy / dist) * factor * 14;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apex Horizon — Financial Technology & Asset Architecture</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            // Apple Midnight / Near-Black palette with subtle blue undertones
+            midnight: {
+              950: '#030508',
+              900: '#070a10',
+              800: '#0d121c',
+              700: '#151c2a',
+              600: '#1f293d',
+            },
+            // Restrained, luxury champagne gold (No neon yellow/orange)
+            champagne: {
+              400: '#d1be9b',
+              300: '#e2d3b7',
+              200: '#f0e6d2',
+              500: '#b8a37e',
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Inter', 'sans-serif'],
+            serif: ['"EB Garamond"', 'Times New Roman', 'serif'],
+            mono: ['"SF Mono"', 'ui-monospace', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          },
+          transitionTimingFunction: {
+            'apple-ease': 'cubic-bezier(0.16, 1, 0.3, 1)',
+          }
         }
-
-        const charIdx = Math.min(chars.length - 1, Math.floor(val * chars.length));
-        const ch = chars[charIdx] || '.';
-
-        const alpha = 0.15 + val * 0.75;
-        cx.fillStyle = `rgba(${baseColor}, ${alpha})`;
-        cx.fillText(ch, x + warpX, y + warpY);
       }
     }
-  }
+  </script>
 
-  draw();
-})();
+  <style>
+    /* Custom Apple-like scrollbars and restrained effects */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #030508;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1f293d;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #b8a37e;
+    }
+    
+    /* Apple SF Pro styling overrides */
+    body {
+      background-color: #030508;
+      color: #e2d3b7;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
 
-go();
-render();
-</script>
+    /* Subdued backdrop blur for cards and header */
+    .apple-glass {
+      background: rgba(7, 10, 16, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .apple-card {
+      background: rgba(13, 18, 28, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .apple-card:hover {
+      border-color: rgba(209, 190, 155, 0.2);
+    }
+
+    /* Animation Classes */
+    .fade-in-up {
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="bg-midnight-950 text-slate-200 min-h-screen flex flex-col justify-between selection:bg-champagne-500/20 selection:text-champagne-200">
+
+  <!-- ==================== 1. HOMEPAGE OPENING INTRO (APPLE STYLE) ==================== -->
+  <div id="intro-overlay" class="fixed inset-0 z-50 bg-midnight-950 flex flex-col items-center justify-center pointer-events-auto transition-opacity duration-1000 ease-out">
+    <div class="text-center px-4 space-y-4">
+      <div id="intro-mark" class="w-12 h-12 mx-auto rounded-full border border-champagne-400/20 flex items-center justify-center opacity-0 transform scale-95 transition-all duration-700 ease-out">
+        <span class="font-serif italic text-champagne-300 text-xl font-light">A</span>
+      </div>
+      <div id="intro-text" class="text-xs uppercase tracking-[0.3em] text-champagne-400/60 font-mono opacity-0 transform translate-y-2 transition-all duration-700 delay-300 ease-out">
+        Apex Horizon Architecture
+      </div>
+      <div id="intro-bar-container" class="w-32 h-[1px] bg-midnight-800 mx-auto overflow-hidden opacity-0 transition-opacity duration-500 delay-500">
+        <div id="intro-bar" class="w-full h-full bg-champagne-400/40 -translate-x-full transition-transform duration-1000 ease-in-out"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 2. HEADER / NAVIGATION ==================== -->
+  <header class="sticky top-0 z-40 w-full apple-glass border-b border-white/[0.04]">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="#" onclick="switchTab('home')" class="flex items-center gap-3 group">
+        <div class="w-7 h-7 rounded-full bg-midnight-900 border border-champagne-400/20 flex items-center justify-center group-hover:border-champagne-400/50 transition-colors">
+          <span class="font-serif italic text-champagne-300 text-xs">A</span>
+        </div>
+        <span class="text-sm tracking-tight font-medium text-slate-100 group-hover:text-champagne-300 transition-colors">APEX HORIZON</span>
+      </a>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-1 bg-midnight-900/60 p-1 rounded-full border border-white/[0.03]">
+        <button onclick="switchTab('home')" id="nav-home" class="nav-btn px-4 py-1.5 text-xs font-medium rounded-full text-champagne-300 bg-white/[0.06] transition-all duration-300">
+          Overview
+        </button>
+        <button onclick="switchTab('analytics')" id="nav-analytics" class="nav-btn px-4 py-1.5 text-xs font-medium rounded-full text-slate-400 hover:text-slate-200 transition-all duration-300">
+          Analytics
+        </button>
+        <button onclick="switchTab('architecture')" id="nav-architecture" class="nav-btn px-4 py-1.5 text-xs font-medium rounded-full text-slate-400 hover:text-slate-200 transition-all duration-300">
+          Architecture
+        </button>
+      </nav>
+
+      <!-- System Status Indicator -->
+      <div class="hidden sm:flex items-center gap-2.5 px-3 py-1 rounded-full border border-white/[0.04] bg-midnight-900/40 text-[11px] font-mono text-slate-400">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/80 animate-pulse"></span>
+        <span>SYSTEM OPERATIONAL</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-6 py-8">
+
+    <!-- ================= PAGE 1: HOMEPAGE (50/50 SPLIT) ================= -->
+    <section id="page-home" class="tab-content transition-opacity duration-500 min-h-[calc(100vh-12rem)] flex flex-col justify-center">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch my-auto">
+        
+        <!-- Left Column: Title & Strategic Content (50%) -->
+        <div class="flex flex-col justify-between space-y-8 pr-0 lg:pr-6">
+          <div class="space-y-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-champagne-400/20 bg-champagne-400/[0.03] text-[11px] font-mono text-champagne-300 tracking-wider">
+              <span>INSTITUTIONAL ASSET ENGINE</span>
+            </div>
+            
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-slate-100 leading-[1.08]">
+              Precision algorithmic liquidity & <span class="font-serif italic font-light text-champagne-300">sovereign architecture.</span>
+            </h1>
+
+            <p class="text-sm sm:text-base text-slate-400 leading-relaxed max-w-xl font-normal">
+              Apex Horizon provides sub-millisecond execution telemetry and autonomous asset allocation structures for modern quantitative institutions.
+            </p>
+          </div>
+
+          <!-- Key Quantitative Metrics -->
+          <div class="grid grid-cols-3 gap-4 py-6 border-y border-white/[0.05]">
+            <div class="space-y-1">
+              <div class="text-[10px] font-mono uppercase tracking-widest text-slate-500">Latency</div>
+              <div class="text-xl sm:text-2xl font-mono text-champagne-200 font-light">0.42<span class="text-xs text-slate-500 ml-0.5">ms</span></div>
+            </div>
+            <div class="space-y-1">
+              <div class="text-[10px] font-mono uppercase tracking-widest text-slate-500">AUM Vol</div>
+              <div class="text-xl sm:text-2xl font-mono text-champagne-200 font-light">$14.8<span class="text-xs text-slate-500 ml-0.5">B</span></div>
+            </div>
+            <div class="space-y-1">
+              <div class="text-[10px] font-mono uppercase tracking-widest text-slate-500">Uptime</div>
+              <div class="text-xl sm:text-2xl font-mono text-champagne-200 font-light">99.99<span class="text-xs text-slate-500 ml-0.5">%</span></div>
+            </div>
+          </div>
+
+          <!-- Interactive CTAs -->
+          <div class="flex items-center gap-4 pt-2">
+            <button onclick="switchTab('analytics')" class="px-6 py-3 rounded-full bg-champagne-300 text-midnight-950 font-medium text-xs tracking-wide hover:bg-champagne-200 transition-all duration-300 shadow-lg shadow-champagne-500/5">
+              Launch Terminal
+            </button>
+            <button onclick="switchTab('architecture')" class="px-6 py-3 rounded-full border border-white/10 text-slate-300 font-medium text-xs tracking-wide hover:bg-white/[0.03] hover:border-white/20 transition-all duration-300">
+              Explore Architecture
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column: Interactive Generative ASCII Canvas (50%) -->
+        <div class="relative w-full h-[480px] lg:h-auto min-h-[420px] rounded-2xl bg-midnight-900/30 border border-white/[0.05] overflow-hidden flex items-center justify-center">
+          <!-- Ambient subtle background glow inside ASCII panel -->
+          <div class="absolute inset-0 bg-radial gradient pointer-events-none opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-champagne-500/10 via-transparent to-transparent"></div>
+          
+          <!-- ASCII Canvas Element -->
+          <canvas id="ascii-canvas" class="w-full h-full block cursor-crosshair"></canvas>
+
+          <!-- Subtle ASCII Overlay Legend -->
+          <div class="absolute bottom-4 left-4 right-4 flex justify-between items-center text-[10px] font-mono text-slate-500 pointer-events-none">
+            <span>GEN_FIELD // TYPE: DYNAMIC_FIELD</span>
+            <span id="ascii-fps" class="text-champagne-400/60">FPS: 60</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= PAGE 2: ANALYTICS TERMINAL ================= -->
+    <section id="page-analytics" class="tab-content hidden transition-opacity duration-500 space-y-8">
+      
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/[0.05] pb-6">
+        <div>
+          <div class="text-[11px] font-mono text-champagne-400/80 tracking-widest uppercase mb-1">Real-Time Telemetry</div>
+          <h2 class="text-3xl font-normal text-slate-100">Institutional Analytics</h2>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-mono text-slate-400">LAST UPDATED: <span class="text-slate-200">11:01:56 UTC</span></span>
+          <button class="p-2 rounded-lg bg-midnight-900 border border-white/10 text-slate-300 hover:text-champagne-300 transition-colors">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Top Metric Cards Row -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="apple-card p-5 rounded-2xl space-y-3">
+          <div class="flex justify-between items-center text-slate-400 text-xs font-medium">
+            <span>NET LIQUIDITY</span>
+            <i data-lucide="activity" class="w-4 h-4 text-champagne-400/60"></i>
+          </div>
+          <div class="text-2xl font-mono font-light text-slate-100">$4,829,102.40</div>
+          <div class="flex items-center gap-1 text-xs text-emerald-400 font-mono">
+            <i data-lucide="trending-up" class="w-3 h-3"></i>
+            <span>+2.41% ($113.8K)</span>
+          </div>
+        </div>
+
+        <div class="apple-card p-5 rounded-2xl space-y-3">
+          <div class="flex justify-between items-center text-slate-400 text-xs font-medium">
+            <span>ALGORITHMIC EXECUTION</span>
+            <i data-lucide="zap" class="w-4 h-4 text-champagne-400/60"></i>
+          </div>
+          <div class="text-2xl font-mono font-light text-slate-100">99.84%</div>
+          <div class="flex items-center gap-1 text-xs text-emerald-400 font-mono">
+            <i data-lucide="check" class="w-3 h-3"></i>
+            <span>Optimal Routing</span>
+          </div>
+        </div>
+
+        <div class="apple-card p-5 rounded-2xl space-y-3">
+          <div class="flex justify-between items-center text-slate-400 text-xs font-medium">
+            <span>VAR RISK INDEX</span>
+            <i data-lucide="shield-alert" class="w-4 h-4 text-champagne-400/60"></i>
+          </div>
+          <div class="text-2xl font-mono font-light text-slate-100">0.084</div>
+          <div class="flex items-center gap-1 text-xs text-slate-400 font-mono">
+            <span>Low Exposure Profile</span>
+          </div>
+        </div>
+
+        <div class="apple-card p-5 rounded-2xl space-y-3">
+          <div class="flex justify-between items-center text-slate-400 text-xs font-medium">
+            <span>NODES ACTIVE</span>
+            <i data-lucide="server" class="w-4 h-4 text-champagne-400/60"></i>
+          </div>
+          <div class="text-2xl font-mono font-light text-slate-100">128 / 128</div>
+          <div class="flex items-center gap-1 text-xs text-champagne-300 font-mono">
+            <span>Global Latency Synchronized</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Chart Display -->
+      <div class="apple-card p-6 rounded-2xl space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-base font-medium text-slate-200">Quantitative Order Flow vs Market Yield</h3>
+            <p class="text-xs text-slate-400">Aggregated real-time order depth across global nodes</p>
+          </div>
+          <div class="flex gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-white/[0.05] text-champagne-300 border border-champagne-400/20">1H</span>
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-transparent text-slate-400 hover:text-slate-200">24H</span>
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-transparent text-slate-400 hover:text-slate-200">7D</span>
+          </div>
+        </div>
+
+        <!-- SVG Micro-Chart -->
+        <div class="w-full h-64 relative flex items-end pt-4">
+          <svg class="w-full h-full overflow-visible" viewBox="0 0 800 200" preserveAspectRatio="none">
+            <!-- Grid Lines -->
+            <line x1="0" y1="0" x2="800" y2="0" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+            <line x1="0" y1="50" x2="800" y2="50" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+            <line x1="0" y1="100" x2="800" y2="100" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+            <line x1="0" y1="150" x2="800" y2="150" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+
+            <!-- Gradient Area fill -->
+            <defs>
+              <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d1be9b" stop-opacity="0.15" />
+                <stop offset="100%" stop-color="#d1be9b" stop-opacity="0.0" />
+              </linearGradient>
+            </defs>
+            
+            <path d="M0,160 Q100,120 200,140 T400,80 T600,110 T800,40 L800,200 L0,200 Z" fill="url(#chartGrad)" />
+            <path d="M0,160 Q100,120 200,140 T400,80 T600,110 T800,40" fill="none" stroke="#d1be9b" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </div>
+
+        <div class="flex justify-between items-center text-[10px] font-mono text-slate-500 pt-2 border-t border-white/[0.04]">
+          <span>00:00 UTC</span>
+          <span>04:00 UTC</span>
+          <span>08:00 UTC</span>
+          <span>12:00 UTC</span>
+          <span>16:00 UTC</span>
+          <span>20:00 UTC</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PAGE 3: ARCHITECTURE & INFRASTRUCTURE ================= -->
+    <section id="page-architecture" class="tab-content hidden transition-opacity duration-500 space-y-8">
+      
+      <div class="border-b border-white/[0.05] pb-6">
+        <div class="text-[11px] font-mono text-champagne-400/80 tracking-widest uppercase mb-1">System Blueprint</div>
+        <h2 class="text-3xl font-normal text-slate-100">Core Architecture</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Architecture Card 1 -->
+        <div class="apple-card p-6 rounded-2xl space-y-4">
+          <div class="w-10 h-10 rounded-full bg-midnight-900 border border-champagne-400/20 flex items-center justify-center text-champagne-300">
+            <i data-lucide="layers" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-lg font-medium text-slate-100">Sub-Atomic Routing</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Direct market access memory channels minimize system kernel overhead, enabling sub-millisecond liquidity discovery.
+          </p>
+          <div class="pt-2 text-[11px] font-mono text-champagne-400/80">
+            Protocols: FIX 4.4, ITCH, OUCH
+          </div>
+        </div>
+
+        <!-- Architecture Card 2 -->
+        <div class="apple-card p-6 rounded-2xl space-y-4">
+          <div class="w-10 h-10 rounded-full bg-midnight-900 border border-champagne-400/20 flex items-center justify-center text-champagne-300">
+            <i data-lucide="cpu" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-lg font-medium text-slate-100">FPGA Acceleration</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Hardware-level execution kernels handle Order-Book synthesis directly on custom semiconductor matrix array chips.
+          </p>
+          <div class="pt-2 text-[11px] font-mono text-champagne-400/80">
+            Hardware: UltraScale+ Gen3
+          </div>
+        </div>
+
+        <!-- Architecture Card 3 -->
+        <div class="apple-card p-6 rounded-2xl space-y-4">
+          <div class="w-10 h-10 rounded-full bg-midnight-900 border border-champagne-400/20 flex items-center justify-center text-champagne-300">
+            <i data-lucide="lock" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-lg font-medium text-slate-100">Zero-Trust Enclaves</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Cryptographic key management executed inside isolated hardware security modules with continuous state attestation.
+          </p>
+          <div class="pt-2 text-[11px] font-mono text-champagne-400/80">
+            Security: EAL6+ Certified
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Infrastructure Table -->
+      <div class="apple-card p-6 rounded-2xl space-y-4">
+        <h3 class="text-base font-medium text-slate-200">Global Node Cluster Status</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead>
+              <tr class="border-b border-white/[0.05] text-slate-500 uppercase tracking-wider">
+                <th class="pb-3">Location</th>
+                <th class="pb-3">Data Center</th>
+                <th class="pb-3">Latency</th>
+                <th class="pb-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/[0.03] text-slate-300">
+              <tr>
+                <td class="py-3 font-medium text-slate-100">New York (LD4)</td>
+                <td class="py-3 text-slate-400">Equinix Secaucus</td>
+                <td class="py-3 text-champagne-300">0.12 ms</td>
+                <td class="py-3 text-emerald-400">● Operational</td>
+              </tr>
+              <tr>
+                <td class="py-3 font-medium text-slate-100">London (LD4)</td>
+                <td class="py-3 text-slate-400">Equinix Slough</td>
+                <td class="py-3 text-champagne-300">0.18 ms</td>
+                <td class="py-3 text-emerald-400">● Operational</td>
+              </tr>
+              <tr>
+                <td class="py-3 font-medium text-slate-100">Tokyo (TY3)</td>
+                <td class="py-3 text-slate-400">Equinix Tokyo</td>
+                <td class="py-3 text-champagne-300">0.31 ms</td>
+                <td class="py-3 text-emerald-400">● Operational</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-white/[0.04] py-8 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-serif italic text-champagne-300">A</span>
+        <span>© 2026 Apex Horizon Systems. All rights reserved.</span>
+      </div>
+      <div class="flex gap-6 font-mono text-[11px]">
+        <a href="#" class="hover:text-slate-300 transition-colors">PRIVACY</a>
+        <a href="#" class="hover:text-slate-300 transition-colors">TERMS</a>
+        <a href="#" class="hover:text-slate-300 transition-colors">SECURITY</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== JAVASCRIPT: TAB SWITCHING & ASCII ENGINE ==================== -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // 1. APPLE OPENING INTRO CONTROLLER
+    window.addEventListener('DOMContentLoaded', () => {
+      const mark = document.getElementById('intro-mark');
+      const text = document.getElementById('intro-text');
+      const container = document.getElementById('intro-bar-container');
+      const bar = document.getElementById('intro-bar');
+      const overlay = document.getElementById('intro-overlay');
+
+      // Sequence animations
+      setTimeout(() => { mark.classList.remove('opacity-0', 'scale-95'); }, 100);
+      setTimeout(() => { text.classList.remove('opacity-0', 'translate-y-2'); }, 400);
+      setTimeout(() => { container.classList.remove('opacity-0'); }, 600);
+      setTimeout(() => { bar.classList.remove('-translate-x-full'); }, 700);
+
+      // Fade out overlay
+      setTimeout(() => {
+        overlay.classList.add('opacity-0');
+        setTimeout(() => {
+          overlay.style.display = 'none';
+        }, 1000);
+      }, 1800);
+    });
+
+    // 2. TAB SWITCHING SYSTEM
+    function switchTab(tabId) {
+      const tabs = ['home', 'analytics', 'architecture'];
+      tabs.forEach(id => {
+        const content = document.getElementById(`page-${id}`);
+        const navBtn = document.getElementById(`nav-${id}`);
+        
+        if (id === tabId) {
+          content.classList.remove('hidden');
+          content.classList.add('fade-in-up');
+          navBtn.classList.add('text-champagne-300', 'bg-white/[0.06]');
+          navBtn.classList.remove('text-slate-400');
+        } else {
+          content.classList.add('hidden');
+          content.classList.remove('fade-in-up');
+          navBtn.classList.remove('text-champagne-300', 'bg-white/[0.06]');
+          navBtn.classList.add('text-slate-400');
+        }
+      });
+    }
+
+    // 3. GENERATIVE & INTERACTIVE ASCII FIELD ENGINE (CANVAS BASED)
+    const canvas = document.getElementById('ascii-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // ASCII Character Palette sorted by density
+    const asciiChars = " .:`',^:\";~-_+i>!lI?]/\\1}{][|)(tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+    
+    let width, height, cols, rows;
+    const fontSize = 11;
+    let time = 0;
+
+    // Mouse Influence System (Smooth decay & recovery)
+    let mouse = {
+      x: -1000,
+      y: -1000,
+      targetX: -1000,
+      targetY: -1000,
+      radius: 140,
+      active: false
+    };
+
+    function resizeCanvas() {
+      const parent = canvas.parentElement;
+      width = canvas.width = parent.clientWidth;
+      height = canvas.height = parent.clientHeight;
+      cols = Math.floor(width / (fontSize * 0.65));
+      rows = Math.floor(height / fontSize);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Mouse movement tracking
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.targetX = e.clientX - rect.left;
+      mouse.targetY = e.clientY - rect.top;
+      mouse.active = true;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      mouse.targetX = -1000;
+      mouse.targetY = -1000;
+      mouse.active = false;
+    });
+
+    // FPS Counter
+    let lastTime = performance.now();
+    let frameCount = 0;
+    const fpsElem = document.getElementById('ascii-fps');
+
+    // Main Generative Render Loop
+    function render() {
+      time += 0.02;
+
+      // Smooth mouse interpolation (Organic delay and response)
+      mouse.x += (mouse.targetX - mouse.x) * 0.08;
+      mouse.y += (mouse.targetY - mouse.y) * 0.08;
+
+      ctx.fillStyle = '#030508';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.font = `${fontSize}px "SF Mono", monospace`;
+      
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = c * (fontSize * 0.65);
+          const y = r * fontSize;
+
+          // Abstract mathematical flow field formula (Organic & Financial Matrix feel)
+          const nx = c / cols - 0.5;
+          const ny = r / rows - 0.5;
+          
+          let wave = Math.sin(nx * 6 + time) * Math.cos(ny * 6 + time);
+          wave += Math.sin(Math.sqrt(nx * nx + ny * ny) * 10 - time * 1.5) * 0.5;
+
+          // Mouse Influence Calculation (Physical field deformation)
+          const dx = x - mouse.x;
+          const dy = y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          let mouseInfluence = 0;
+          if (dist < mouse.radius) {
+            const factor = 1 - (dist / mouse.radius);
+            mouseInfluence = Math.pow(factor, 2) * 1.8; // Smooth natural decay
+          }
+
+          // Combined Field Intensity
+          let intensity = (wave + 1) / 2 + mouseInfluence;
+          intensity = Math.max(0, Math.min(1, intensity));
+
+          // Character Lookup
+          const charIdx = Math.floor(intensity * (asciiChars.length - 1));
+          const char = asciiChars[charIdx] || ' ';
+
+          // Apple Champagne Gold palette color calculation
+          if (mouseInfluence > 0.4) {
+            ctx.fillStyle = `rgba(226, 211, 183, ${0.4 + mouseInfluence * 0.5})`; // Champagne highlight
+          } else {
+            const alpha = 0.15 + intensity * 0.45;
+            ctx.fillStyle = `rgba(180, 190, 205, ${alpha})`; // Subtle cool grey/blue base
+          }
+
+          ctx.fillText(char, x, y);
+        }
+      }
+
+      // Calculate FPS
+      frameCount++;
+      const now = performance.now();
+      if (now - lastTime >= 1000) {
+        if (fpsElem) fpsElem.innerText = `FPS: ${frameCount}`;
+        frameCount = 0;
+        lastTime = now;
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    // Start Generative Engine
+    render();
+  </script>
 </body>
 </html>
