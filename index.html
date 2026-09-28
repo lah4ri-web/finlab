@@ -8,11 +8,13 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..600;1,400..600&display=swap');
 
-:root[data-theme="dark"]{
+:root{
   --bg: #030508;
   --bg2: #07090e;
   --card: #090c12;
+  --card-hover: #0d111a;
   --text: #f0e8d8;
+  --text-muted: #d0c8b8;
   --mut: #8e887d;
   --line: rgba(212, 175, 106, 0.14);
   --line-subtle: rgba(212, 175, 106, 0.07);
@@ -23,23 +25,26 @@
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   --font-serif: "EB Garamond", "Times New Roman", Times, Georgia, serif;
   --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top,0px);
+  padding-bottom: env(safe-area-inset-bottom,0px);
+  scroll-behavior: smooth;
 }
 
 :root[data-theme="light"]{
-  --bg: #f5f2eb;
-  --bg2: #eae5da;
-  --card: #f0ebd9;
+  --bg: #f7f5f0;
+  --bg2: #ede8df;
+  --card: #ffffff;
+  --card-hover: #fcfbfa;
   --text: #1a1815;
-  --mut: #6c665d;
-  --line: rgba(140, 105, 45, 0.22);
-  --line-subtle: rgba(140, 105, 45, 0.11);
-  --gold: #9e7830;
-  --gold2: #523e13;
-  --gold-dim: rgba(158, 120, 48, 0.45);
-  --gold-bg: rgba(158, 120, 48, 0.08);
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
-  --font-serif: "EB Garamond", "Times New Roman", Times, Georgia, serif;
-  --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  --text-muted: #2d2924;
+  --mut: #635e55;
+  --line: rgba(160, 120, 50, 0.22);
+  --line-subtle: rgba(160, 120, 50, 0.12);
+  --gold: #9e782f;
+  --gold2: #6b4e13;
+  --gold-dim: rgba(158, 120, 47, 0.5);
+  --gold-bg: rgba(158, 120, 47, 0.08);
 }
 
 *{box-sizing:border-box}
@@ -52,7 +57,7 @@ body{
   -webkit-font-smoothing:antialiased;
   letter-spacing:-.011em;
   overflow-x:hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 nav{
@@ -63,10 +68,7 @@ nav{
   z-index:100;
   padding-top:env(safe-area-inset-top,0px);
   background: var(--bg);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid var(--line);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 .nb{
   max-width:1300px;
@@ -107,7 +109,7 @@ nav{
   white-space: nowrap;
   padding: 17px 0;
   border-bottom: 1px solid transparent;
-  transition: color 0.3s ease, border-color 0.3s ease;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 .nt a:hover{ color: var(--text); }
 .nt a.on{
@@ -127,12 +129,12 @@ kbd{
   background: transparent;
   border: 1px solid var(--line);
   color: var(--mut);
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 5px 11px;
   font: 11px var(--font-sans);
   letter-spacing: 0.03em;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 .tb:hover{
   color: var(--gold2);
@@ -156,16 +158,14 @@ main{
 .view{
   display:none;
   opacity: 0;
-  filter: blur(8px);
-  transform: scale(0.995);
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
   padding: 40px 32px 0;
 }
 .view.on{
   display:block;
   opacity: 1;
-  filter: blur(0px);
-  transform: scale(1);
+  transform: translateY(0);
 }
 
 .tag{
@@ -244,14 +244,14 @@ main{
   align-items:center;
   justify-content:center;
   padding:12px 24px;
-  border-radius:6px;
+  border-radius:4px;
   background:var(--gold);
-  color:var(--bg);
+  color:#030508;
   font-weight:500;
   text-decoration:none;
   font-size:13px;
   letter-spacing:0.02em;
-  transition:all .3s ease;
+  transition:all .2s ease;
 }
 .b:hover{
   background: var(--gold2);
@@ -280,6 +280,7 @@ main{
   font: 400 24px var(--mono);
   color: var(--gold2);
   letter-spacing:-.03em;
+  font-variant-numeric: tabular-nums;
 }
 .ms span{
   font-size:12px;
@@ -317,7 +318,7 @@ main{
   border-right: 1px solid var(--line);
   text-decoration:none;
   color:inherit;
-  transition: background 0.3s ease;
+  transition: background 0.2s ease;
 }
 .mod:last-child{ border-right: none; }
 .mod:hover{
@@ -341,8 +342,8 @@ main{
   background:var(--card);
   border:1px solid var(--line);
   border-radius:0px;
-  padding:28px;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  padding:24px;
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 .card h3{
   margin:0 0 20px;
@@ -369,7 +370,7 @@ main{
   border-bottom:2px solid transparent;
   margin-bottom:-1px;
   white-space:nowrap;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
 }
 .tabs button:hover{ color:var(--text); }
 .tabs button.on{
@@ -379,19 +380,14 @@ main{
 }
 .pane{
   display:none;
-  opacity: 0;
-  filter: blur(4px);
-  transition: opacity 0.3s ease, filter 0.3s ease;
 }
 .pane.on{
   display:block;
-  opacity: 1;
-  filter: blur(0px);
 }
 
 .split{
   display:grid;
-  grid-template-columns:minmax(0,1fr) 320px;
+  grid-template-columns:minmax(0,1fr) 340px;
   gap:24px;
   align-items:start;
 }
@@ -407,17 +403,24 @@ main{
   gap:24px;
 }
 
-.f{ margin:18px 0; }
+.ctl-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.f{ margin:14px 0; }
 .f label{
   display:flex;
   justify-content:space-between;
-  font-size:13px;
+  font-size:12px;
   color:var(--mut);
-  margin-bottom:10px;
+  margin-bottom:8px;
 }
 .f b{
   color:var(--gold2);
   font:400 12px var(--mono);
+  font-variant-numeric: tabular-nums;
 }
 
 input[type=range]{
@@ -435,10 +438,10 @@ input[type=range]::-webkit-slider-thumb{
   border-radius:50%;
   background:var(--gold);
   cursor:pointer;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.15s ease, background 0.15s ease;
 }
 input[type=range]::-webkit-slider-thumb:hover{
-  transform: scale(1.3);
+  transform: scale(1.25);
   background: var(--gold2);
 }
 input[type=range]::-moz-range-thumb{
@@ -459,6 +462,7 @@ select,input[type=number]{
   font:inherit;
   font-size: 13px;
   outline: none;
+  font-variant-numeric: tabular-nums;
 }
 select:focus, input[type=number]:focus{
   border-color: var(--gold);
@@ -473,7 +477,7 @@ select:focus, input[type=number]:focus{
   cursor:pointer;
   font:12px var(--font-sans);
   letter-spacing: 0.03em;
-  transition:all .3s ease;
+  transition:all .2s ease;
 }
 .btn:hover{
   background:var(--gold-bg);
@@ -501,6 +505,7 @@ select:focus, input[type=number]:focus{
 .kp b{
   display:block;
   font:400 22px var(--mono);
+  font-variant-numeric: tabular-nums;
   letter-spacing:-.03em;
   margin-top:6px;
   color: var(--gold2);
@@ -510,12 +515,13 @@ select:focus, input[type=number]:focus{
   display:flex;
   justify-content:space-between;
   align-items:baseline;
-  padding:10px 0;
+  padding:8px 0;
   border-bottom:1px solid var(--line-subtle);
 }
 .lv div:last-child{border:0}
 .lv b{
-  font:400 16px var(--mono);
+  font:400 15px var(--mono);
+  font-variant-numeric: tabular-nums;
   color:var(--gold2);
 }
 
@@ -534,7 +540,7 @@ th,td{
 }
 th:first-child,td:first-child{
   text-align:left;
-  color:var(--mut);
+  color:var(--text-muted);
   font-family:var(--font-sans);
   font-size:13px;
 }
@@ -574,7 +580,6 @@ tr.t td{
 .memo{
   white-space:pre-wrap;
   line-height:1.7;
-  font-size:14px;
   color:var(--text);
   font-family: var(--font-serif);
   font-size: 16px;
@@ -665,7 +670,7 @@ footer{
 </div>
 
 <div class="view" id="v_model"><div class="vh"><div class="tag">finmodel / model</div><h2>Shape the business.</h2><p>Pick a group, move a slider. The live panel updates as you go.</p></div>
- <div class="split"><div id="ctl" class="pg"></div>
+ <div class="split"><div id="ctl" class="ctl-grid"></div>
  <aside><div class="card lv" id="lv"></div>
  <div class="card"><h3>Stress lock and goal seek</h3>
  <div class="f"><label>Protected assumption</label><select id="lock"><option value="none">None</option><option value="initialGrowth">Initial growth</option><option value="grossMargin">Gross margin</option><option value="exitMultiple">Exit multiple</option></select></div>
@@ -703,6 +708,7 @@ const G=[['Growth engine',[['startingRevenue','Starting revenue',100,20,500,5,'$
 ['Cash and capital',[['dso','Receivable days',45,10,120,1,'d'],['dpo','Payable days',30,5,120,1,'d'],['inventoryDays','Inventory days',10,0,90,1,'d'],['wcDrag','Other working capital',1,0,5,.25,'%'],['maintenanceCapex','Maintenance capex',2,0,8,.25,'%'],['growthCapex','Growth capex, % new revenue',8,0,20,.5,'%'],['usefulLife','Asset life',5,2,15,1,'y']]],
 ['Financing',[['startingCash','Starting cash',20,0,100,1,'$m'],['existingDebt','Existing debt',45,0,200,1,'$m'],['termLoanRate','Term loan rate',7.5,2,15,.25,'%'],['interestRate','Revolver rate',7,2,15,.25,'%'],['debtPaydown','Mandatory paydown',8,0,40,1,'$m'],['cashSweep','Cash sweep',50,0,100,5,'%'],['minimumCash','Minimum cash',10,0,50,1,'$m'],['revolverCapacity','Revolver capacity',30,0,100,1,'$m'],['maxLeverage','Max net debt to EBITDA',4.5,1,8,.25,'x'],['minCoverage','Min interest coverage',2,1,6,.25,'x']]],
 ['Valuation',[['forecastPeriod','Forecast years',5,3,10,1,'y'],['entryMultiple','Entry EBITDA multiple',9,4,20,.5,'x'],['exitMultiple','Exit EBITDA multiple',10,4,25,.5,'x'],['transactionFees','Fees, % of value',2,0,5,.25,'%'],['discountRate','Discount rate (WACC)',11,6,20,.5,'%'],['terminalGrowth','Terminal growth',2.5,0,5,.25,'%']]]];
+
 $('ctl').innerHTML=G.map(([t,it])=>`<div class="card rv"><h3>${t}</h3>${it.map(([id,l,v,mn,mx,st,u])=>`<div class="f"><label for="${id}">${l}<b id="o_${id}"></b></label><input type="range" id="${id}" min="${mn}" max="${mx}" step="${st}" value="${v}" data-u="${u}"></div>`).join('')}</div>`).join('');
 const IDS=G.flatMap(g=>g[1].map(i=>i[0]));
 const disp=(v,u)=>u==='$'?'$'+v.toLocaleString():u==='$m'?'$'+v+'m':v.toLocaleString()+u;
@@ -738,6 +744,7 @@ function run(a){
     ys.push(y);p={endCustomers:ec,endARPC:ea,revenue,nwc,ppe,equity,termDebt:term,revolver:rev,cash};
   }
   return ys}
+
 function value(a,ys){
   const L=ys.at(-1),q=k=>a[k]/100,r=q('discountRate'),g=q('terminalGrowth');
   const ltm=a.startingRevenue*(q('grossMargin')-q('rndPct')-q('smPct')-q('otherOpCosts')),entryEV=Math.max(.01,ltm)*a.entryMultiple,fees=entryEV*q('transactionFees');
@@ -752,18 +759,80 @@ const PRE={distress:['Distress',{initialGrowth:-8,growthDecay:1,churn:18,grossMa
 function preset(k,a){const o={...a,...PRE[k][1]},l=$('lock').value;if(l!=='none')o[l]=a[l];return o}
 
 function tbl(ys,rows){return`<table><thead><tr><th></th>${ys.map(y=>`<th>Year ${y.year}</th>`).join('')}</tr></thead><tbody>${rows.map(([l,f,fm,t])=>`<tr class="${t?'t':''}"><td>${l}</td>${ys.map(y=>`<td>${(fm||M)(typeof f==='string'?y[f]:f(y))}</td>`).join('')}</tr>`).join('')}</tbody></table>`}
-function chart(ys){const W=760,H=290,pd=34,n=ys.length,vs=ys.flatMap(y=>[y.revenue,y.ebitda,y.fcf]),mx=Math.max(...vs)*1.12,mn=Math.min(0,...vs)*1.12,sy=v=>H-pd-(v-mn)/(mx-mn)*(H-2*pd),bw=(W-2*pd)/n,sx=i=>pd+bw*i+bw/2;
- const line=(k,c)=>`<path d="${ys.map((y,i)=>(i?'L':'M')+sx(i)+' '+sy(y[k])).join('')}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`+ys.map((y,i)=>`<circle cx="${sx(i)}" cy="${sy(y[k])}" r="3.5" fill="${c}"/>`).join('');
- return`<svg viewBox="0 0 ${W} ${H+24}" width="100%" role="img" aria-label="Revenue, EBITDA and free cash flow by year"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity=".7"/><stop offset="1" stop-color="var(--gold)" stop-opacity=".05"/></linearGradient></defs>
- ${ys.map((y,i)=>`<rect x="${sx(i)-bw*.24}" y="${sy(Math.max(y.revenue,0))}" width="${bw*.48}" height="${Math.abs(sy(y.revenue)-sy(0))}" rx="2" fill="url(#g)"/><text x="${sx(i)}" y="${H+6}" text-anchor="middle" fill="var(--mut)" font-size="11">Y${y.year}</text>`).join('')}
- <line x1="${pd}" x2="${W-pd}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--line)"/>${line('ebitda','var(--gold2)')}${line('fcf','var(--gold)')}
- <g font-size="11" fill="var(--mut)"><text x="${pd}" y="14">Bars: revenue</text><text x="${pd+110}" y="14" fill="var(--gold2)">Line: EBITDA</text><text x="${pd+215}" y="14" fill="var(--gold)">Line: free cash flow</text></g></svg>`}
+
+/* Redesigned Apple/Technical Quality Chart */
+function chart(ys){
+  const W=760,H=280,pd=40,n=ys.length;
+  const vs=ys.flatMap(y=>[y.revenue,y.ebitda,y.fcf]);
+  const mx=Math.max(...vs,10)*1.1, mn=Math.min(0,...vs);
+  const sy=v=>H-pd-(v-mn)/(mx-mn)*(H-2*pd);
+  const bw=(W-2*pd)/n, sx=i=>pd+bw*i+bw/2;
+
+  const isLight = document.documentElement.dataset.theme === 'light';
+  const gridLineColor = isLight ? 'rgba(160, 120, 50, 0.15)' : 'rgba(212, 175, 106, 0.12)';
+  const textColor = isLight ? '#635e55' : '#8e887d';
+  const gold1 = isLight ? '#9e782f' : '#d4af6a';
+  const gold2 = isLight ? '#6b4e13' : '#f2e3bd';
+
+  let gridLines = '';
+  for(let i=0; i<=4; i++){
+    const yVal = mn + (mx-mn)*(i/4);
+    const yPos = sy(yVal);
+    gridLines += `<line x1="${pd}" y1="${yPos}" x2="${W-pd}" y2="${yPos}" stroke="${gridLineColor}" stroke-dasharray="2,2"/>`;
+    gridLines += `<text x="${pd-8}" y="${yPos+3}" font-size="10" font-family="var(--mono)" fill="${textColor}" text-anchor="end">${Math.round(yVal)}</text>`;
+  }
+
+  const makePath = (k) => ys.map((y,i)=>(i===0?'M':'L')+sx(i)+' '+sy(y[k])).join(' ');
+
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="overflow:visible;" role="img" aria-label="Financial performance overview">
+  <defs>
+    <linearGradient id="barG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${gold1}" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="${gold1}" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+  ${gridLines}
+  ${ys.map((y,i)=>{
+    const bh = Math.abs(sy(y.revenue) - sy(0));
+    const bx = sx(i) - bw*0.22;
+    const by = sy(Math.max(0, y.revenue));
+    return `<rect x="${bx}" y="${by}" width="${bw*0.44}" height="${bh}" fill="url(#barG)" stroke="${gold1}" stroke-opacity="0.3" stroke-width="1"/>
+    <text x="${sx(i)}" y="${H-12}" font-size="11" font-family="var(--mono)" fill="${textColor}" text-anchor="middle">Y${y.year}</text>`;
+  }).join('')}
+  <path d="${makePath('ebitda')}" fill="none" stroke="${gold2}" stroke-width="2"/>
+  ${ys.map((y,i)=>`<circle cx="${sx(i)}" cy="${sy(y.ebitda)}" r="3" fill="${gold2}"/>`).join('')}
+  <path d="${makePath('fcf')}" fill="none" stroke="${gold1}" stroke-width="1.5" stroke-dasharray="4,3"/>
+  ${ys.map((y,i)=>`<circle cx="${sx(i)}" cy="${sy(y.fcf)}" r="2.5" fill="${gold1}"/>`).join('')}
+  <g font-size="11" font-family="var(--font-sans)" fill="${textColor}">
+    <rect x="${pd}" y="10" width="10" height="10" fill="url(#barG)" stroke="${gold1}" stroke-opacity="0.4"/>
+    <text x="${pd+16}" y="19">Revenue</text>
+    <line x1="${pd+90}" y1="15" x2="${pd+106}" y2="15" stroke="${gold2}" stroke-width="2"/>
+    <text x="${pd+112}" y="19">EBITDA</text>
+    <line x1="${pd+180}" y1="15" x2="${pd+196}" y2="15" stroke="${gold1}" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <text x="${pd+202}" y="19">Free Cash Flow</text>
+  </g>
+  </svg>`;
+}
 
 let seed=7;const rnd=()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296},gs=()=>Math.sqrt(-2*Math.log(rnd()+1e-9))*Math.cos(6.2832*rnd());
-function mcRender(a){seed=7;const r=[];for(let i=0;i<300;i++)r.push(model({...a,initialGrowth:a.initialGrowth+gs()*4,grossMargin:Math.min(95,a.grossMargin+gs()*3),exitMultiple:Math.max(3,a.exitMultiple+gs()*1.5),churn:Math.max(1,a.churn+gs()*2)}).v.moic);
- r.sort((x,y)=>x-y);const lo=r[0],hi=r[299],B=14,bins=Array(B).fill(0);r.forEach(v=>bins[Math.min(B-1,Math.floor((v-lo)/(hi-lo+1e-9)*B))]++);const mb=Math.max(...bins);
- $('mc').innerHTML=`<svg viewBox="0 0 400 170" width="100%" role="img" aria-label="Distribution of MOIC outcomes">${bins.map((b,i)=>`<rect x="${i*28.5+4}" y="${150-b/mb*140}" width="22" height="${b/mb*140}" rx="1" fill="${lo+(i+.5)*(hi-lo)/B<1?'#e06c60':'var(--gold)'}" opacity=".85"/>`).join('')}<text x="4" y="166" font-size="10" fill="var(--mut)">${X(lo)}</text><text x="396" y="166" font-size="10" text-anchor="end" fill="var(--mut)">${X(hi)}</text></svg>`;
- const t=+$('tgt').value;$('mcs').textContent=`Median ${X(r[150])}. Middle 80% between ${X(r[30])} and ${X(r[270])}. Chance of at least ${X(t)}: ${N(r.filter(v=>v>=t).length/3,0)}%. Chance of losing money: ${N(r.filter(v=>v<1).length/3,0)}%.`}
+
+function mcRender(a){
+  seed=7;const r=[];for(let i=0;i<300;i++)r.push(model({...a,initialGrowth:a.initialGrowth+gs()*4,grossMargin:Math.min(95,a.grossMargin+gs()*3),exitMultiple:Math.max(3,a.exitMultiple+gs()*1.5),churn:Math.max(1,a.churn+gs()*2)}).v.moic);
+  r.sort((x,y)=>x-y);const lo=r[0],hi=r[299],B=15,bins=Array(B).fill(0);r.forEach(v=>bins[Math.min(B-1,Math.floor((v-lo)/(hi-lo+1e-9)*B))]++);const mb=Math.max(...bins);
+  const isLight = document.documentElement.dataset.theme === 'light';
+  const cGold = isLight ? '#9e782f' : '#d4af6a';
+  const cRed = '#e06c60';
+
+  $('mc').innerHTML=`<svg viewBox="0 0 400 170" width="100%" role="img" aria-label="Distribution of MOIC outcomes">${bins.map((b,i)=>{
+    const xVal = lo+(i+.5)*(hi-lo)/B;
+    const color = xVal < 1 ? cRed : cGold;
+    return `<rect x="${i*25+8}" y="${140-b/mb*120}" width="20" height="${b/mb*120}" fill="${color}" opacity="0.8"/>`;
+  }).join('')}
+  <line x1="8" y1="140" x2="388" y2="140" stroke="var(--line)"/>
+  <text x="8" y="160" font-size="10" font-family="var(--mono)" fill="var(--mut)">${X(lo)}</text>
+  <text x="388" y="160" font-size="10" font-family="var(--mono)" text-anchor="end" fill="var(--mut)">${X(hi)}</text></svg>`;
+  const t=+$('tgt').value;$('mcs').textContent=`Median ${X(r[150])}. Middle 80% between ${X(r[30])} and ${X(r[270])}. Chance of at least ${X(t)}: ${N(r.filter(v=>v>=t).length/3,0)}%. Chance of losing money: ${N(r.filter(v=>v<1).length/3,0)}%.`
+}
 
 function render(){
   const a=read(),m=model(a),ys=m.ys,L=ys.at(-1),v=m.v,c=(k,ok)=>`<span class="${ok?'ok':'bad'}">${k}</span>`;
@@ -783,6 +852,7 @@ function render(){
   const th=v.moic>=2&&v.irr>=.15?'The case supports an attractive return.':v.moic>=1.5?'The case is investable, but needs disciplined execution.':'The case does not generate a compelling equity return.';
   $('memo').textContent=`${th}\n\nRevenue grows from ${M(a.startingRevenue)} to ${M(L.revenue)} (${P(v.cagr)} a year). EBITDA reaches ${M(L.ebitda)} at a ${P(L.margin)} margin, and net leverage ends at ${X(L.lev)}.\n\nA sponsor invests ${M(v.eqIn)} and exits with ${M(v.exitEq)}: ${X(v.moic)} MOIC and ${P(v.irr)} IRR. The unlevered DCF values the business at ${M(v.dcf)}.\n\nValue is created when customers and pricing outgrow churn, gross profit funds growth, and free cash flow pays down debt. It breaks when growth fades faster than costs adjust, or when leverage leaves no room for a bad year.`;
   const gs2=[-10,-5,0,5,10],ms=[-2,-1,0,1,2],g=ms.map(d=>gs2.map(e=>model({...a,exitMultiple:Math.max(1,a.exitMultiple+d),initialGrowth:a.initialGrowth+e}).v.moic)),f=g.flat(),lo=Math.min(...f),hi=Math.max(...f);
+  
   $('sens').innerHTML=`<table><thead><tr><th>Exit multiple</th>${gs2.map(e=>`<th>${N(a.initialGrowth+e,0)}% growth</th>`).join('')}</tr></thead><tbody>${g.map((r,i)=>`<tr><td>${N(a.exitMultiple+ms[i])}x</td>${r.map(x=>`<td style="background:${x<1?'rgba(224,108,96,.18)':`rgba(212,175,106,${.05+.35*(x-lo)/(hi-lo+1e-9)})`}">${X(x)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
   const dr=[['Growth +5%','initialGrowth',5],['Gross margin +5%','grossMargin',5],['Exit multiple +1x','exitMultiple',1],['Churn +3%','churn',3],['Growth capex +3%','growthCapex',3],['Entry multiple +1x','entryMultiple',1]].map(([l,k,d])=>[l,model({...a,[k]:a[k]+d}).v.moic-v.moic]).sort((x,y)=>Math.abs(y[1])-Math.abs(x[1])),mx=Math.max(...dr.map(d=>Math.abs(d[1])),1e-4);
   $('torn').innerHTML=dr.map(d=>`<div class="bar"><span>${d[0]}</span><span><i style="width:${Math.abs(d[1])/mx*100}%;${d[1]<0?'background:#e06c60':''}"></i></span><span>${d[1]>=0?'+':''}${N(d[1],2)}x</span></div>`).join('');
@@ -790,6 +860,7 @@ function render(){
   $('scn').innerHTML=`<table><thead><tr><th>Scenario</th><th>Revenue</th><th>EBITDA</th><th>Leverage</th><th>MOIC</th><th>IRR</th><th></th></tr></thead><tbody>${sm.map(([k,s])=>{const l=s.ys.at(-1);return`<tr><td>${PRE[k][0]}</td><td>${M(l.revenue)}</td><td>${M(l.ebitda)}</td><td>${X(l.lev)}</td><td>${X(s.v.moic)}</td><td>${P(s.v.irr)}</td><td><button class="btn g" data-k="${k}">Load</button></td></tr>`}).join('')}</tbody></table>`;
   clearTimeout(render.t);render.t=setTimeout(()=>mcRender(a),160);
 }
+
 $('scn').addEventListener('click',e=>{const k=e.target.dataset.k;if(!k)return;const o=preset(k,read());Object.keys(PRE[k][1]).forEach(i=>{if($(i))$(i).value=o[i]});render()});
 $('solve').addEventListener('click',()=>{const l=$('lock').value,t=+$('tgt').value;if(l==='none'){$('sres').textContent='Choose a protected assumption first.';return}
   const k=l==='initialGrowth'?'exitMultiple':l==='exitMultiple'?'initialGrowth':'exitMultiple',a=read();let lo=k==='exitMultiple'?1:-30,hi=k==='exitMultiple'?30:100,mid;
@@ -798,7 +869,7 @@ $('solve').addEventListener('click',()=>{const l=$('lock').value,t=+$('tgt').val
 document.addEventListener('input',e=>{if(e.target.type==='range')requestAnimationFrame(render)});
 $('lock').onchange=$('tgt').oninput=()=>{};
 
-/* Navigation Shell */
+/* shell */
 const VIEWS=[['home','Home'],['model','Model'],['statements','Statements'],['financing','Financing'],['returns','Returns'],['scenarios','Scenarios']];
 $('nt').innerHTML=VIEWS.map(([k,l],i)=>`<a href="#/${k}" data-v="${k}">${l}<kbd>${i+1}</kbd></a>`).join('');
 let cur='home';
@@ -820,29 +891,30 @@ document.querySelectorAll('.pg').forEach(pg=>{const ps=[...pg.children].filter(c
  bar.onclick=e=>{const b=e.target.closest('button');if(b)sel(+b.dataset.i)};sel(0)});
 const _r=render;render=function(){_r();$('lv').innerHTML=[['Sponsor MOIC','h1v'],['Sponsor IRR','h2v'],['Revenue CAGR','h3v'],['Rule of 40','h4v']].map(([l,i])=>`<div><span>${l}</span><b>${$(i).textContent}</b></div>`).join('')};
 
-/* Fully Functional Theme Switcher */
+/* Fully Functional Theme Toggle with Persistence */
+const savedTheme = localStorage.getItem('finmodel_theme') || 'dark';
+document.documentElement.dataset.theme = savedTheme;
+
 $('th').onclick=()=>{
-  const root=document.documentElement;
-  const next=root.getAttribute('data-theme')==='light'?'dark':'light';
-  root.setAttribute('data-theme',next);
-  const metaColor = document.querySelector('meta[name="theme-color"]');
-  if(metaColor) metaColor.setAttribute('content', next === 'light' ? '#f5f2eb' : '#030508');
+  const current = document.documentElement.dataset.theme;
+  const next = current === 'light' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem('finmodel_theme', next);
+  render();
 };
 
-/* Coherent Structural Wave ASCII Engine with Continuous Physical Cursor Field Interaction */
+/* Advanced Structured ASCII Visual Engine (Matrix Flow & Smooth Physics Cursor) */
 const cv=$('cv'),cx=cv.getContext('2d');
-let COLS=54, ROWS=36;
-const CHARSET = ' .:-=+*#%@░▒▓█│─┼┴┬┤├┌┐└┘';
+let COLS=56, ROWS=38;
+const CHARS=' .:-=+*#%@░▒▓█│─┼┴┬┤├┌┐└┘';
 
 let mouseState = {
   targetX: -1000,
   targetY: -1000,
-  currX: -1000,
-  currY: -1000,
-  vx: 0,
-  vy: 0,
-  active: false,
-  influence: 0
+  easeX: -1000,
+  easeY: -1000,
+  intensity: 0,
+  active: false
 };
 
 function initGrid(){
@@ -854,9 +926,8 @@ function initGrid(){
   cv.width=w*dpr;
   cv.height=h*dpr;
   cx.setTransform(dpr,0,0,dpr,0,0);
-
-  COLS = Math.floor(w / 14);
-  ROWS = Math.floor(h / 18);
+  COLS = Math.floor(w / 13);
+  ROWS = Math.floor(h / 17);
 }
 
 addEventListener('resize', initGrid);
@@ -875,89 +946,89 @@ if(ascContainer){
 }
 
 let time = 0;
+
 function drawAscii(){
   requestAnimationFrame(drawAscii);
   if(cur !== 'home') return;
-  time += 0.02;
+  time += 0.018;
 
   const p=cv.parentElement;
   if(!p) return;
   const w = p.clientWidth;
   const h = p.clientHeight;
 
-  cx.clearRect(0, 0, w, h);
-
-  // Smooth mouse interpolation & continuous field recovery
-  if (mouseState.active) {
-    const dx = mouseState.targetX - mouseState.currX;
-    const dy = mouseState.targetY - mouseState.currY;
-    mouseState.vx = mouseState.vx * 0.82 + dx * 0.12;
-    mouseState.vy = mouseState.vy * 0.82 + dy * 0.12;
-    mouseState.currX += mouseState.vx;
-    mouseState.currY += mouseState.vy;
-    mouseState.influence = Math.min(1, mouseState.influence + 0.05);
+  // Smooth mouse physics easing & gradual falloff
+  if(mouseState.active) {
+    mouseState.intensity = Math.min(1, mouseState.intensity + 0.05);
+    mouseState.easeX += (mouseState.targetX - mouseState.easeX) * 0.1;
+    mouseState.easeY += (mouseState.targetY - mouseState.easeY) * 0.1;
   } else {
-    mouseState.currX += mouseState.vx;
-    mouseState.currY += mouseState.vy;
-    mouseState.vx *= 0.92;
-    mouseState.vy *= 0.92;
-    mouseState.influence = Math.max(0, mouseState.influence - 0.03);
+    mouseState.intensity = Math.max(0, mouseState.intensity - 0.03);
   }
+
+  cx.clearRect(0, 0, w, h);
 
   const cellW = w / COLS;
   const cellH = h / ROWS;
 
-  cx.font = `11px ui-monospace, "SF Mono", Menlo, Consolas, monospace`;
+  cx.font = `11px "SF Mono", ui-monospace, Menlo, Consolas, monospace`;
   cx.textAlign = 'center';
   cx.textBaseline = 'middle';
 
-  const radius = 220;
-  const speedScale = Math.sqrt(mouseState.vx*mouseState.vx + mouseState.vy*mouseState.vy);
+  const isLight = document.documentElement.dataset.theme === 'light';
 
   for(let r=0; r<ROWS; r++){
     for(let c=0; c<COLS; c++){
       const x = (c + 0.5) * cellW;
       const y = (r + 0.5) * cellH;
 
-      // Base Mathematical Field Dynamics
+      // Coherent underlying mathematical visual composition (Asciify/Matrix style)
       const nx = c / COLS;
       const ny = r / ROWS;
-      const wave1 = Math.sin(nx * 6 + time) * Math.cos(ny * 5 - time * 0.8);
-      const wave2 = Math.sin((nx + ny) * 8 - time * 1.2);
-      const wave3 = Math.cos(Math.sqrt((nx-0.5)*(nx-0.5) + (ny-0.5)*(ny-0.5)) * 12 - time * 1.5);
-      let baseVal = (wave1 + wave2 + wave3 + 3) / 6;
+      
+      const v1 = Math.sin(nx * 8 + time * 1.2) * Math.cos(ny * 8 - time * 0.8);
+      const v2 = Math.sin((nx + ny) * 12 + time * 0.5);
+      const v3 = Math.cos(Math.sqrt((nx-0.5)*(nx-0.5) + (ny-0.5)*(ny-0.5)) * 14 - time * 1.5);
+      
+      let baseVal = (v1 + v2 + v3 + 3) / 6;
 
-      // Cursor Perturbation Field
-      const cdx = x - mouseState.currX;
-      const cdy = y - mouseState.currY;
-      const dist = Math.sqrt(cdx * cdx + cdy * cdy);
-
-      let displacement = 0;
-      if (dist < radius && mouseState.influence > 0.01) {
-        const falloff = Math.pow(1 - dist / radius, 2) * mouseState.influence;
-        const angle = Math.atan2(cdy, cdx);
-        
-        // Physical field deformation
-        const ripple = Math.sin(dist * 0.08 - time * 4 + speedScale * 0.05);
-        displacement = ripple * falloff * 0.65;
-        
-        // Phase shift around cursor
-        baseVal += Math.cos(angle * 2 + time * 2) * falloff * 0.35;
+      // Integrated cursor influence with spatial falloff
+      let mouseInfluence = 0;
+      if(mouseState.intensity > 0.001) {
+        const dx = x - mouseState.easeX;
+        const dy = y - mouseState.easeY;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const radius = 180;
+        if(dist < radius) {
+          const falloff = Math.pow(1 - dist / radius, 2);
+          mouseInfluence = falloff * mouseState.intensity;
+        }
       }
 
-      let val = Math.min(1, Math.max(0, baseVal + displacement));
+      // Modulate character density seamlessly
+      let finalVal = baseVal + mouseInfluence * 0.45 * Math.sin(time * 3 + c);
+      finalVal = Math.min(1, Math.max(0, finalVal));
 
-      const charIdx = Math.floor(val * (CHARSET.length - 1));
-      const char = CHARSET[charIdx];
+      const charIdx = Math.floor(finalVal * (CHARS.length - 1));
+      const char = CHARS[charIdx];
 
-      // Dynamic Color & Lighting tied to theme and depth
-      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      if (displacement > 0.15) {
-        cx.fillStyle = isLight ? `rgba(82, 62, 19, ${0.7 + val * 0.3})` : `rgba(242, 227, 189, ${0.7 + val * 0.3})`;
-      } else if (val > 0.45) {
-        cx.fillStyle = isLight ? `rgba(158, 120, 48, ${0.35 + val * 0.5})` : `rgba(212, 175, 106, ${0.35 + val * 0.5})`;
+      // Color mapping with theme awareness
+      if (isLight) {
+        if (mouseInfluence > 0.2) {
+          cx.fillStyle = `rgba(107, 78, 19, ${0.5 + mouseInfluence * 0.5})`;
+        } else if (finalVal > 0.5) {
+          cx.fillStyle = `rgba(158, 120, 47, ${0.3 + finalVal * 0.5})`;
+        } else {
+          cx.fillStyle = `rgba(99, 94, 85, ${0.15 + finalVal * 0.25})`;
+        }
       } else {
-        cx.fillStyle = isLight ? `rgba(108, 102, 93, ${0.15 + val * 0.3})` : `rgba(142, 136, 125, ${0.12 + val * 0.35})`;
+        if (mouseInfluence > 0.2) {
+          cx.fillStyle = `rgba(242, 227, 189, ${0.5 + mouseInfluence * 0.5})`;
+        } else if (finalVal > 0.5) {
+          cx.fillStyle = `rgba(212, 175, 106, ${0.25 + finalVal * 0.5})`;
+        } else {
+          cx.fillStyle = `rgba(142, 136, 125, ${0.1 + finalVal * 0.3})`;
+        }
       }
 
       cx.fillText(char, x, y);
