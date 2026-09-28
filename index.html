@@ -8,11 +8,11 @@
 <style>
 :root {
   --bg: #02040a;
-  --bg-subtle: rgba(6, 9, 19, 0.25);
-  --bg-elevated: rgba(10, 14, 26, 0.4);
+  --bg-subtle: rgba(6, 9, 19, 0.4);
+  --bg-elevated: rgba(10, 14, 26, 0.5);
   --text: #f4f1ea;
   --mut: #828792;
-  --line: rgba(212, 175, 106, 0.12);
+  --line: rgba(212, 175, 106, 0.15);
   --line-subtle: rgba(255, 255, 255, 0.05);
   --gold: #d4af6a;
   --gold-dark: #8a6d3b;
@@ -28,18 +28,18 @@
 }
 
 :root[data-theme="light"] {
-  --bg: #f2f0eb;
-  --bg-subtle: rgba(230, 226, 218, 0.3);
-  --bg-elevated: rgba(255, 255, 255, 0.5);
-  --text: #1a1917;
-  --mut: #686660;
-  --line: rgba(143, 106, 31, 0.18);
-  --line-subtle: rgba(0, 0, 0, 0.06);
+  --bg: #f6f4ef;
+  --bg-subtle: rgba(238, 234, 225, 0.4);
+  --bg-elevated: rgba(255, 255, 255, 0.6);
+  --text: #1a1c23;
+  --mut: #686e79;
+  --line: rgba(143, 106, 31, 0.22);
+  --line-subtle: rgba(0, 0, 0, 0.08);
   --gold: #8f6a1f;
   --gold-dark: #5c4210;
-  --gold-light: #ab822b;
+  --gold-light: #a37b28;
   --gold-muted: rgba(143, 106, 31, 0.18);
-  --gold-line-subtle: rgba(143, 106, 31, 0.35);
+  --gold-line-subtle: rgba(143, 106, 31, 0.4);
   --red: #b83d32;
   --grn: #2b7a4f;
 }
@@ -63,18 +63,18 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: -0.01em;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-x: hidden;
 }
 
-/* 3. HOMEPAGE BLUR-IN ANIMATION */
-body.home-init main {
-  animation: homepageBlurIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+/* 3. SIMPLIFIED HOMEPAGE OPENING BLUR-IN */
+.home-blur-in {
+  animation: blurInReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes homepageBlurIn {
+@keyframes blurInReveal {
   0% {
-    filter: blur(16px);
+    filter: blur(12px);
     opacity: 0;
   }
   100% {
@@ -97,9 +97,9 @@ nav {
   left: 0;
   right: 0;
   z-index: 100;
-  background: color-mix(in srgb, var(--bg) 85%, transparent);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid var(--line);
 }
 
@@ -186,7 +186,7 @@ kbd {
   color: var(--gold);
 }
 
-/* Main Layout Container */
+/* Layout Container */
 main {
   position: relative;
   z-index: 1;
@@ -195,16 +195,15 @@ main {
   padding: 80px 24px 60px;
 }
 
-/* 2. iOS-STYLE BLUR TRANSITION BETWEEN VIEWS & TABS */
+/* 2. iOS-STYLE BLUR TRANSITION BETWEEN VIEWS */
 .view {
   display: none;
   opacity: 0;
-  filter: blur(12px);
-  transform: scale(0.99);
+  filter: blur(10px);
+  transform: scale(0.995);
   transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
               filter 0.35s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, filter, transform;
 }
 
 .view.on {
@@ -393,9 +392,9 @@ main {
   line-height: 1.5;
 }
 
-/* 8. FEATURE CONTAINERS — STRICTLY TRANSPARENT */
+/* 10. TRANSPARENT CARDS & CONTAINERS */
 .card {
-  background: transparent;
+  background: var(--bg-subtle);
   border: 1px solid var(--line);
   border-radius: 0px;
   padding: 24px;
@@ -409,7 +408,7 @@ main {
   letter-spacing: -0.01em;
 }
 
-/* TAB NAVIGATION SYSTEM WITH iOS BLUR TRANSITION */
+/* TAB NAVIGATION WITH iOS BLUR CROSSFADE */
 .tabs {
   display: flex;
   gap: 0;
@@ -444,18 +443,13 @@ main {
   display: none;
   opacity: 0;
   filter: blur(8px);
-  transform: scale(0.995);
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, filter, transform;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pane.on {
   display: block;
   opacity: 1;
   filter: blur(0px);
-  transform: scale(1);
 }
 
 /* GRID SPLITS */
@@ -535,7 +529,7 @@ select, input[type=number] {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid var(--line);
-  background: transparent;
+  background: var(--bg-elevated);
   color: var(--text);
   font-family: var(--font-sans);
   font-size: 13px;
@@ -574,7 +568,7 @@ select:focus, input[type=number]:focus {
 }
 
 .kp div {
-  background: transparent;
+  background: var(--bg-subtle);
   border: 1px solid var(--line);
   padding: 16px;
 }
@@ -726,7 +720,7 @@ footer {
 }
 </style>
 </head>
-<body class="home-init">
+<body>
 
 <nav>
   <div class="nb">
@@ -738,7 +732,7 @@ footer {
 
 <main>
   <!-- HOME VIEW -->
-  <div class="view" id="v_home">
+  <div class="view home-blur-in" id="v_home">
     <div class="hero-grid">
       <div class="hero-left">
         <div class="tag">finmodel / three statements, LBO & DCF</div>
@@ -887,7 +881,7 @@ const M = v => (v < 0 ? '(' : '') + '$' + N(Math.abs(v)) + 'm' + (v < 0 ? ')' : 
 const P = v => N(v * 100) + '%';
 const X = v => N(v, 2) + 'x';
 
-/* 1 & 7. SYSTEM THEME DETECTION & REFINED LIGHT/DARK SYSTEM */
+/* 1. REFINED LIGHT MODE SYSTEM ACCORDING TO OPERATING SYSTEM PREFERENCE */
 function applySystemTheme() {
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   document.documentElement.dataset.theme = prefersDark ? 'dark' : 'light';
@@ -897,7 +891,7 @@ applySystemTheme();
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
   document.documentElement.dataset.theme = e.matches ? 'dark' : 'light';
-  $('th').textContent = e.matches ? 'Dark' : 'Light';
+  $('th').textContent = e.matches ? 'Light' : 'Dark';
 });
 
 $('th').onclick = () => {
@@ -905,13 +899,6 @@ $('th').onclick = () => {
   document.documentElement.dataset.theme = isDark ? 'light' : 'dark';
   $('th').textContent = isDark ? 'Dark' : 'Light';
 };
-
-/* 3. HOMEPAGE SIMPLE BLUR-IN ANIMATION TIMING */
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    document.body.classList.remove('home-init');
-  }, 1200);
-});
 
 const G = [
   ['Growth engine', [
@@ -1055,76 +1042,53 @@ function tbl(ys, rows) {
   return `<table><thead><tr><th>Metric</th>${ys.map(y => `<th>Year ${y.year}</th>`).join('')}</tr></thead><tbody>${rows.map(([l, f, fm, t]) => `<tr class="${t ? 't' : ''}"><td>${l}</td>${ys.map(y => `<td>${(fm || M)(typeof f === 'string' ? y[f] : f(y))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
-/* 9, 10 & 11. REBUILT GRAPH & CLEANED DATA VISUALIZATION */
+/* 11 & 12. REBUILT GRAPH PRESENTATION WITH FULL FUNCTIONAL Y-AXIS & DECLUTTERED HIERARCHY */
 function chart(ys) {
-  const W = 800, H = 280, padL = 50, padR = 20, padT = 36, padB = 36;
+  const W = 780, H = 280, pdL = 60, pdR = 30, pdT = 32, pdB = 40;
   const n = ys.length;
+  const vs = ys.flatMap(y => [y.revenue, y.ebitda, y.fcf]);
+  const rawMax = Math.max(...vs);
+  const rawMin = Math.min(0, ...vs);
   
   // Clean Y-axis scale calculation
-  const vs = ys.flatMap(y => [y.revenue, y.ebitda, y.fcf]);
-  const maxRaw = Math.max(...vs, 10);
-  const minRaw = Math.min(0, ...vs);
-  const yTicksCount = 4;
-  const step = Math.ceil(maxRaw / yTicksCount / 50) * 50;
-  const yMax = step * yTicksCount;
-  const yMin = minRaw < 0 ? Math.floor(minRaw / 50) * 50 : 0;
-  
-  const sy = v => H - padB - ((v - yMin) / (yMax - yMin)) * (H - padT - padB);
-  const bw = (W - padL - padR) / n;
-  const sx = i => padL + bw * i + bw / 2;
-  
-  // Champagne gold tones
-  const lineGold1 = "var(--gold)";
-  const lineGold2 = "var(--gold-dark)";
-  
-  const drawLine = (key, color, dash = false) => {
-    const pathD = ys.map((y, i) => (i === 0 ? 'M' : 'L') + sx(i) + ' ' + sy(y[key])).join(' ');
-    return `<path d="${pathD}" fill="none" stroke="${color}" stroke-width="2" ${dash ? 'stroke-dasharray="4 4"' : ''} stroke-linecap="square"/>` +
-           ys.map((y, i) => `<circle cx="${sx(i)}" cy="${sy(y[key])}" r="3" fill="var(--bg)" stroke="${color}" stroke-width="1.5"/>`).join('');
-  };
-  
-  // Clean Y-axis Ticks
-  let yAxisGrid = '';
-  for (let i = 0; i <= yTicksCount; i++) {
-    const val = yMin + (yMax - yMin) * (i / yTicksCount);
+  const yMax = Math.ceil(rawMax / 50) * 50 || 100;
+  const yMin = Math.floor(rawMin / 50) * 50;
+  const yTicks = 4;
+  const step = (yMax - yMin) / yTicks;
+
+  const sy = v => H - pdB - (v - yMin) / (yMax - yMin) * (H - pdT - pdB);
+  const bw = (W - pdL - pdR) / n;
+  const sx = i => pdL + bw * i + bw / 2;
+
+  const lineLight = "var(--gold)";
+  const lineDark = "var(--gold-dark)";
+
+  const line = (k, c, dash = false) => `<path d="${ys.map((y, i) => (i ? 'L' : 'M') + sx(i) + ' ' + sy(y[k])).join('')}" fill="none" stroke="${c}" stroke-width="2" ${dash ? 'stroke-dasharray="4 4"' : ''}/>` + 
+    ys.map((y, i) => `<circle cx="${sx(i)}" cy="${sy(y[k])}" r="3" fill="var(--bg)" stroke="${c}" stroke-width="1.5"/>`).join('');
+
+  let gridHTML = '';
+  for (let i = 0; i <= yTicks; i++) {
+    const val = yMin + step * i;
     const yPos = sy(val);
-    yAxisGrid += `
-      <line x1="${padL}" x2="${W - padR}" y1="${yPos}" y2="${yPos}" stroke="var(--line-subtle)" stroke-width="1"/>
-      <text x="${padL - 8}" y="${yPos + 4}" text-anchor="end" fill="var(--mut)" font-size="10" font-family="var(--font-sans)">$${val}m</text>
+    gridHTML += `
+      <line x1="${pdL}" x2="${W - pdR}" y1="${yPos}" y2="${yPos}" stroke="var(--line-subtle)" stroke-width="1"/>
+      <text x="${pdL - 10}" y="${yPos + 4}" text-anchor="end" fill="var(--mut)" font-size="11" font-family="var(--font-sans)">$${val}m</text>
     `;
   }
-  
-  return `
-  <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" style="background:transparent; font-family:var(--font-sans); display:block;">
-    ${yAxisGrid}
-    
-    <!-- Outline-only Revenue Bars -->
-    ${ys.map((y, i) => {
-      const barH = Math.max(1, Math.abs(sy(y.revenue) - sy(0)));
-      const barY = sy(Math.max(y.revenue, 0));
-      return `
-        <rect x="${sx(i) - bw * 0.22}" y="${barY}" width="${bw * 0.44}" height="${barH}" 
-              fill="transparent" stroke="var(--gold-line-subtle)" stroke-width="1.2"/>
-        <text x="${sx(i)}" y="${H - 12}" text-anchor="middle" fill="var(--mut)" font-size="11" font-weight="500">Year ${y.year}</text>
-      `;
-    }).join('')}
-    
-    <!-- Distinct Champagne Gold Lines -->
-    ${drawLine('ebitda', lineGold1)}
-    ${drawLine('fcf', lineGold2, true)}
-    
-    <!-- Legend -->
-    <g font-size="11" font-weight="500" transform="translate(${padL}, 16)">
-      <rect x="0" y="-8" width="10" height="10" fill="transparent" stroke="var(--gold-line-subtle)" stroke-width="1.2"/>
-      <text x="16" y="0" fill="var(--mut)">Revenue (Outline)</text>
-      
-      <line x1="140" y1="-3" x2="156" y2="-3" stroke="${lineGold1}" stroke-width="2"/>
-      <text x="162" y="0" fill="var(--text)">EBITDA</text>
-      
-      <line x1="230" y1="-3" x2="246" y2="-3" stroke="${lineGold2}" stroke-width="2" stroke-dasharray="3 3"/>
-      <text x="252" y="0" fill="var(--mut)">Free Cash Flow</text>
-    </g>
-  </svg>`;
+
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" style="background:transparent; font-family:var(--font-sans);">
+  ${gridHTML}
+  ${ys.map((y, i) => `
+    <rect x="${sx(i) - bw * .2}" y="${sy(Math.max(y.revenue, 0))}" width="${bw * .4}" height="${Math.max(1, Math.abs(sy(y.revenue) - sy(0)))}" fill="none" stroke="var(--gold-line-subtle)" stroke-width="1"/>
+    <text x="${sx(i)}" y="${H - 12}" text-anchor="middle" fill="var(--mut)" font-size="11" font-weight="500">Year ${y.year}</text>
+  `).join('')}
+  ${line('ebitda', lineLight)}
+  ${line('fcf', lineDark, true)}
+  <g font-size="11" fill="var(--mut)" font-weight="500">
+    <text x="${pdL}" y="18">Outlines: Revenue</text>
+    <text x="${pdL + 140}" y="18" fill="${lineLight}">Solid: EBITDA</text>
+    <text x="${pdL + 250}" y="18" fill="${lineDark}">Dashed: Free Cash Flow</text>
+  </g></svg>`;
 }
 
 let seed = 7;
@@ -1250,23 +1214,23 @@ render = function() {
   $('lv').innerHTML = [['Sponsor MOIC', 'h1v'], ['Sponsor IRR', 'h2v'], ['Revenue CAGR', 'h3v'], ['Rule of 40', 'h4v']].map(([l, i]) => `<div><span>${l}</span><b>${$(i).textContent}</b></div>`).join('');
 };
 
-/* 4, 5 & 6. HEAVY ROTHKO-LIKE ATMOSPHERIC ASCII + INVISIBLE CIRCULAR SWIRL DISPLACEMENT + CHARACTER BACKGROUND GRID */
+/* 5, 6, 7, 8, 9. HIGH-DENSITY ATMOSPHERIC ASCII ENGINE WITH CIRCULAR SWIRL INTERACTION */
 const cv = $('cv'), cx = cv.getContext('2d');
-let COLS = 64, ROWS = 42;
+let COLS = 72, ROWS = 48;
 let animTime = 0;
 
-// Cursor physical field tracker
+// Circular mouse field tracker (NO VISIBLE CIRCLE)
 let cursorState = {
-  currentPixelX: -9999,
-  currentPixelY: -9999,
-  targetPixelX: -9999,
-  targetPixelY: -9999,
+  currentX: -999,
+  currentY: -999,
+  targetX: -999,
+  targetY: -999,
   intensity: 0,
   targetIntensity: 0
 };
 
-// High density Rothko-style character gradient mapping
-const DENSE_CHARS = ' .:-=+*#%@█▓▒░░▒▓█';
+// Rich character set for heavy Rothko density gradients
+const CHAR_MAP = '  .·:-=+*#%@█';
 
 function resizeCanvas() {
   const parent = cv.parentElement;
@@ -1277,8 +1241,8 @@ function resizeCanvas() {
   cv.height = rect.height * dpr;
   cx.setTransform(dpr, 0, 0, dpr, 0, 0);
   
-  COLS = Math.floor(rect.width / 10);
-  ROWS = Math.floor(rect.height / 14);
+  COLS = Math.floor(rect.width / 9);
+  ROWS = Math.floor(rect.height / 15);
 }
 
 addEventListener('resize', resizeCanvas);
@@ -1287,8 +1251,8 @@ const ascContainer = document.querySelector('.asc-container');
 if (ascContainer) {
   ascContainer.addEventListener('pointermove', e => {
     const rect = ascContainer.getBoundingClientRect();
-    cursorState.targetPixelX = e.clientX - rect.left;
-    cursorState.targetPixelY = e.clientY - rect.top;
+    cursorState.targetX = (e.clientX - rect.left) / rect.width * COLS;
+    cursorState.targetY = (e.clientY - rect.top) / rect.height * ROWS;
     cursorState.targetIntensity = 1.0;
   });
   
@@ -1303,9 +1267,9 @@ function renderASCII() {
 
   animTime += 0.015;
 
-  // Smooth spatial cursor interpolation
-  cursorState.currentPixelX += (cursorState.targetPixelX - cursorState.currentPixelX) * 0.08;
-  cursorState.currentPixelY += (cursorState.targetPixelY - cursorState.currentPixelY) * 0.08;
+  // Smooth continuous cursor field tracking
+  cursorState.currentX += (cursorState.targetX - cursorState.currentX) * 0.08;
+  cursorState.currentY += (cursorState.targetY - cursorState.currentY) * 0.08;
   cursorState.intensity += (cursorState.targetIntensity - cursorState.intensity) * 0.05;
 
   const pRect = cv.parentElement.getBoundingClientRect();
@@ -1313,70 +1277,65 @@ function renderASCII() {
   const ch = pRect.height / ROWS;
 
   cx.clearRect(0, 0, pRect.width, pRect.height);
-  cx.font = `${Math.floor(ch * 0.9)}px ${getComputedStyle(document.body).getPropertyValue('--font-mono')}`;
+  cx.font = `${Math.floor(ch * 0.9)}px ui-monospace, "SF Mono", monospace`;
   cx.textAlign = 'center';
   cx.textBaseline = 'middle';
 
   const isLight = document.documentElement.dataset.theme === 'light';
-
-  // True isotropic circular influence radius in pixels
-  const influenceRadius = 140;
+  const circularRadius = 14.0;
 
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
-      let posX = (c + 0.5) * cw;
-      let posY = (r + 0.5) * ch;
+      let sampleX = c;
+      let sampleY = r;
 
-      // 6. Character-based Background Texture (Tiny subtle dots throughout)
-      const bgChar = (c % 4 === 0 && r % 4 === 0) ? '·' : ' ';
-
-      // 5. Rothko-style atmospheric masses (deep organic continuous fields)
-      const nx = c / COLS;
-      const ny = r / ROWS;
-      
-      let m1 = Math.sin(nx * 3.5 + animTime * 0.5) * Math.cos(ny * 2.8 + animTime * 0.4);
-      let m2 = Math.cos(Math.sqrt((nx - 0.5) ** 2 + (ny - 0.5) ** 2) * 5.0 - animTime * 0.7);
-      let m3 = Math.sin(nx * 8.0 - ny * 6.0 + animTime * 0.9) * 0.25;
-      
-      let density = (m1 + m2 + m3 + 1.8) / 3.6;
-      density = Math.pow(Math.min(1, Math.max(0, density)), 0.85); // Heavy atmospheric mass
-
-      // 4. Circular Physical Swirl Interaction
-      const dx = posX - cursorState.currentPixelX;
-      const dy = posY - cursorState.currentPixelY;
+      // Distance from cursor field
+      const dx = c - cursorState.currentX;
+      const dy = r - cursorState.currentY;
       const dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (dist < influenceRadius && cursorState.intensity > 0.001) {
-        const falloff = Math.pow(1 - dist / influenceRadius, 2) * cursorState.intensity;
-        const angle = Math.atan2(dy, dx);
-        
-        // Swirl offset perpendicular to radius
-        const swirlAngle = angle + Math.PI / 2 + falloff * 1.5;
-        const swirlDist = falloff * 32.0;
+      // Lowlighter Swirl/Tangential Vector Flow Effect
+      if (dist < circularRadius && cursorState.intensity > 0.001) {
+        const falloff = Math.pow(1 - dist / circularRadius, 2.5) * cursorState.intensity;
+        const swirlAngle = Math.atan2(dy, dx) + falloff * Math.PI * 1.5;
+        const swirlMag = falloff * 8.0;
 
-        posX += Math.cos(swirlAngle) * swirlDist;
-        posY += Math.sin(swirlAngle) * swirlDist;
-        
-        // Modulate density organically along swirl field
-        density = Math.min(1, Math.max(0, density + Math.sin(dist * 0.08 - animTime * 2.0) * falloff * 0.35));
+        sampleX += Math.cos(swirlAngle) * swirlMag;
+        sampleY += Math.sin(swirlAngle) * swirlMag;
       }
 
-      // Character selection
-      let char = bgChar;
-      if (density > 0.12) {
-        const charIdx = Math.floor(density * (DENSE_CHARS.length - 1));
-        char = DENSE_CHARS[charIdx] || ' ';
+      // Atmospheric Multi-Frequency Field
+      const nx = sampleX / COLS - 0.5;
+      const ny = sampleY / ROWS - 0.5;
+
+      let v1 = Math.sin(nx * 4.5 + animTime * 0.8) * Math.cos(ny * 4.5 - animTime * 0.6);
+      let v2 = Math.cos(Math.sqrt(nx * nx + ny * ny) * 8.0 - animTime * 1.2);
+      let v3 = Math.sin((nx + ny) * 5.0 + animTime);
+
+      let val = (v1 + v2 + v3 * 0.5 + 2.5) / 5.0;
+      val = Math.min(1, Math.max(0, val));
+
+      // 8. Subtle Background Dot Grid Texture
+      let char = '·';
+      let isBgDot = true;
+
+      if (val > 0.15) {
+        const charIdx = Math.floor(val * (CHAR_MAP.length - 1));
+        char = CHAR_MAP[charIdx];
+        isBgDot = false;
       }
 
-      // Color and opacity blending
-      let alpha = density <= 0.12 ? 0.08 : (0.25 + density * 0.7);
+      const drawX = (c + 0.5) * cw;
+      const drawY = (r + 0.5) * ch;
+
+      let alpha = isBgDot ? 0.08 : 0.2 + val * 0.75;
       if (isLight) {
         cx.fillStyle = `rgba(143, 106, 31, ${alpha.toFixed(2)})`;
       } else {
         cx.fillStyle = `rgba(212, 175, 106, ${alpha.toFixed(2)})`;
       }
 
-      cx.fillText(char, posX, posY);
+      cx.fillText(char, drawX, drawY);
     }
   }
 }
