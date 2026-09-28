@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>finmodel / investment workstation</title>
+    <title>finmodel / three statements, LBO & DCF</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -11,14 +12,19 @@
             theme: {
                 extend: {
                     colors: {
-                        background: '#080808',
-                        surface: '#121212',
-                        border: '#222222',
-                        gold: '#e8b900',
-                        muted: '#888888',
+                        terminal: {
+                            bg: '#080808',
+                            surface: '#0f0f0f',
+                            border: '#222222',
+                            gold: '#e8b900',
+                            goldMuted: '#997b00',
+                            text: '#e1e1e1',
+                            dim: '#71717a'
+                        }
                     },
                     fontFamily: {
                         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                        sans: ['-apple-system', 'BlinkMacSystemFont', "Segoe UI", 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
                     }
                 }
             }
@@ -27,36 +33,14 @@
     <style>
         body {
             background-color: #080808;
-            color: #e0e0e0;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            color: #e1e1e1;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             letter-spacing: -0.01em;
         }
-        .thin-separator {
-            height: 1px;
-            background-color: #222222;
+        .font-mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         }
-        .vertical-divider {
-            width: 1px;
-            background-color: #222222;
-        }
-        .gold-line {
-            stroke: #e8b900;
-            stroke-width: 1;
-            fill: none;
-        }
-        .terminal-input {
-            background: transparent;
-            border: 1px solid #333;
-            color: #e8b900;
-            font-family: inherit;
-            padding: 2px 6px;
-            font-size: 0.85rem;
-        }
-        .terminal-input:focus {
-            outline: none;
-            border-color: #e8b900;
-        }
-        /* Custom scrollbar for dense workstation feel */
+        /* Custom scrollbar for dense terminal feel */
         ::-webkit-scrollbar {
             width: 4px;
             height: 4px;
@@ -65,433 +49,513 @@
             background: #080808;
         }
         ::-webkit-scrollbar-thumb {
-            background: #222;
+            background: #27272a;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #e8b900;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-gold selection:text-black">
+<body class="bg-terminal-bg text-terminal-text min-h-screen flex flex-col selection:bg-terminal-gold selection:text-black">
 
-    <!-- Intentional Financial-Model Workflow Navigation -->
-    <header class="border-b border-border sticky top-0 z-50 bg-background/95 backdrop-blur-sm">
-        <div class="max-w-7xl mx-auto px-4 h-12 flex items-center justify-between text-xs">
-            <div class="flex items-center space-x-3 text-muted">
-                <span class="text-gold font-bold tracking-wider">finmodel</span>
-                <span class="text-border">/</span>
-                <span class="text-xs text-muted/80">three statements, LBO & DCF</span>
-            </div>
+    <!-- Top Institutional Header & Workflow Navigation -->
+    <header class="border-b border-terminal-border bg-terminal-bg/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
             
-            <nav class="flex items-center space-x-1 sm:space-x-6">
-                <button onclick="switchTab('home')" class="nav-link text-gold font-medium transition-all duration-200 px-2 py-1 hover:text-gold">HOME</button>
-                <div class="vertical-divider h-3"></div>
-                <button onclick="switchTab('model')" class="nav-link text-muted hover:text-gold transition-all duration-200 px-2 py-1">MODEL</button>
-                <div class="vertical-divider h-3"></div>
-                <button onclick="switchTab('statements')" class="nav-link text-muted hover:text-gold transition-all duration-200 px-2 py-1">STATEMENTS</button>
-                <div class="vertical-divider h-3"></div>
-                <button onclick="switchTab('financing')" class="nav-link text-muted hover:text-gold transition-all duration-200 px-2 py-1">FINANCING</button>
-                <div class="vertical-divider h-3"></div>
-                <button onclick="switchTab('returns')" class="nav-link text-muted hover:text-gold transition-all duration-200 px-2 py-1">RETURNS</button>
-                <div class="vertical-divider h-3"></div>
-                <button onclick="switchTab('scenarios')" class="nav-link text-muted hover:text-gold transition-all duration-200 px-2 py-1">SCENARIOS</button>
+            <!-- Brand / Proposition -->
+            <div class="flex items-center space-x-6">
+                <button onclick="switchTab('home')" class="text-left group cursor-pointer focus:outline-none">
+                    <span class="font-mono text-xs tracking-wider text-terminal-gold block">finmodel</span>
+                    <span class="text-[10px] text-terminal-dim block">three statements, LBO & DCF</span>
+                </button>
+            </div>
+
+            <!-- Workflow Navigation -->
+            <nav class="hidden md:flex items-center space-x-4 font-mono text-[11px] tracking-widest">
+                <button onclick="switchTab('model')" id="nav-model" class="nav-link text-terminal-dim hover:text-terminal-gold transition-colors py-1 px-2">MODEL</button>
+                <span class="text-terminal-border">/</span>
+                <button onclick="switchTab('statements')" id="nav-statements" class="nav-link text-terminal-dim hover:text-terminal-gold transition-colors py-1 px-2">STATEMENTS</button>
+                <span class="text-terminal-border">/</span>
+                <button onclick="switchTab('financing')" id="nav-financing" class="nav-link text-terminal-dim hover:text-terminal-gold transition-colors py-1 px-2">FINANCING</button>
+                <span class="text-terminal-border">/</span>
+                <button onclick="switchTab('returns')" id="nav-returns" class="nav-link text-terminal-dim hover:text-terminal-gold transition-colors py-1 px-2">RETURNS</button>
+                <span class="text-terminal-border">/</span>
+                <button onclick="switchTab('scenarios')" id="nav-scenarios" class="nav-link text-terminal-dim hover:text-terminal-gold transition-colors py-1 px-2">SCENARIOS</button>
             </nav>
 
-            <div class="hidden md:flex items-center space-x-2 text-muted text-[10px]">
-                <span class="inline-block w-1.5 h-1.5 rounded-full bg-gold animate-pulse"></span>
-                <span>SYNCED</span>
+            <!-- Status Indicator -->
+            <div class="flex items-center space-x-3 font-mono text-[10px] text-terminal-dim">
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-terminal-gold animate-pulse"></span>
+                <span>SYNCED: LBO_V4.8</span>
             </div>
         </div>
-        <div class="thin-separator"></div>
     </header>
 
-    <!-- Main Workstation Viewport -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col">
 
-        <!-- HOME TAB / EDITORIAL HERO -->
-        <section id="tab-home" class="space-y-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[70vh]">
-                <div class="lg:col-span-7 space-y-6">
-                    <div class="inline-flex items-center space-x-2 text-xs text-muted border border-border px-2.5 py-1">
-                        <span class="text-gold">v2.4</span>
-                        <span>Institutional Workstation</span>
+        <!-- ================= HOME VIEW ================= -->
+        <div id="view-home" class="view-section space-y-12">
+            <!-- Hero Section (50/50 Layout with ASCII signature) -->
+            <section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[75vh]">
+                <div class="lg:col-span-7 space-y-8">
+                    <div class="space-y-4">
+                        <div class="inline-flex items-center space-x-2 font-mono text-[10px] uppercase tracking-widest text-terminal-gold border border-terminal-gold/30 px-2.5 py-1">
+                            <span>Institutional Workstation</span>
+                        </div>
+                        <h1 class="text-4xl lg:text-6xl font-semibold tracking-tight text-white leading-[1.1]">
+                            Model the business.<br>
+                            <span class="text-terminal-gold">Price the return.</span>
+                        </h1>
+                        <p class="text-terminal-dim text-sm lg:text-base font-normal max-w-xl leading-relaxed">
+                            Deterministic three-statement projection engines, debt structuring, and sponsor-grade returns built for rigorous underwriting.
+                        </p>
                     </div>
-                    
-                    <h1 class="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight">
-                        Model the business. <br/>
-                        <span class="text-gold">Price the return.</span>
-                    </h1>
-                    
-                    <p class="text-sm text-muted max-w-xl font-normal leading-relaxed">
-                        Deterministic institutional financial modeling engine built for rigorous LBO, DCF, and balance sheet structuring.
-                    </p>
 
-                    <div class="pt-2 flex items-center space-x-4">
-                        <button onclick="switchTab('model')" class="px-4 py-2 bg-gold text-black font-semibold text-xs hover:bg-gold/90 transition-colors">
-                            INITIALIZE MODEL WORKSTATION →
+                    <!-- CTA Actions -->
+                    <div class="flex items-center space-x-4 pt-2">
+                        <button onclick="switchTab('model')" class="bg-terminal-gold text-black font-mono text-xs uppercase tracking-wider px-6 py-3 font-medium hover:bg-white transition-colors">
+                            Launch Workstation →
                         </button>
-                        <button onclick="switchTab('returns')" class="px-4 py-2 border border-border text-xs text-muted hover:text-white hover:border-gold transition-colors">
-                            VIEW RETURNS
+                        <button onclick="switchTab('returns')" class="border border-terminal-border text-terminal-text font-mono text-xs uppercase tracking-wider px-6 py-3 hover:border-terminal-gold transition-colors">
+                            View Returns Analysis
                         </button>
                     </div>
                 </div>
 
-                <!-- 50/50 ASCII Visual Signature Container -->
-                <div class="lg:col-span-5 border border-border bg-surface p-2 flex flex-col items-center justify-center relative min-h-[360px]">
-                    <div class="absolute top-2 left-2 text-[10px] text-muted tracking-widest uppercase">ascii.engine // visual signature</div>
-                    <canvas id="ascii-canvas" class="w-full h-[320px] block"></canvas>
-                    <div class="absolute bottom-2 right-2 text-[10px] text-gold">IN: #e8b900</div>
-                </div>
-            </div>
-
-            <!-- Metric Row - Terminal Readout Style -->
-            <div class="border-t border-b border-border py-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="px-4 first:pl-0 border-r border-border last:border-r-0">
-                    <div class="text-[10px] uppercase text-muted tracking-wider">Sponsor MOIC</div>
-                    <div class="text-2xl sm:text-3xl font-bold text-white mt-1">2.8x</div>
-                    <div class="text-[11px] text-gold mt-0.5 flex items-center space-x-1">
-                      <span>+0.3x vs base</span>
+                <!-- 50/50 ASCII Visual Signature -->
+                <div class="lg:col-span-5 relative flex justify-center items-center">
+                    <div class="w-full aspect-square border border-terminal-border bg-black/40 relative overflow-hidden flex items-center justify-center">
+                        <canvas id="ascii-canvas" class="w-full h-full object-contain"></canvas>
+                        <div class="absolute bottom-2 right-2 font-mono text-[9px] text-terminal-gold/60 uppercase tracking-widest pointer-events-none">
+                            ASCII.STUDIO // 080808
+                        </div>
                     </div>
                 </div>
-                <div class="px-4 border-r border-border last:border-r-0">
-                    <div class="text-[10px] uppercase text-muted tracking-wider">Sponsor IRR</div>
-                    <div class="text-2xl sm:text-3xl font-bold text-white mt-1">24.1%</div>
-                    <div class="text-[11px] text-gold mt-0.5 flex items-center space-x-1">
-                      <span>+180 bps</span>
-                    </div>
-                </div>
-                <div class="px-4 border-r border-border last:border-r-0">
-                    <div class="text-[10px] uppercase text-muted tracking-wider">Revenue CAGR</div>
-                    <div class="text-2xl sm:text-3xl font-bold text-white mt-1">14.2%</div>
-                    <div class="text-[11px] text-muted mt-0.5">FY24-FY28E</div>
-                </div>
-                <div class="px-4 last:pr-0">
-                    <div class="text-[10px] uppercase text-muted tracking-wider">Rule of 40</div>
-                    <div class="text-2xl sm:text-3xl font-bold text-white mt-1">46.5%</div>
-                    <div class="text-[11px] text-gold mt-0.5">Optimal band</div>
-                </div>
-            </div>
+            </section>
 
-            <!-- Engraved Technical Chart Section -->
-            <div class="space-y-4 pt-4">
-                <div class="flex items-center justify-between text-xs">
-                    <span class="text-muted uppercase tracking-wider">FIGURE 1.1 // EBITDA & Free Cash Flow Trajectory ($M)</span>
-                    <span class="text-gold">CHAMPAGNE-GOLD SPEC</span>
+            <!-- Terminal Metric Row (No cards, precise vertical dividers) -->
+            <section class="border-y border-terminal-border py-6 grid grid-cols-2 lg:grid-cols-4 gap-0 divide-x divide-terminal-border">
+                <div class="px-6 first:pl-0 last:pr-0">
+                    <div class="font-mono text-[10px] uppercase text-terminal-dim tracking-wider">Sponsor MOIC</div>
+                    <div class="text-3xl font-mono font-semibold text-white mt-1">2.8x</div>
+                    <div class="font-mono text-[10px] text-terminal-gold mt-1">▲ +0.2x vs base case</div>
                 </div>
-                <div class="border border-border bg-surface p-4 h-64 relative flex items-end">
-                    <!-- Engraved technical chart visualization -->
-                    <svg class="w-full h-full overflow-visible" viewBox="0 0 800 200" preserveAspectRatio="none">
-                        <!-- Restrained grid ticks -->
-                        <line x1="0" y1="0" x2="800" y2="0" stroke="#222" stroke-dasharray="2 2" />
-                        <line x1="0" y1="50" x2="800" y2="50" stroke="#222" stroke-dasharray="2 2" />
-                        <line x1="0" y1="100" x2="800" y2="100" stroke="#222" stroke-dasharray="2 2" />
-                        <line x1="0" y1="150" x2="800" y2="150" stroke="#222" stroke-dasharray="2 2" />
-                        <line x1="0" y1="200" x2="800" y2="200" stroke="#222" />
-
-                        <!-- Outline-only bars -->
-                        <rect x="60" y="120" width="40" height="80" fill="none" stroke="#e8b900" stroke-width="1" opacity="0.4"/>
-                        <rect x="220" y="90" width="40" height="110" fill="none" stroke="#e8b900" stroke-width="1" opacity="0.6"/>
-                        <rect x="380" y="60" width="40" height="140" fill="none" stroke="#e8b900" stroke-width="1" opacity="0.8"/>
-                        <rect x="540" y="30" width="40" height="170" fill="none" stroke="#e8b900" stroke-width="1" opacity="1.0"/>
-                        <rect x="700" y="10" width="40" height="190" fill="none" stroke="#e8b900" stroke-width="1" stroke-dasharray="4 2"/>
-
-                        <!-- Extremely thin champagne-gold primary line -->
-                        <path d="M 80 140 Q 240 100 400 70 T 720 20" class="gold-line" />
-                    </svg>
-                    <div class="absolute bottom-2 left-4 text-[10px] text-muted flex space-x-8">
-                        <span>FY24A</span><span>FY25E</span><span>FY26E</span><span>FY27E</span><span>FY28E</span>
-                    </div>
+                <div class="px-6">
+                    <div class="font-mono text-[10px] uppercase text-terminal-dim tracking-wider">Sponsor IRR</div>
+                    <div class="text-3xl font-mono font-semibold text-white mt-1">24.1%</div>
+                    <div class="font-mono text-[10px] text-terminal-gold mt-1">▲ +140 bps YTD</div>
                 </div>
-            </div>
-        </section>
+                <div class="px-6">
+                    <div class="font-mono text-[10px] uppercase text-terminal-dim tracking-wider">Revenue CAGR</div>
+                    <div class="text-3xl font-mono font-semibold text-white mt-1">16.4%</div>
+                    <div class="font-mono text-[10px] text-terminal-dim mt-1">FY24 – FY28E</div>
+                </div>
+                <div class="px-6">
+                    <div class="font-mono text-[10px] uppercase text-terminal-dim tracking-wider">Rule of 40</div>
+                    <div class="text-3xl font-mono font-semibold text-white mt-1">52.4%</div>
+                    <div class="font-mono text-[10px] text-terminal-gold mt-1">Growth + EBITDA %</div>
+                </div>
+            </section>
+        </div>
 
-        <!-- MODEL TAB -->
-        <section id="tab-model" class="hidden space-y-6">
-            <div class="flex items-center justify-between border-b border-border pb-3">
+
+        <!-- ================= MODEL VIEW ================= -->
+        <div id="view-model" class="view-section hidden space-y-6">
+            <div class="border-b border-terminal-border pb-4 flex items-center justify-between">
                 <div>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Operational Model & Driver Matrix</h2>
-                    <p class="text-xs text-muted">High-density parametric workspace for revenue assumptions, cost drivers, and goal seek.</p>
+                    <h2 class="font-mono text-xs uppercase tracking-widest text-terminal-gold">MODEL WORKSTATION / DENSITY & DRIVERS</h2>
+                    <p class="text-xs text-terminal-dim mt-1">Operational driver configuration, assumption locks, and real-time sensitivity mapping.</p>
                 </div>
-                <div class="flex items-center space-x-3 text-xs">
-                    <span class="text-muted">STATUS: <span class="text-gold">STRESS LOCK ACTIVE</span></span>
-                    <button class="px-3 py-1 bg-surface border border-border text-gold hover:border-gold">RE-SOLVE</button>
+                <div class="flex items-center space-x-2 font-mono text-xs">
+                    <span class="text-terminal-dim">STRESS LOCK:</span>
+                    <span class="text-terminal-gold">ACTIVE</span>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Driver Group 1 -->
-                <div class="border border-border bg-surface p-4 space-y-3">
-                    <div class="text-xs font-bold text-gold uppercase tracking-wider border-b border-border pb-2">01. Revenue Drivers</div>
-                    <div class="space-y-2 text-xs">
-                        <div class="flex justify-between items-center"><span class="text-muted">ARR Growth Rate</span><input type="text" class="terminal-input w-20 text-right" value="22.5%"></div>
-                        <div class="flex justify-between items-center"><span class="text-muted">Net Retention (NRR)</span><input type="text" class="terminal-input w-20 text-right" value="112.0%"></div>
-                        <div class="flex justify-between items-center"><span class="text-muted">Gross Churn</span><input type="text" class="terminal-input w-20 text-right" value="5.2%"></div>
-                        <div class="flex justify-between items-center"><span class="text-muted">ACV Expansion</span><input type="text" class="terminal-input w-20 text-right" value="$45.2k"></div>
+            <!-- Dense Model Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Driver Groups -->
+                <div class="border border-terminal-border bg-terminal-surface p-4 space-y-4">
+                    <div class="font-mono text-[11px] uppercase tracking-wider text-terminal-gold border-b border-terminal-border pb-2">1. Operational Drivers</div>
+                    <div class="space-y-3 font-mono text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="text-terminal-dim">Core Volume Growth</span>
+                            <span class="text-white">18.5%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-terminal-dim">ASP Realization</span>
+                            <span class="text-white">3.0%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-terminal-dim">Gross Margin Cap</span>
+                            <span class="text-white">68.2%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-terminal-dim">SaaS NRR</span>
+                            <span class="text-white">114.0%</span>
+                        </div>
                     </div>
                 </div>
-                <!-- Driver Group 2 -->
-                <div class="border border-border bg-surface p-4 space-y-3">
-                    <div class="text-xs font-bold text-gold uppercase tracking-wider border-b border-border pb-2">02. Margin Structure</div>
-                    <div class="space-y-2 text-xs">
-                        <div class="flex justify-between items-center"><span class="text-muted">Gross Margin</span><input type="text" class="terminal-input w-20 text-right" value="82.4%"></div>
-                        <div class="flex justify-between items-center"><span class="text-muted">S&M % of Rev</span><input type="text" class="terminal-input w-20 text-right" value="34.0%"></div>
-                        <div class="flex justify-between items-center"><span class="text-muted">R&D % of Rev</span><input type="text" class="terminal-input w-20 text-right" value="18.5%"></div>
-                        <div class="flex justify-between items-center"><span class="text-muted">G&A % of Rev</span><input type="text" class="terminal-input w-20 text-right" value="10.1%"></div>
+
+                <!-- Assumptions & Editable Values -->
+                <div class="border border-terminal-border bg-terminal-surface p-4 space-y-4">
+                    <div class="font-mono text-[11px] uppercase tracking-wider text-terminal-gold border-b border-terminal-border pb-2">2. Working Capital & Capex</div>
+                    <div class="space-y-3 font-mono text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="text-terminal-dim">DSO (Days)</span>
+                            <input type="text" value="45.0" class="bg-black border border-terminal-border text-right text-terminal-gold w-20 px-2 py-1 focus:outline-none focus:border-terminal-gold">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-terminal-dim">DPO (Days)</span>
+                            <input type="text" value="30.0" class="bg-black border border-terminal-border text-right text-terminal-gold w-20 px-2 py-1 focus:outline-none focus:border-terminal-gold">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-terminal-dim">CapEx % Rev</span>
+                            <input type="text" value="4.5%" class="bg-black border border-terminal-border text-right text-terminal-gold w-20 px-2 py-1 focus:outline-none focus:border-terminal-gold">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-terminal-dim">Tax Rate</span>
+                            <input type="text" value="21.0%" class="bg-black border border-terminal-border text-right text-terminal-gold w-20 px-2 py-1 focus:outline-none focus:border-terminal-gold">
+                        </div>
                     </div>
                 </div>
-                <!-- Driver Group 3 -->
-                <div class="border border-border bg-surface p-4 space-y-3">
-                    <div class="text-xs font-bold text-gold uppercase tracking-wider border-b border-border pb-2">03. Capital Structure</div>
-                    <div class="space-y-2 text-xs">
-                        <div class="flex justify-between items-center"><span class="text-muted">Opening Leverage</span><input type="text" class="terminal-input w-20 text-right" value="4.5x"></div>
-                        <div class="flex justify-between items-center"><span class="text-muted">Term Loan %</span><input type="text" class="terminal-input w-20 text-right" value="65.0%"></div>
-                        <div class="flex justify-between items-center"><span class="text-muted">Interest Rate (SOFR+)</span><input type="text" class="terminal-input w-20 text-right" value="6.75%"></div>
-                        <div class="flex justify-between items-center"><span class="text-muted">Cash Sweep %</span><input type="text" class="terminal-input w-20 text-right" value="75.0%"></div>
+
+                <!-- Outputs & Sensitivity Impact -->
+                <div class="border border-terminal-border bg-terminal-surface p-4 space-y-4">
+                    <div class="font-mono text-[11px] uppercase tracking-wider text-terminal-gold border-b border-terminal-border pb-2">3. Calculated Outputs</div>
+                    <div class="space-y-3 font-mono text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="text-terminal-dim">Unlevered FCF</span>
+                            <span class="text-white">$42.8M</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-terminal-dim">EBITDA Conversion</span>
+                            <span class="text-white">82.1%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-terminal-dim">Goal Seek Margin</span>
+                            <span class="text-terminal-gold">+240 bps</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-terminal-dim">Sensitivity Delta</span>
+                            <span class="text-terminal-gold">Optimal</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- STATEMENTS TAB -->
-        <section id="tab-statements" class="hidden space-y-6">
-            <div class="flex items-center justify-between border-b border-border pb-3">
+
+        <!-- ================= STATEMENTS VIEW ================= -->
+        <div id="view-statements" class="view-section hidden space-y-6">
+            <div class="border-b border-terminal-border pb-4 flex items-center justify-between">
                 <div>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Integrated Financial Statements</h2>
-                    <p class="text-xs text-muted">Investment-banking typeset model output (Income Statement, Balance Sheet, Cash Flows).</p>
+                    <h2 class="font-mono text-xs uppercase tracking-widest text-terminal-gold">FINANCIAL STATEMENTS / THREE-STATEMENT MODEL</h2>
+                    <p class="text-xs text-terminal-dim mt-1">Typeset investment-banking model layout with rigorous alignment and subtotal rules.</p>
                 </div>
-                <div class="text-xs text-gold">UNITS: USD ($M)</div>
             </div>
 
-            <div class="border border-border bg-surface overflow-x-auto p-4">
-                <table class="w-full text-xs text-left">
+            <div class="border border-terminal-border bg-terminal-surface p-6 overflow-x-auto font-mono text-xs">
+                <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-border text-muted">
-                            <th class="py-2 font-normal">Line Item ($M)</th>
-                            <th class="py-2 font-normal text-right">FY24A</th>
-                            <th class="py-2 font-normal text-right">FY25E</th>
-                            <th class="py-2 font-normal text-right">FY26E</th>
-                            <th class="py-2 font-normal text-right">FY27E</th>
-                            <th class="py-2 font-normal text-right text-gold">FY28E</th>
+                        <tr class="border-b border-terminal-border text-terminal-dim">
+                            <th class="py-2 font-normal">Line Item ($ in millions)</th>
+                            <th class="py-2 text-right font-normal">FY24A</th>
+                            <th class="py-2 text-right font-normal">FY25E</th>
+                            <th class="py-2 text-right font-normal">FY26E</th>
+                            <th class="py-2 text-right font-normal">FY27E</th>
+                            <th class="py-2 text-right font-normal">FY28E</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-border/40">
+                    <tbody class="divide-y divide-terminal-border/50">
+                        <!-- Revenue -->
                         <tr>
-                            <td class="py-2 font-bold text-white">Revenue</td>
-                            <td class="py-2 text-right">85.4</td>
-                            <td class="py-2 text-right">104.2</td>
-                            <td class="py-2 text-right">128.5</td>
-                            <td class="py-2 text-right">158.0</td>
-                            <td class="py-2 text-right text-gold font-bold">194.2</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 pl-4 text-muted">Cost of Goods Sold</td>
-                            <td class="py-2 text-right">(15.0)</td>
-                            <td class="py-2 text-right">(18.3)</td>
-                            <td class="py-2 text-right">(22.6)</td>
-                            <td class="py-2 text-right">(27.8)</td>
-                            <td class="py-2 text-right">(34.1)</td>
-                        </tr>
-                        <tr class="border-t border-border">
-                            <td class="py-2 font-bold text-white">Gross Profit</td>
-                            <td class="py-2 text-right">70.4</td>
-                            <td class="py-2 text-right">85.9</td>
-                            <td class="py-2 text-right">105.9</td>
-                            <td class="py-2 text-right">130.2</td>
-                            <td class="py-2 text-right text-gold font-bold">160.1</td>
+                            <td class="py-3 text-white font-medium">Software Subscription Revenue</td>
+                            <td class="py-3 text-right">85.4</td>
+                            <td class="py-3 text-right">104.2</td>
+                            <td class="py-3 text-right">128.0</td>
+                            <td class="py-3 text-right">156.5</td>
+                            <td class="py-3 text-right">191.0</td>
                         </tr>
                         <tr>
-                            <td class="py-2 pl-4 text-muted">Operating Expenses (S&M, R&D, G&A)</td>
-                            <td class="py-2 text-right">(52.0)</td>
-                            <td class="py-2 text-right">(60.0)</td>
-                            <td class="py-2 text-right">(69.5)</td>
-                            <td class="py-2 text-right">(80.0)</td>
-                            <td class="py-2 text-right">(92.0)</td>
+                            <td class="py-3 text-white font-medium">Professional Services</td>
+                            <td class="py-3 text-right">12.1</td>
+                            <td class="py-3 text-right">14.0</td>
+                            <td class="py-3 text-right">15.5</td>
+                            <td class="py-3 text-right">17.0</td>
+                            <td class="py-3 text-right">19.0</td>
                         </tr>
-                        <tr class="border-t border-border">
-                            <td class="py-2 font-bold text-white">EBITDA</td>
-                            <td class="py-2 text-right">18.4</td>
-                            <td class="py-2 text-right">25.9</td>
-                            <td class="py-2 text-right">36.4</td>
-                            <td class="py-2 text-right">50.2</td>
-                            <td class="py-2 text-right text-gold font-bold">68.1</td>
+                        <tr class="border-t border-terminal-border font-semibold text-white">
+                            <td class="py-3">Total Revenue</td>
+                            <td class="py-3 text-right">97.5</td>
+                            <td class="py-3 text-right">118.2</td>
+                            <td class="py-3 text-right">143.5</td>
+                            <td class="py-3 text-right">173.5</td>
+                            <td class="py-3 text-right text-terminal-gold">210.0</td>
+                        </tr>
+                        <!-- Expenses -->
+                        <tr>
+                            <td class="py-3 pl-4 text-terminal-dim">Cost of Goods Sold (COGS)</td>
+                            <td class="py-3 text-right">(15.2)</td>
+                            <td class="py-3 text-right">(17.8)</td>
+                            <td class="py-3 text-right">(21.0)</td>
+                            <td class="py-3 text-right">(24.5)</td>
+                            <td class="py-3 text-right">(28.0)</td>
+                        </tr>
+                        <tr class="border-t border-terminal-border font-semibold text-white">
+                            <td class="py-3">Gross Profit</td>
+                            <td class="py-3 text-right">82.3</td>
+                            <td class="py-3 text-right">100.4</td>
+                            <td class="py-3 text-right">122.5</td>
+                            <td class="py-3 text-right">149.0</td>
+                            <td class="py-3 text-right text-terminal-gold">182.0</td>
                         </tr>
                         <tr>
-                            <td class="py-2 pl-4 text-muted">D&A / Interest / Taxes</td>
-                            <td class="py-2 text-right">(8.2)</td>
-                            <td class="py-2 text-right">(9.1)</td>
-                            <td class="py-2 text-right">(10.0)</td>
-                            <td class="py-2 text-right">(10.5)</td>
-                            <td class="py-2 text-right">(11.0)</td>
+                            <td class="py-3 pl-4 text-terminal-dim">Sales & Marketing (S&M)</td>
+                            <td class="py-3 text-right">(34.0)</td>
+                            <td class="py-3 text-right">(40.0)</td>
+                            <td class="py-3 text-right">(47.0)</td>
+                            <td class="py-3 text-right">(55.0)</td>
+                            <td class="py-3 text-right">(64.0)</td>
                         </tr>
-                        <tr class="border-t-2 border-gold/40">
-                            <td class="py-2 font-bold text-white">Net Income</td>
-                            <td class="py-2 text-right font-bold">10.2</td>
-                            <td class="py-2 text-right font-bold">16.8</td>
-                            <td class="py-2 text-right font-bold">26.4</td>
-                            <td class="py-2 text-right font-bold">39.7</td>
-                            <td class="py-2 text-right text-gold font-bold">57.1</td>
+                        <tr>
+                            <td class="py-3 pl-4 text-terminal-dim">Research & Development (R&D)</td>
+                            <td class="py-3 text-right">(22.0)</td>
+                            <td class="py-3 text-right">(26.0)</td>
+                            <td class="py-3 text-right">(30.5)</td>
+                            <td class="py-3 text-right">(35.5)</td>
+                            <td class="py-3 text-right">(41.0)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 pl-4 text-terminal-dim">General & Administrative (G&A)</td>
+                            <td class="py-3 text-right">(12.0)</td>
+                            <td class="py-3 text-right">(14.0)</td>
+                            <td class="py-3 text-right">(16.0)</td>
+                            <td class="py-3 text-right">(18.0)</td>
+                            <td class="py-3 text-right">(20.0)</td>
+                        </tr>
+                        <tr class="border-t-2 border-terminal-border font-semibold text-white">
+                            <td class="py-3">Adjusted EBITDA</td>
+                            <td class="py-3 text-right">14.3</td>
+                            <td class="py-3 text-right">20.4</td>
+                            <td class="py-3 text-right">29.0</td>
+                            <td class="py-3 text-right">40.5</td>
+                            <td class="py-3 text-right text-terminal-gold">57.0</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </section>
+        </div>
 
-        <!-- FINANCING TAB -->
-        <section id="tab-financing" class="hidden space-y-6">
-            <div class="flex items-center justify-between border-b border-border pb-3">
+
+        <!-- ================= FINANCING VIEW ================= -->
+        <div id="view-financing" class="view-section hidden space-y-6">
+            <div class="border-b border-terminal-border pb-4 flex items-center justify-between">
                 <div>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Debt & Capital Structure Risk</h2>
-                    <p class="text-xs text-muted">DEBT → CASH FLOW → PAYDOWN → COVENANT → RISK visualization.</p>
-                </div>
-                <div class="text-xs text-gold">COVENANT HEADROOM: 35%</div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
-                <div class="border border-border bg-surface p-4 space-y-2">
-                    <span class="text-muted block text-[10px]">01 // DEBT</span>
-                    <div class="font-bold text-white text-sm">Term Loan B</div>
-                    <div class="text-gold">$165.0M</div>
-                    <div class="text-[11px] text-muted pt-2 border-t border-border">Initial 4.5x leverage opening tranche</div>
-                </div>
-                <div class="border border-border bg-surface p-4 space-y-2">
-                    <span class="text-muted block text-[10px]">02 // CASH FLOW</span>
-                    <div class="font-bold text-white text-sm">Unlevered FCF</div>
-                    <div class="text-gold">$42.5M / yr</div>
-                    <div class="text-[11px] text-muted pt-2 border-t border-border">High operating cash conversion (82%)</div>
-                </div>
-                <div class="border border-border bg-surface p-4 space-y-2">
-                    <span class="text-muted block text-[10px]">03 // PAYDOWN</span>
-                    <div class="font-bold text-white text-sm">Cash Sweep</div>
-                    <div class="text-gold">75% Allocation</div>
-                    <div class="text-[11px] text-muted pt-2 border-t border-border">Accelerated debt retirement schedule</div>
-                </div>
-                <div class="border border-border bg-surface p-4 space-y-2">
-                    <span class="text-muted block text-[10px]">04 // COVENANT</span>
-                    <div class="font-bold text-white text-sm">Leverage Ratio</div>
-                    <div class="text-gold">2.1x (Max 5.5x)</div>
-                    <div class="text-[11px] text-muted pt-2 border-t border-border">Comfortable headroom cushion</div>
-                </div>
-                <div class="border border-border bg-surface p-4 space-y-2">
-                    <span class="text-muted block text-[10px]">05 // RISK</span>
-                    <div class="font-bold text-white text-sm">Flags & Stress</div>
-                    <div class="text-gold">LOW RISK</div>
-                    <div class="text-[11px] text-muted pt-2 border-t border-border">Zero breach under downside test</div>
+                    <h2 class="font-mono text-xs uppercase tracking-widest text-terminal-gold">FINANCING / RISK & DEBT STACK VISUALIZATION</h2>
+                    <p class="text-xs text-terminal-dim mt-1">Deterministic debt schedule, cash sweep mechanics, and covenant headroom.</p>
                 </div>
             </div>
-        </section>
 
-        <!-- RETURNS TAB -->
-        <section id="tab-returns" class="hidden space-y-6">
-            <div class="flex items-center justify-between border-b border-border pb-3">
-                <div>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Investment Committee Return Analysis</h2>
-                    <p class="text-xs text-muted">Primary sponsor return metrics and deeper sensitivity analysis.</p>
-                </div>
-                <div class="text-xs text-gold">HOLD PERIOD: 5.0 YRS</div>
-            </div>
-
-            <!-- Visual Climax Highlight -->
-            <div class="border border-gold/40 bg-surface p-6 flex flex-col sm:flex-row items-center justify-between">
-                <div class="space-y-1">
-                    <div class="text-[10px] uppercase text-muted tracking-wider">Primary Sponsor Returns</div>
-                    <div class="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-                        2.8x <span class="text-gold font-normal text-2xl sm:text-3xl ml-2">MOIC</span>
-                        <span class="text-border mx-2">/</span>
-                        24.1% <span class="text-gold font-normal text-2xl sm:text-3xl ml-2">IRR</span>
+            <!-- Risk Flow: DEBT → CASH FLOW → PAYDOWN → COVENANT → RISK -->
+            <div class="border border-terminal-border bg-terminal-surface p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 font-mono text-center">
+                    <div class="border border-terminal-border p-4 bg-black">
+                        <div class="text-[10px] text-terminal-dim uppercase">1. Debt</div>
+                        <div class="text-sm font-semibold text-white mt-1">$120.0M</div>
+                        <div class="text-[10px] text-terminal-gold mt-1">4.5x Leverage</div>
+                    </div>
+                    <div class="border border-terminal-border p-4 bg-black">
+                        <div class="text-[10px] text-terminal-dim uppercase">2. Cash Flow</div>
+                        <div class="text-sm font-semibold text-white mt-1">$42.8M</div>
+                        <div class="text-[10px] text-terminal-gold mt-1">Free Cash Flow</div>
+                    </div>
+                    <div class="border border-terminal-border p-4 bg-black">
+                        <div class="text-[10px] text-terminal-dim uppercase">3. Paydown</div>
+                        <div class="text-sm font-semibold text-white mt-1">$28.5M</div>
+                        <div class="text-[10px] text-terminal-gold mt-1">100% Sweep Active</div>
+                    </div>
+                    <div class="border border-terminal-border p-4 bg-black">
+                        <div class="text-[10px] text-terminal-dim uppercase">4. Covenant</div>
+                        <div class="text-sm font-semibold text-white mt-1">5.25x max</div>
+                        <div class="text-[10px] text-terminal-gold mt-1">Headroom: +75bps</div>
+                    </div>
+                    <div class="border border-terminal-border p-4 bg-black">
+                        <div class="text-[10px] text-terminal-dim uppercase">5. Risk Flag</div>
+                        <div class="text-sm font-semibold text-white mt-1">LOW</div>
+                        <div class="text-[10px] text-terminal-gold mt-1">All Clear</div>
                     </div>
                 </div>
-                <div class="mt-4 sm:mt-0 flex space-x-3 text-xs">
-                    <div class="border border-border px-3 py-2 text-center">
-                        <div class="text-muted">Exit EV</div>
-                        <div class="text-white font-bold mt-0.5">$684.0M</div>
+
+                <div class="pt-4 border-t border-terminal-border font-mono text-xs space-y-3">
+                    <div class="flex justify-between text-terminal-dim">
+                        <span>Revolver Facility ($15.0M Limit)</span>
+                        <span class="text-white">$0.0M Drawn</span>
                     </div>
-                    <div class="border border-border px-3 py-2 text-center">
-                        <div class="text-muted">Total Gain</div>
-                        <div class="text-gold font-bold mt-0.5">$248.5M</div>
+                    <div class="flex justify-between text-terminal-dim">
+                        <span>Term Loan B (SOFR + 450, 1.0% Floor)</span>
+                        <span class="text-white">$120.0M Outstanding</span>
+                    </div>
+                    <div class="flex justify-between text-terminal-dim">
+                        <span>Interest Coverage Ratio (EBITDA / Interest)</span>
+                        <span class="text-terminal-gold">4.2x (Min 2.5x)</span>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- SCENARIOS TAB -->
-        <section id="tab-scenarios" class="hidden space-y-6">
-            <div class="flex items-center justify-between border-b border-border pb-3">
+
+        <!-- ================= RETURNS VIEW ================= -->
+        <div id="view-returns" class="view-section hidden space-y-6">
+            <div class="border-b border-terminal-border pb-4 flex items-center justify-between">
                 <div>
-                    <h2 class="text-sm font-bold text-white uppercase tracking-wider">Scenario Comparison Matrix</h2>
-                    <p class="text-xs text-muted">Institutional side-by-side sensitivity outputs.</p>
+                    <h2 class="font-mono text-xs uppercase tracking-widest text-terminal-gold">RETURNS / INVESTMENT COMMITTEE ANALYSIS</h2>
+                    <p class="text-xs text-terminal-dim mt-1">Sponsor returns climax, DCF valuation bridge, and sensitivity matrices.</p>
                 </div>
-                <div class="text-xs text-gold">4 CASES LOADED</div>
             </div>
 
-            <div class="border border-border bg-surface overflow-x-auto p-4">
-                <table class="w-full text-xs text-left">
+            <!-- Returns Climax Header -->
+            <div class="border border-terminal-border bg-terminal-surface p-8 text-center space-y-2">
+                <div class="font-mono text-xs uppercase tracking-widest text-terminal-dim">Sponsor Returns</div>
+                <div class="text-4xl lg:text-5xl font-mono font-semibold text-white tracking-tight">
+                    2.8x <span class="text-terminal-gold font-normal">MOIC</span> &nbsp;&nbsp; 24.1% <span class="text-terminal-gold font-normal">IRR</span>
+                </div>
+                <div class="font-mono text-xs text-terminal-dim pt-2">Based on 5.0x Exit EBITDA Multiple ($57.0M FY28E EBITDA)</div>
+            </div>
+
+            <!-- Detailed Analysis Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="border border-terminal-border bg-terminal-surface p-6 space-y-4">
+                    <div class="font-mono text-xs uppercase tracking-wider text-terminal-gold border-b border-terminal-border pb-2">Valuation Bridge</div>
+                    <div class="space-y-2 font-mono text-xs">
+                        <div class="flex justify-between"><span class="text-terminal-dim">Enterprise Value (Exit)</span><span class="text-white">$285.0M</span></div>
+                        <div class="flex justify-between"><span class="text-terminal-dim">Less: Net Debt</span><span class="text-white">($63.0M)</span></div>
+                        <div class="flex justify-between"><span class="text-terminal-dim">Equity Value at Exit</span><span class="text-white">$222.0M</span></div>
+                        <div class="flex justify-between font-semibold text-terminal-gold pt-2 border-t border-terminal-border"><span>Sponsor Proceeds</span><span>$222.0M</span></div>
+                    </div>
+                </div>
+
+                <div class="border border-terminal-border bg-terminal-surface p-6 space-y-4">
+                    <div class="font-mono text-xs uppercase tracking-wider text-terminal-gold border-b border-terminal-border pb-2">DCF Valuation & WACC</div>
+                    <div class="space-y-2 font-mono text-xs">
+                        <div class="flex justify-between"><span class="text-terminal-dim">Discount Rate (WACC)</span><span class="text-white">10.5%</span></div>
+                        <div class="flex justify-between"><span class="text-terminal-dim">Terminal Growth Rate</span><span class="text-white">3.0%</span></div>
+                        <div class="flex justify-between"><span class="text-terminal-dim">Present Value of Cash Flows</span><span class="text-white">$142.5M</span></div>
+                        <div class="flex justify-between font-semibold text-terminal-gold pt-2 border-t border-terminal-border"><span>Implied Share Price</span><span>$34.50</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ================= SCENARIOS VIEW ================= -->
+        <div id="view-scenarios" class="view-section hidden space-y-6">
+            <div class="border-b border-terminal-border pb-4 flex items-center justify-between">
+                <div>
+                    <h2 class="font-mono text-xs uppercase tracking-widest text-terminal-gold">SCENARIOS / COMPARISON MATRIX</h2>
+                    <p class="text-xs text-terminal-dim mt-1">Compact institutional comparison matrix across operating cases.</p>
+                </div>
+            </div>
+
+            <!-- Compact Comparison Matrix -->
+            <div class="border border-terminal-border bg-terminal-surface p-6 overflow-x-auto font-mono text-xs">
+                <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-border text-muted">
-                            <th class="py-2 font-normal">Metric / Variable</th>
-                            <th class="py-2 font-normal text-right">Base Case</th>
-                            <th class="py-2 font-normal text-right">Upside Case</th>
-                            <th class="py-2 font-normal text-right">Downside Case</th>
-                            <th class="py-2 font-normal text-right text-gold">Stress Case</th>
+                        <tr class="border-b border-terminal-border text-terminal-dim">
+                            <th class="py-3 font-normal">Metric / Variable</th>
+                            <th class="py-3 text-right font-normal">Base Case</th>
+                            <th class="py-3 text-right font-normal">Upside</th>
+                            <th class="py-3 text-right font-normal">Downside</th>
+                            <th class="py-3 text-right font-normal">Stress Test</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-border/40">
+                    <tbody class="divide-y divide-terminal-border/50">
                         <tr>
-                            <td class="py-2 font-bold text-white">Revenue CAGR</td>
-                            <td class="py-2 text-right">14.2%</td>
-                            <td class="py-2 text-right text-gold">18.5%</td>
-                            <td class="py-2 text-right">9.8%</td>
-                            <td class="py-2 text-right">6.5%</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 font-bold text-white">EBITDA Margin (Exit)</td>
-                            <td class="py-2 text-right">35.0%</td>
-                            <td class="py-2 text-right text-gold">40.2%</td>
-                            <td class="py-2 text-right">28.5%</td>
-                            <td class="py-2 text-right">24.0%</td>
+                            <td class="py-3 text-white font-medium">Revenue CAGR</td>
+                            <td class="py-3 text-right">16.4%</td>
+                            <td class="py-3 text-right text-terminal-gold">21.0%</td>
+                            <td class="py-3 text-right">11.5%</td>
+                            <td class="py-3 text-right">8.0%</td>
                         </tr>
                         <tr>
-                            <td class="py-2 font-bold text-white">Exit Multiple</td>
-                            <td class="py-2 text-right">10.0x</td>
-                            <td class="py-2 text-right text-gold">12.0x</td>
-                            <td class="py-2 text-right">8.5x</td>
-                            <td class="py-2 text-right">7.0x</td>
+                            <td class="py-3 text-white font-medium">EBITDA Margin</td>
+                            <td class="py-3 text-right">27.1%</td>
+                            <td class="py-3 text-right text-terminal-gold">32.0%</td>
+                            <td class="py-3 text-right">21.5%</td>
+                            <td class="py-3 text-right">16.0%</td>
                         </tr>
-                        <tr class="border-t border-border">
-                            <td class="py-2 font-bold text-white">MOIC</td>
-                            <td class="py-2 text-right">2.8x</td>
-                            <td class="py-2 text-right text-gold font-bold">3.9x</td>
-                            <td class="py-2 text-right">1.9x</td>
-                            <td class="py-2 text-right">1.4x</td>
+                        <tr>
+                            <td class="py-3 text-white font-medium">Exit Multiple</td>
+                            <td class="py-3 text-right">5.0x</td>
+                            <td class="py-3 text-right text-terminal-gold">6.0x</td>
+                            <td class="py-3 text-right">4.0x</td>
+                            <td class="py-3 text-right">3.5x</td>
                         </tr>
-                        <tr class="border-t-2 border-gold/40">
-                            <td class="py-2 font-bold text-white">IRR</td>
-                            <td class="py-2 text-right">24.1%</td>
-                            <td class="py-2 text-right text-gold font-bold">32.4%</td>
-                            <td class="py-2 text-right">14.2%</td>
-                            <td class="py-2 text-right">7.8%</td>
+                        <tr>
+                            <td class="py-3 text-white font-medium">MOIC</td>
+                            <td class="py-3 text-right">2.8x</td>
+                            <td class="py-3 text-right text-terminal-gold">3.7x</td>
+                            <td class="py-3 text-right">1.9x</td>
+                            <td class="py-3 text-right">1.4x</td>
+                        </tr>
+                        <tr class="font-semibold text-white border-t border-terminal-border">
+                            <td class="py-3">IRR</td>
+                            <td class="py-3 text-right">24.1%</td>
+                            <td class="py-3 text-right text-terminal-gold">31.5%</td>
+                            <td class="py-3 text-right">14.2%</td>
+                            <td class="py-3 text-right">7.8%</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </section>
+        </div>
 
     </main>
 
-    <!-- Footer Status Bar -->
-    <footer class="border-t border-border bg-background py-2 px-6 text-[10px] text-muted flex items-center justify-between">
-        <div class="flex items-center space-x-4">
-            <span>ENGINE: DETERMINISTIC LBO/DCF</span>
-            <span>MEMORY: 14.2 MB</span>
-        </div>
-        <div class="flex items-center space-x-4">
-            <span class="text-gold">SECURE WORKSTATION</span>
-            <span>LATENCY: 0.4ms</span>
+    <!-- Footer -->
+    <footer class="border-t border-terminal-border py-6 mt-12 bg-terminal-bg font-mono text-[10px] text-terminal-dim">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>FINMODEL WORKSTATION // INSTITUTIONAL UNDERWRITING ENGINE</div>
+            <div class="flex items-center space-x-6">
+                <span>SECURE SSL</span>
+                <span>LATENCY: 14MS</span>
+                <span class="text-terminal-gold">BUILD 2026.Q2</span>
+            </div>
         </div>
     </footer>
 
-    <!-- Scripts: asciify-engine & tab switcher -->
+    <!-- Tab Switching Script -->
+    <script>
+        function switchTab(tabId) {
+            // Hide all views
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.add('hidden');
+            });
+            // Show target view
+            const target = document.getElementById('view-' + tabId);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            // Update nav active states
+            document.querySelectorAll('.nav-link').forEach(el => {
+                el.classList.remove('text-terminal-gold');
+                el.classList.add('text-terminal-dim');
+            });
+            const activeNav = document.getElementById('nav-' + tabId);
+            if (activeNav) {
+                activeNav.classList.remove('text-terminal-dim');
+                activeNav.classList.add('text-terminal-gold');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+
+    <!-- ASCII Studio Initialization Script -->
     <script type="module">
-        import { mountStudio } from 'asciify-engine/studio';
+        import { mountStudio } from 'https://esm.sh/asciify-engine/studio';
 
         const canvas = document.getElementById('ascii-canvas');
         if (canvas) {
@@ -575,32 +639,16 @@
                     }
                   }
                 });
+
+                // Handle cleanup on unload if needed
+                window.addEventListener('unload', () => {
+                    if (studio && typeof studio.destroy === 'function') {
+                        studio.destroy();
+                    }
+                });
             } catch (e) {
-                console.log('Ascii engine mount fallback:', e);
+                console.warn('ASCII Studio fallback: Canvas initialized without media source.', e);
             }
-        }
-    </script>
-
-    <script>
-        function switchTab(tabId) {
-            // Hide all tabs
-            const tabs = ['home', 'model', 'statements', 'financing', 'returns', 'scenarios'];
-            tabs.forEach(t => {
-                const el = document.getElementById('tab-' + t);
-                if (el) el.classList.add('hidden');
-            });
-
-            // Show selected tab
-            const target = document.getElementById('tab-' + tabId);
-            if (target) target.classList.remove('hidden');
-
-            // Update nav active states
-            document.querySelectorAll('nav button').forEach(btn => {
-                btn.classList.remove('text-gold', 'font-medium');
-                btn.classList.add('text-muted');
-            });
-            event.target.classList.add('text-gold', 'font-medium');
-            event.target.classList.remove('text-muted');
         }
     </script>
 </body>
