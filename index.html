@@ -1,34 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#02040a">
+<title>finmodel</title>
+<style>
 :root {
-  /* Ultra-Dark Midnight Backgrounds */
-  --bg-base: #06080d;            /* Deepest desaturated midnight black */
-  --bg-surface: #0a0d14;         /* Subdued surface for cards & elevated panels */
-  --bg-surface-elevated: #10141f;/* Subtle contrast for hovers and overlays */
-  --bg-glass: rgba(10, 13, 20, 0.72); /* Glass translucency with low saturation */
-
-  /* Structural Borders & Dividers */
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-medium: rgba(255, 255, 255, 0.12);
-  --border-active: rgba(212, 197, 169, 0.30);
-
-  /* Typography Colors */
-  --text-primary: #f2f3f5;       /* Crisp off-white */
-  --text-secondary: #8e95a5;     /* Cool desaturated muted text */
-  --text-tertiary: #525866;      /* Low-emphasis labels */
-
-  /* Restrained Champagne Gold Accents */
-  --accent-champagne: #d4c5a9;
-  --accent-champagne-subtle: rgba(212, 197, 169, 0.12);
-  --accent-champagne-glow: rgba(212, 197, 169, 0.04);
-
-  /* Interaction & State Colors */
-  --state-hover: rgba(255, 255, 255, 0.03);
-  --state-active: rgba(255, 255, 255, 0.07);
-
-  /* Apple Layout Constants */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --ease-apple: cubic-bezier(0.25, 1, 0.5, 1);
-  --transition-fast: 180ms var(--ease-apple);
-  --transition-smooth: 350ms var(--ease-apple);
+  --bg: #02040a;
+  --bg-subtle: #060913;
+  --bg-elevated: #0a0e1a;
+  --text: #f4f1ea;
+  --mut: #828792;
+  --line: rgba(212, 175, 106, 0.12);
+  --line-subtle: rgba(255, 255, 255, 0.05);
+  --gold: #d4af6a;
+  --gold-dark: #8a6d3b;
+  --gold-light: #f2e3bd;
+  --gold-muted: rgba(212, 175, 106, 0.25);
+  --red: #d9675d;
+  --grn: #7fc4a0;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "EB Garamond", "Times New Roman", Times, Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  box-sizing: border-box;
 }
+
+:root[data-theme="light"] {
+  --bg: #f5f3ef;
+  --bg-subtle: #eae6dd;
+  --bg-elevated: #ffffff;
+  --text: #111318;
+  --mut: #686e79;
+  --line: rgba(143, 106, 31, 0.2);
+  --line-subtle: rgba(0, 0, 0, 0.07);
+  --gold: #8f6a1f;
+  --gold-dark: #5c4210;
+  --gold-light: #3d2a08;
+  --gold-muted: rgba(143, 106, 31, 0.25);
+  --red: #b83d32;
+  --grn: #2b7a4f;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
+  transition: background 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* Serif Accent Utility */
+.editorial {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Header & Navigation */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.nb {
+  max-width: 1360px;
+  margin: 0 auto;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.logo {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.02em;
+}
+
+.logo i {
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  display: inline-block;
+}
+
+.nt {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nt a {
+  color: var(--mut);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nt a:hover {
+  color: var(--text);
+}
+
+.nt a.on {
+  color: var(--gold);
+}
+
+kbd {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: var(--mut);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 1px 4px;
+  opacity: 0.7;
+}
+
+.tb {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--text);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tb:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Layout Container */
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 80px 24px 60px;
+}
+
+/* View Switcher & Transitions */
+.view {
+  display: none;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.view.on {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Structural Header */
+.vh {
+  padding: 32px 0 24px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 32px;
+}
+
+.tag {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.vh h2 {
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.vh p {
+  color: var(--mut);
+  font-size: 15px;
+  margin: 0;
+  max-width: 640px;
+}
+
+/* HOMEPAGE 50/50 GRID */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 160px);
+  border: 1px solid var(--line);
+}
+
+.hero-left {
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--line);
+}
+
+.hero-left h1 {
+  font-size: clamp(38px, 4.5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  margin: 16px 0 24px;
+}
+
+.hero-left h1 span {
+  color: var(--mut);
+}
+
+.lede {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--mut);
+  margin: 0 0 32px;
+  max-width: 480px;
+}
+
+.btns {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 2px;
+  background: var(--gold);
+  color: #02040a;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.b:hover {
+  opacity: 0.9;
+}
+
+.b.g {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+.b.g:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.ms {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.ms div b {
+  display: block;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.ms div span {
+  font-size: 12px;
+  color: var(--mut);
+}
+
+/* HOMEPAGE ASCII CONTAINMENT (Structural 50%) */
+.asc-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #000;
+  overflow: hidden;
+}
+
+.asc-container canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* HOMEPAGE MODS GRID */
+.mods {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border: 1px solid var(--line);
+  border-top: 0;
+}
+
+.mod {
+  padding: 24px 20px;
+  text-decoration: none;
+  color: inherit;
+  border-right: 1px solid var(--line);
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.mod:last-child {
+  border-right: 0;
+}
+
+.mod:hover {
+  background: var(--bg-subtle);
+}
+
+.mod h3 {
+  margin: 12px 0 6px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.mod p {
+  margin: 0;
+  color: var(--mut);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* CARDS & CONTAINERS */
+.card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--line);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.card h3 {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* TAB NAVIGATION SYSTEM */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+
+.tabs button {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--mut);
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-transform: capitalize;
+  transition: all 0.2s ease;
+  margin-bottom: -1px;
+}
+
+.tabs button:hover {
+  color: var(--text);
+}
+
+.tabs button.on {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.pane {
+  display: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.pane.on {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* GRID SPLITS */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.split aside {
+  position: sticky;
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.g2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.pg-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* FORM & INPUT CONTROL STYLING */
+.f {
+  margin-bottom: 16px;
+}
+
+.f label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--mut);
+  margin-bottom: 6px;
+}
+
+.f b {
+  color: var(--gold);
+  font-weight: 500;
+  font-size: 12px;
+  font-family: var(--font-sans);
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2px;
+  border-radius: 0;
+  background: var(--line);
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--gold);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 0.1s ease;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+select, input[type=number] {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  outline: none;
+}
+
+select:focus, input[type=number]:focus {
+  border-color: var(--gold);
+}
+
+.btn {
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  padding: 10px 16px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.btn:hover {
+  background: var(--gold-muted);
+}
+
+/* KPI DASHBOARD TILES */
+.kp {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kp div {
+  background: var(--bg-subtle);
+  border: 1px solid var(--line);
+  padding: 16px;
+}
+
+.kp span, .lv span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mut);
+  display: block;
+}
+
+.kp b {
+  display: block;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-top: 4px;
+  color: var(--text);
+}
+
+.lv div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line-subtle);
+}
+
+.lv div:last-child {
+  border: 0;
+}
+
+.lv b {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--gold);
+}
+
+/* TABLES */
+.tw {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+th, td {
+  padding: 10px 12px;
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line-subtle);
+}
+
+th:first-child, td:first-child {
+  text-align: left;
+  color: var(--mut);
+  font-size: 13px;
+}
+
+th {
+  font-weight: 500;
+  color: var(--mut);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+tr.t td {
+  color: var(--text);
+  font-weight: 600;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.ok { color: var(--grn); font-weight: 500; }
+.bad { color: var(--red); font-weight: 500; }
+
+.chk {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line-subtle);
+}
+
+.chk:last-child { border: 0; }
+
+.chk small {
+  display: block;
+  color: var(--mut);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.memo {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: 140px 1fr 64px;
+  gap: 12px;
+  align-items: center;
+  margin: 10px 0;
+  font-size: 12px;
+}
+
+.bar i {
+  display: block;
+  height: 4px;
+  background: var(--gold);
+}
+
+.small {
+  font-size: 12px;
+  color: var(--mut);
+  line-height: 1.5;
+}
+
+footer {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+  color: var(--mut);
+  font-size: 12px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media(max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .asc-container { height: 380px; }
+  .mods { grid-template-columns: repeat(2, 1fr); }
+  .kp { grid-template-columns: repeat(2, 1fr); }
+  .split { grid-template-columns: 1fr; }
+  .split aside { position: static; }
+  .g2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nb">
+    <a class="logo" href="#/home"><i></i>finmodel</a>
+    <div class="nt" id="nt"></div>
+    <button class="tb" id="th">Light</button>
+  </div>
+</nav>
+
+<main>
+  <!-- HOME VIEW -->
+  <div class="view" id="v_home">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="tag">finmodel / three statements, LBO & DCF</div>
+        <h1>Model the business.<br><span class="editorial">Price the return.</span></h1>
+        <p class="lede">A live financial engine built from scratch. Drivers flow through three statements, debt schedules, and investor returns in real time.</p>
+        <div class="btns">
+          <a class="b" href="#/model">Open Model</a>
+          <a class="b g" href="#/returns">View Returns</a>
+        </div>
+        <div class="ms">
+          <div><b id="h1v"></b><span>Sponsor MOIC</span></div>
+          <div><b id="h2v"></b><span>Sponsor IRR</span></div>
+          <div><b id="h3v"></b><span>Revenue CAGR</span></div>
+          <div><b id="h4v"></b><span>Rule of 40</span></div>
+        </div>
+      </div>
+      <div class="asc-container" aria-hidden="true">
+        <canvas id="cv"></canvas>
+      </div>
+    </div>
+    <div class="mods">
+      <a class="mod" href="#/model"><span class="tag">/model</span><h3>Model</h3><p>Drivers across growth, margins, cash and capital.</p></a>
+      <a class="mod" href="#/statements"><span class="tag">/statements</span><h3>Statements</h3><p>Income, cash flow and balance sheet that tie out.</p></a>
+      <a class="mod" href="#/financing"><span class="tag">/financing</span><h3>Financing</h3><p>Revolver, debt sweep, covenants and risk flags.</p></a>
+      <a class="mod" href="#/returns"><span class="tag">/returns</span><h3>Returns</h3><p>MOIC, IRR, DCF, sensitivity and Monte Carlo.</p></a>
+      <a class="mod" href="#/scenarios"><span class="tag">/scenarios</span><h3>Scenarios</h3><p>Five worlds compared against your base case.</p></a>
+    </div>
+  </div>
+
+  <!-- MODEL VIEW -->
+  <div class="view" id="v_model">
+    <div class="vh">
+      <div class="tag">finmodel / model</div>
+      <h2>Shape the <span class="editorial">business engine</span>.</h2>
+      <p>Adjust parameters across five operational modules. Changes calculate immediately.</p>
+    </div>
+    <div class="split">
+      <div id="ctl" class="pg-controls"></div>
+      <aside>
+        <div class="card lv" id="lv"></div>
+        <div class="card">
+          <h3>Stress Lock & Goal Seek</h3>
+          <div class="f">
+            <label>Protected assumption</label>
+            <select id="lock">
+              <option value="none">None</option>
+              <option value="initialGrowth">Initial growth</option>
+              <option value="grossMargin">Gross margin</option>
+              <option value="exitMultiple">Exit multiple</option>
+            </select>
+          </div>
+          <div class="f">
+            <label>Target MOIC</label>
+            <input id="tgt" type="number" value="2.0" step="0.1">
+          </div>
+          <p class="small" style="margin-bottom: 16px;">Goal seek adjusts unprotected drivers to hit the target return.</p>
+          <button class="btn" id="solve">Solve Target</button>
+          <p class="small" id="sres" style="margin-top: 12px; color: var(--gold);"></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- STATEMENTS VIEW -->
+  <div class="view" id="v_statements">
+    <div class="vh">
+      <div class="tag">finmodel / statements</div>
+      <h2>Three statements, <span class="editorial">fully tied</span>.</h2>
+      <p>Integrated financial statements with top-down growth paths and bottom-up unit economics.</p>
+    </div>
+    <div class="kp" id="kp1"></div>
+    <div class="pg">
+      <div class="pane" data-label="chart"><div class="card"><div id="chart"></div></div></div>
+      <div class="pane" data-label="income"><div class="card tw" id="is"></div></div>
+      <div class="pane" data-label="cash flow"><div class="card tw" id="cf"></div></div>
+      <div class="pane" data-label="balance sheet"><div class="card tw" id="bs"></div></div>
+      <div class="pane" data-label="unit economics"><div class="card tw" id="ue"></div></div>
+    </div>
+  </div>
+
+  <!-- FINANCING VIEW -->
+  <div class="view" id="v_financing">
+    <div class="vh">
+      <div class="tag">finmodel / financing</div>
+      <h2>Debt structure & <span class="editorial">covenants</span>.</h2>
+      <p>Revolver, term loan, cash sweep mechanics, and credit risk monitoring.</p>
+    </div>
+    <div class="pg">
+      <div class="pane" data-label="debt schedule"><div class="card tw" id="dt"></div></div>
+      <div class="pane" data-label="integrity"><div class="card" id="chks"></div></div>
+      <div class="pane" data-label="risk flags"><div class="card" id="risks"></div></div>
+    </div>
+  </div>
+
+  <!-- RETURNS VIEW -->
+  <div class="view" id="v_returns">
+    <div class="vh">
+      <div class="tag">finmodel / returns</div>
+      <h2>Valuation & <span class="editorial">investor returns</span>.</h2>
+      <p>LBO sponsor exit profiles, unlevered DCF, tornado sensitivities, and probabilistic Monte Carlo simulation.</p>
+    </div>
+    <div class="kp" id="kp2"></div>
+    <div class="pg">
+      <div class="pane" data-label="valuation & memo">
+        <div class="g2">
+          <div class="card"><h3>Valuation Bridge</h3><div class="tw" id="val"></div></div>
+          <div class="card"><h3>Investment Memo</h3><div class="memo" id="memo"></div></div>
+        </div>
+      </div>
+      <div class="pane" data-label="sensitivity">
+        <div class="g2">
+          <div class="card" style="grid-column: 1 / -1"><h3>MOIC Sensitivity (Growth vs Exit Multiple)</h3><div class="tw" id="sens"></div></div>
+          <div class="card"><h3>Tornado Analysis</h3><div id="torn"></div></div>
+        </div>
+      </div>
+      <div class="pane" data-label="monte carlo">
+        <div class="card">
+          <h3>300 Simulated Iterations</h3>
+          <div id="mc" style="max-width: 560px;"></div>
+          <p class="small" id="mcs" style="margin-top: 16px;"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIOS VIEW -->
+  <div class="view" id="v_scenarios">
+    <div class="vh">
+      <div class="tag">finmodel / scenarios</div>
+      <h2>Strategic <span class="editorial">scenarios</span>.</h2>
+      <p>Compare pre-configured macro cases against your current active model.</p>
+    </div>
+    <div class="card tw" id="scn"></div>
+  </div>
+</main>
+
+<footer>
+  <span>Finmodel Project — Integrated Financial Architecture</span>
+  <span>Press 1–6 to navigate</span>
+</footer>
+
+<script>
+const $ = i => document.getElementById(i);
+const N = (x, d = 1) => Number.isFinite(x) ? x.toFixed(d) : 'n/a';
+const M = v => (v < 0 ? '(' : '') + '$' + N(Math.abs(v)) + 'm' + (v < 0 ? ')' : '');
+const P = v => N(v * 100) + '%';
+const X = v => N(v, 2) + 'x';
+
+const G = [
+  ['Growth engine', [
+    ['startingRevenue', 'Starting revenue', 100, 20, 500, 5, '$m'],
+    ['initialGrowth', 'Initial growth', 18, -20, 60, 1, '%'],
+    ['growthDecay', 'Annual growth decay', 2.5, 0, 8, .5, '%'],
+    ['marketSize', 'Market ceiling', 900, 200, 3000, 50, '$m'],
+    ['startingCustomers', 'Starting customers', 10000, 2000, 50000, 500, ''],
+    ['customerGrowth', 'Gross customer adds', 24, 0, 60, 1, '%'],
+    ['arpc', 'Revenue per customer', 10000, 2000, 30000, 500, '$'],
+    ['churn', 'Annual churn', 8, 1, 25, .5, '%'],
+    ['priceIncrease', 'Price increase', 3, 0, 8, .5, '%'],
+    ['acqEfficiency', 'Acquisition efficiency', 1.3, .5, 2.5, .1, 'x']
+  ]],
+  ['Margins and tax', [
+    ['grossMargin', 'Gross margin', 72, 30, 90, 1, '%'],
+    ['rndPct', 'R&D, % revenue', 12, 0, 30, .5, '%'],
+    ['smPct', 'Sales & marketing, % revenue', 18, 0, 40, .5, '%'],
+    ['otherOpCosts', 'Other costs, % revenue', 20, 5, 40, .5, '%'],
+    ['taxRate', 'Tax rate', 25, 0, 40, 1, '%'],
+    ['inflation', 'Inflation', 2.5, 0, 8, .1, '%']
+  ]],
+  ['Cash and capital', [
+    ['dso', 'Receivable days', 45, 10, 120, 1, 'd'],
+    ['dpo', 'Payable days', 30, 5, 120, 1, 'd'],
+    ['inventoryDays', 'Inventory days', 10, 0, 90, 1, 'd'],
+    ['wcDrag', 'Other working capital', 1, 0, 5, .25, '%'],
+    ['maintenanceCapex', 'Maintenance capex', 2, 0, 8, .25, '%'],
+    ['growthCapex', 'Growth capex, % new rev', 8, 0, 20, .5, '%'],
+    ['usefulLife', 'Asset life', 5, 2, 15, 1, 'y']
+  ]],
+  ['Financing', [
+    ['startingCash', 'Starting cash', 20, 0, 100, 1, '$m'],
+    ['existingDebt', 'Existing debt', 45, 0, 200, 1, '$m'],
+    ['termLoanRate', 'Term loan rate', 7.5, 2, 15, .25, '%'],
+    ['interestRate', 'Revolver rate', 7, 2, 15, .25, '%'],
+    ['debtPaydown', 'Mandatory paydown', 8, 0, 40, 1, '$m'],
+    ['cashSweep', 'Cash sweep', 50, 0, 100, 5, '%'],
+    ['minimumCash', 'Minimum cash', 10, 0, 50, 1, '$m'],
+    ['revolverCapacity', 'Revolver capacity', 30, 0, 100, 1, '$m'],
+    ['maxLeverage', 'Max net debt / EBITDA', 4.5, 1, 8, .25, 'x'],
+    ['minCoverage', 'Min interest coverage', 2, 1, 6, .25, 'x']
+  ]],
+  ['Valuation', [
+    ['forecastPeriod', 'Forecast years', 5, 3, 10, 1, 'y'],
+    ['entryMultiple', 'Entry EBITDA multiple', 9, 4, 20, .5, 'x'],
+    ['exitMultiple', 'Exit EBITDA multiple', 10, 4, 25, .5, 'x'],
+    ['transactionFees', 'Fees, % of value', 2, 0, 5, .25, '%'],
+    ['discountRate', 'Discount rate (WACC)', 11, 6, 20, .5, '%'],
+    ['terminalGrowth', 'Terminal growth', 2.5, 0, 5, .25, '%']
+  ]]
+];
+
+$('ctl').innerHTML = G.map(([t, it]) => `
+  <div class="card">
+    <h3>${t}</h3>
+    ${it.map(([id, l, v, mn, mx, st, u]) => `
+      <div class="f">
+        <label for="${id}"><span>${l}</span><b id="o_${id}"></b></label>
+        <input type="range" id="${id}" min="${mn}" max="${mx}" step="${st}" value="${v}" data-u="${u}">
+      </div>
+    `).join('')}
+  </div>
+`).join('');
+
+const IDS = G.flatMap(g => g[1].map(i => i[0]));
+const disp = (v, u) => u === '$' ? '$' + v.toLocaleString() : u === '$m' ? '$' + v + 'm' : v.toLocaleString() + u;
+
+function read() {
+  const a = {};
+  IDS.forEach(i => {
+    const e = $(i);
+    a[i] = +e.value;
+    const o = $('o_' + i);
+    if (o) o.textContent = disp(+e.value, e.dataset.u);
+  });
+  return a;
+}
+
+function run(a) {
+  const q = k => a[k] / 100, ys = [], layers = [];
+  const cg0 = a.startingRevenue * (1 - q('grossMargin')), ar0 = a.startingRevenue / 365 * a.dso, inv0 = cg0 / 365 * a.inventoryDays, ap0 = cg0 / 365 * a.dpo, on0 = a.startingRevenue * q('wcDrag'), ppe0 = a.startingRevenue * .25;
+  let p = { endCustomers: a.startingCustomers, endARPC: a.arpc, revenue: a.startingRevenue, nwc: ar0 + inv0 + on0 - ap0, ppe: ppe0, equity: a.startingCash + ar0 + inv0 + on0 + ppe0 - ap0 - a.existingDebt, termDebt: a.existingDebt, revolver: 0, cash: a.startingCash };
+  const life = Math.round(a.usefulLife);
+
+  for (let i = 0; i < a.forecastPeriod; i++) {
+    const bc = p.endCustomers, adds = bc * Math.max(0, q('customerGrowth') - i * q('growthDecay') * .25) * a.acqEfficiency, ec = Math.max(0, bc + adds - bc * q('churn'));
+    const ea = p.endARPC * (1 + q('priceIncrease') + q('inflation') * .15);
+    const td = p.revenue * (1 + Math.max(-.95, q('initialGrowth') - i * q('growthDecay'))), bu = (bc + ec) / 2 * (p.endARPC + ea) / 2 / 1e6;
+    const revenue = Math.min(a.marketSize, .35 * td + .65 * bu), growth = revenue / p.revenue - 1;
+    const cogs = revenue * (1 - q('grossMargin')), gp = revenue - cogs, rnd = revenue * q('rndPct'), sm = revenue * q('smPct'), oth = revenue * q('otherOpCosts'), ebitda = gp - rnd - sm - oth;
+    const ar = revenue / 365 * a.dso, inv = cogs / 365 * a.inventoryDays, ap = cogs / 365 * a.dpo, on = revenue * q('wcDrag'), nwc = ar + inv + on - ap, dnwc = nwc - p.nwc;
+    const capex = revenue * q('maintenanceCapex') + Math.max(0, revenue - p.revenue) * q('growthCapex') * (i % 2 === 0 ? 1.25 : .75);
+    layers.push(capex);
+    let dep = i < life ? ppe0 / life : 0;
+    layers.forEach((c, j) => { if (i - j < life) dep += c / life; });
+    const ppe = p.ppe + capex - dep, ebit = ebitda - dep;
+    const interest = p.termDebt * q('termLoanRate') + p.revolver * q('interestRate'), ebt = ebit - interest, taxes = Math.max(0, ebt * q('taxRate')), ni = ebt - taxes;
+    const cfo = ni + dep - dnwc, fcf = cfo - capex, ufcf = (ebit > 0 ? ebit * (1 - q('taxRate')) : ebit) + dep - dnwc - capex;
+    let cash = p.cash + fcf, rev = p.revolver, term = p.termDebt, draw = 0;
+    if (cash < a.minimumCash) { draw = Math.max(0, Math.min(a.revolverCapacity - rev, a.minimumCash - cash)); rev += draw; cash += draw; }
+    const mand = Math.min(a.debtPaydown, term, Math.max(0, cash - a.minimumCash)); term -= mand; cash -= mand;
+    const rep = Math.min(rev, Math.max(0, cash - a.minimumCash)); rev -= rep; cash -= rep;
+    const sweep = Math.min(term, Math.max(0, cash - a.minimumCash) * q('cashSweep')); term -= sweep; cash -= sweep;
+    const debt = term + rev, netDebt = debt - cash, equity = p.equity + ni, assets = cash + ar + inv + on + ppe, liab = debt + ap;
+    const ltv = a.arpc * q('grossMargin') / q('churn'), cac = adds > 0 ? sm * 1e6 / adds : NaN;
+    const y = { year: i + 1, revenue, growth, gp, ebitda, margin: ebitda / revenue, dep, ebit, interest, taxes, ni, dnwc, capex, cfo, fcf, ufcf, cash, term, rev, debt, netDebt, draw, mand, rep, sweep, bt: p.termDebt, br: p.revolver, ar, inv, ap, on, ppe, equity, assets, liab, check: assets - liab - equity, lev: ebitda > 0 ? netDebt / ebitda : Infinity, cov: interest > 0 ? ebitda / interest : Infinity, customers: ec, arpc: ea, ltvcac: ltv / cac, r40: growth + ebitda / revenue, cA: bc, cA2: adds, cogs, rnd, sm, oth, nwc, cac, ltv };
+    ys.push(y);
+    p = { endCustomers: ec, endARPC: ea, revenue, nwc, ppe, equity, termDebt: term, revolver: rev, cash };
+  }
+  return ys;
+}
+
+function value(a, ys) {
+  const L = ys.at(-1), q = k => a[k] / 100, r = q('discountRate'), g = q('terminalGrowth');
+  const ltm = a.startingRevenue * (q('grossMargin') - q('rndPct') - q('smPct') - q('otherOpCosts')), entryEV = Math.max(.01, ltm) * a.entryMultiple, fees = entryEV * q('transactionFees');
+  const eqIn = Math.max(.01, entryEV - a.existingDebt + a.startingCash + fees), exitEV = Math.max(0, L.ebitda * a.exitMultiple), exitEq = Math.max(0, exitEV - L.netDebt);
+  const moic = exitEq / eqIn, irr = moic > 0 ? Math.pow(moic, 1 / a.forecastPeriod) - 1 : NaN;
+  let pv = 0; ys.forEach((y, i) => pv += y.ufcf / Math.pow(1 + r, i + 1));
+  const tv = r > g ? L.ufcf * (1 + g) / (r - g) : 0, pvtv = tv / Math.pow(1 + r, ys.length), dcf = pv + pvtv;
+  return { ltm, entryEV, fees, eqIn, exitEV, exitEq, moic, irr, dcf, pvtv, tvShare: dcf ? pvtv / dcf : NaN, dcfEq: dcf - a.existingDebt + a.startingCash, cagr: Math.pow(L.revenue / a.startingRevenue, 1 / ys.length) - 1 };
+}
+
+const model = a => { const ys = run(a); return { a, ys, v: value(a, ys) }; };
+
+const PRE = {
+  distress: ['Distress', { initialGrowth: -8, growthDecay: 1, churn: 18, grossMargin: 58, smPct: 20, exitMultiple: 6, customerGrowth: 5 }],
+  slow: ['Slow growth', { initialGrowth: 7, growthDecay: 1.5, churn: 11, grossMargin: 65, exitMultiple: 8, customerGrowth: 13 }],
+  base: ['Base case', { initialGrowth: 18, growthDecay: 2.5, churn: 8, grossMargin: 72, smPct: 18, exitMultiple: 10, customerGrowth: 24 }],
+  hyper: ['Hypergrowth', { initialGrowth: 40, growthDecay: 4, churn: 7, grossMargin: 74, smPct: 27, exitMultiple: 12, customerGrowth: 48, growthCapex: 12 }],
+  comp: ['Compounder', { initialGrowth: 20, growthDecay: 1, churn: 5, grossMargin: 80, smPct: 15, exitMultiple: 13, customerGrowth: 24, priceIncrease: 4 }]
+};
+
+function preset(k, a) {
+  const o = { ...a, ...PRE[k][1] }, l = $('lock').value;
+  if (l !== 'none') o[l] = a[l];
+  return o;
+}
+
+function tbl(ys, rows) {
+  return `<table><thead><tr><th>Metric</th>${ys.map(y => `<th>Year ${y.year}</th>`).join('')}</tr></thead><tbody>${rows.map(([l, f, fm, t]) => `<tr class="${t ? 't' : ''}"><td>${l}</td>${ys.map(y => `<td>${(fm || M)(typeof f === 'string' ? y[f] : f(y))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+function chart(ys) {
+  const W = 760, H = 260, pd = 36, n = ys.length, vs = ys.flatMap(y => [y.revenue, y.ebitda, y.fcf]), mx = Math.max(...vs) * 1.1, mn = Math.min(0, ...vs) * 1.1, sy = v => H - pd - (v - mn) / (mx - mn) * (H - 2 * pd), bw = (W - 2 * pd) / n, sx = i => pd + bw * i + bw / 2;
+  const line = (k, c) => `<path d="${ys.map((y, i) => (i ? 'L' : 'M') + sx(i) + ' ' + sy(y[k])).join('')}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>` + ys.map((y, i) => `<circle cx="${sx(i)}" cy="${sy(y[k])}" r="3.5" fill="${c}"/>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H + 24}" width="100%" role="img"><defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity="0.3"/><stop offset="1" stop-color="var(--gold)" stop-opacity="0.05"/></linearGradient></defs>
+  ${ys.map((y, i) => `<rect x="${sx(i) - bw * .24}" y="${sy(Math.max(y.revenue, 0))}" width="${bw * .48}" height="${Math.abs(sy(y.revenue) - sy(0))}" fill="url(#gb)" stroke="var(--gold)" stroke-width="1"/><text x="${sx(i)}" y="${H + 10}" text-anchor="middle" fill="var(--mut)" font-size="11">Y${y.year}</text>`).join('')}
+  <line x1="${pd}" x2="${W - pd}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--line)"/>${line('ebitda', '#7fc4a0')}${line('fcf', '#f2e3bd')}
+  <g font-size="11" fill="var(--mut)"><text x="${pd}" y="16">Bars: Revenue</text><text x="${pd + 110}" y="16" fill="#7fc4a0">Line: EBITDA</text><text x="${pd + 210}" y="16" fill="#f2e3bd">Line: Free Cash Flow</text></g></svg>`;
+}
+
+let seed = 7;
+const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const gs = () => Math.sqrt(-2 * Math.log(rnd() + 1e-9)) * Math.cos(6.2832 * rnd());
+
+function mcRender(a) {
+  seed = 7; const r = [];
+  for (let i = 0; i < 300; i++) r.push(model({ ...a, initialGrowth: a.initialGrowth + gs() * 4, grossMargin: Math.min(95, a.grossMargin + gs() * 3), exitMultiple: Math.max(3, a.exitMultiple + gs() * 1.5), churn: Math.max(1, a.churn + gs() * 2) }).v.moic);
+  r.sort((x, y) => x - y); const lo = r[0], hi = r[299], B = 14, bins = Array(B).fill(0);
+  r.forEach(v => bins[Math.min(B - 1, Math.floor((v - lo) / (hi - lo + 1e-9) * B))]++);
+  const mb = Math.max(...bins);
+  $('mc').innerHTML = `<svg viewBox="0 0 400 160" width="100%">${bins.map((b, i) => `<rect x="${i * 28.5 + 4}" y="${140 - b / mb * 130}" width="22" height="${b / mb * 130}" fill="${lo + (i + .5) * (hi - lo) / B < 1 ? 'var(--red)' : 'var(--gold)'}" opacity="0.8"/>`).join('')}<text x="4" y="156" font-size="10" fill="var(--mut)">${X(lo)}</text><text x="396" y="156" font-size="10" text-anchor="end" fill="var(--mut)">${X(hi)}</text></svg>`;
+  const t = +$('tgt').value;
+  $('mcs').textContent = `Median ${X(r[150])}. Middle 80% range: ${X(r[30])} to ${X(r[270])}. Chance of ≥ ${X(t)} MOIC: ${N(r.filter(v => v >= t).length / 3, 0)}%. Downside loss risk: ${N(r.filter(v => v < 1).length / 3, 0)}%.`;
+}
+
+function render() {
+  const a = read(), m = model(a), ys = m.ys, L = ys.at(-1), v = m.v, c = (k, ok) => `<span class="${ok ? 'ok' : 'bad'}">${k}</span>`;
+  const kp = (id, arr) => $(id).innerHTML = arr.map(([l, x]) => `<div><span>${l}</span><b>${x}</b></div>`).join('');
+
+  $('h1v').textContent = X(v.moic);$('h2v').textContent = P(v.irr);
+  $('h3v').textContent = P(v.cagr);$('h4v').textContent = N(L.r40 * 100, 0);
+
+  kp('kp1', [['Final Revenue', M(L.revenue)], ['EBITDA', M(L.ebitda)], ['EBITDA Margin', P(L.margin)], ['Free Cash Flow', M(L.fcf)], ['Net Debt', M(L.netDebt)]]);
+  kp('kp2', [['Exit EV', M(v.exitEV)], ['Exit Equity', M(v.exitEq)], ['MOIC', X(v.moic)], ['IRR', P(v.irr)], ['DCF Value', M(v.dcf)]]);
+
+  $('chart').innerHTML = chart(ys);
+  $('is').innerHTML = tbl(ys, [['Revenue', 'revenue', M, 1], ['Growth', 'growth', P], ['Cost of revenue', y => -y.cogs], ['Gross profit', 'gp', M, 1], ['R&D', y => -y.rnd], ['Sales & marketing', y => -y.sm], ['Other costs', y => -y.oth], ['EBITDA', 'ebitda', M, 1], ['Depreciation', y => -y.dep], ['EBIT', 'ebit', M], ['Interest', y => -y.interest], ['Taxes', y => -y.taxes], ['Net income', 'ni', M, 1]]);$('cf').innerHTML = tbl(ys, [['Net income', 'ni'], ['Depreciation', 'dep'], ['Change in working capital', y => -y.dnwc], ['Operating cash flow', 'cfo', M, 1], ['Capital spending', y => -y.capex], ['Free cash flow', 'fcf', M, 1], ['Unlevered free cash flow', 'ufcf']]);
+  $('bs').innerHTML = tbl(ys, [['Cash', 'cash'], ['Receivables', 'ar'], ['Inventory', 'inv'], ['Other working capital', 'on'], ['Net PP&E', 'ppe'], ['Total assets', 'assets', M, 1], ['Payables', 'ap'], ['Debt', 'debt'], ['Equity', 'equity'], ['Imbalance Check', 'check', x => N(x, 4)]]);$('ue').innerHTML = tbl(ys, [['Customers', 'customers', x => Math.round(x).toLocaleString()], ['ARPC', 'arpc', x => '$' + Math.round(x).toLocaleString()], ['LTV / CAC', 'ltvcac', x => N(x) + 'x'], ['Rule of 40', 'r40', P]]);$('dt').innerHTML = tbl(ys, [['Opening Term Loan', 'bt'], ['Opening Revolver', 'br'], ['Interest', 'interest'], ['Revolver Draw', 'draw'], ['Mandatory Paydown', 'mand'], ['Revolver Repayment', 'rep'], ['Cash Sweep', 'sweep'], ['Closing Term Loan', 'term', M, 1], ['Closing Revolver', 'rev', M, 1], ['Cash', 'cash'], ['Net Debt / EBITDA', 'lev', X], ['Interest Coverage', 'cov', X]]);
+
+  const bal = ys.every(y => Math.abs(y.check) < 1e-6), liq = ys.every(y => y.cash >= a.minimumCash - 1e-6 || y.rev >= a.revolverCapacity - 1e-6), cov = ys.every(y => y.lev <= a.maxLeverage && y.cov >= a.minCoverage);
+  const ck = (ok, t, d) => `<div class="chk"><div>${t}<small>${d}</small></div>${c(ok ? 'Pass' : 'Flag', ok)}</div>`;
+  $('chks').innerHTML = ck(bal, 'Balance Sheet Integrity', 'Assets equal liabilities plus equity across all forecast years.') + ck(liq, 'Liquidity Buffer', 'Cash balances satisfy minimum operational cash constraints.') + ck(cov, 'Credit Covenants', 'Leverage ratio and interest coverage stay within bounds.');
+
+  $('val').innerHTML = `<table><tbody>${[['Entry EBITDA', M(v.ltm)], ['Entry Enterprise Value', M(v.entryEV)], ['Fees', M(v.fees)], ['Sponsor Equity Invested', M(v.eqIn)], ['Exit EBITDA', M(L.ebitda)], ['Exit Enterprise Value', M(v.exitEV)], ['Net Debt at Exit', M(L.netDebt)], ['Exit Equity Value', M(v.exitEq)], ['DCF Enterprise Value', M(v.dcf)], ['Terminal Value Share', P(v.tvShare)]].map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table>`;
+
+  const risks = [];
+  if (L.margin < .1) risks.push('EBITDA margin compresses below 10%');
+  if (ys.some(y => y.cash < a.minimumCash - 1e-6)) risks.push('Liquidity drops below minimum threshold');
+  if (ys.some(y => y.rev >= a.revolverCapacity - .01)) risks.push('Revolver capacity fully utilized');
+  if (!cov) risks.push('Credit covenant breach detected');
+  if (v.exitEV > v.dcf * 1.25) risks.push('Exit valuation exceeds DCF by >25% (multiple reliance)');
+  if (!risks.length) risks.push('All structural credit and return checks passed');
+  $('risks').innerHTML = risks.map(r => `<div class="chk"><div>${r}</div>${c(r.startsWith('All') ? 'Clear' : 'Watch', r.startsWith('All'))}</div>`).join('');
+
+  const th = v.moic >= 2 && v.irr >= .15 ? 'Investment profiles as an attractive risk-adjusted return.' : v.moic >= 1.5 ? 'Execution-dependent return profile; sensitive to exit multiple.' : 'Uncompelling risk-return structure under current parameters.';
+  $('memo').textContent = `${th}\n\nRevenue scales from ${M(a.startingRevenue)} to ${M(L.revenue)} (${P(v.cagr)} CAGR). Final EBITDA reaches ${M(L.ebitda)} (${P(L.margin)} margin).\n\nSponsor equity of ${M(v.eqIn)} yields ${M(v.exitEq)} exit value, generating ${X(v.moic)} MOIC and ${P(v.irr)} IRR. Unlevered DCF benchmark indicates an Enterprise Value of ${M(v.dcf)}.`;
+
+  const gs2 = [-10, -5, 0, 5, 10], ms = [-2, -1, 0, 1, 2], g = ms.map(d => gs2.map(e => model({ ...a, exitMultiple: Math.max(1, a.exitMultiple + d), initialGrowth: a.initialGrowth + e }).v.moic)), f = g.flat(), lo = Math.min(...f), hi = Math.max(...f);
+  $('sens').innerHTML = `<table><thead><tr><th>Exit Multiple</th>${gs2.map(e => `<th>${N(a.initialGrowth + e, 0)}% Growth</th>`).join('')}</tr></thead><tbody>${g.map((r, i) => `<tr><td>${N(a.exitMultiple + ms[i])}x</td>${r.map(x => `<td style="background:${x < 1 ? 'rgba(217,103,93,0.2)' : `rgba(212,175,106,${0.08 + .4 * (x - lo) / (hi - lo + 1e-9)})`}">${X(x)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+
+  const dr = [['Growth +5%', 'initialGrowth', 5], ['Gross Margin +5%', 'grossMargin', 5], ['Exit Multiple +1x', 'exitMultiple', 1], ['Churn +3%', 'churn', 3], ['Growth Capex +3%', 'growthCapex', 3], ['Entry Multiple +1x', 'entryMultiple', 1]].map(([l, k, d]) => [l, model({ ...a, [k]: a[k] + d }).v.moic - v.moic]).sort((x, y) => Math.abs(y[1]) - Math.abs(x[1])), mx = Math.max(...dr.map(d => Math.abs(d[1])), 1e-4);
+  $('torn').innerHTML = dr.map(d => `<div class="bar"><span>${d[0]}</span><span><i style="width:${Math.abs(d[1]) / mx * 100}%;${d[1] < 0 ? 'background:var(--red)' : ''}"></i></span><span>${d[1] >= 0 ? '+' : ''}${N(d[1], 2)}x</span></div>`).join('');
+
+  const keys = Object.keys(PRE), sm = keys.map(k => [k, model(preset(k, a))]);
+  $('scn').innerHTML = `<table><thead><tr><th>Scenario</th><th>Revenue</th><th>EBITDA</th><th>Leverage</th><th>MOIC</th><th>IRR</th><th>Action</th></tr></thead><tbody>${sm.map(([k, s]) => { const l = s.ys.at(-1); return `<tr><td>${PRE[k][0]}</td><td>${M(l.revenue)}</td><td>${M(l.ebitda)}</td><td>${X(l.lev)}</td><td>${X(s.v.moic)}</td><td>${P(s.v.irr)}</td><td><button class="btn" data-k="${k}">Load Case</button></td></tr>`; }).join('')}</tbody></table>`;
+
+  clearTimeout(render.t); render.t = setTimeout(() => mcRender(a), 160);
+}
+
+$('scn').addEventListener('click', e => {
+  const k = e.target.dataset.k; if (!k) return;
+  const o = preset(k, read());
+  Object.keys(PRE[k][1]).forEach(i => { if ($(i))$(i).value = o[i]; });
+  render();
+});
+
+$('solve').addEventListener('click', () => {
+  const l = $('lock').value, t = +$('tgt').value;
+  if (l === 'none') { $('sres').textContent = 'Please select a protected assumption first.'; return; }
+  const k = l === 'initialGrowth' ? 'exitMultiple' : 'exitMultiple';
+  const a = read(); let lo = 1, hi = 30, mid;
+  for (let i = 0; i < 50; i++) {
+    mid = (lo + hi) / 2;
+    model({ ...a, [k]: mid }).v.moic < t ? lo = mid : hi = mid;
+  }
+  $(k).value = mid; render();$('sres').textContent = `Target reached. Set ${k} to ${N(mid, 2)}.`;
+});
+
+document.addEventListener('input', e => { if (e.target.type === 'range') requestAnimationFrame(render); });
+
+/* Navigation & Views Routing */
+const VIEWS = [['home', 'Home'], ['model', 'Model'], ['statements', 'Statements'], ['financing', 'Financing'], ['returns', 'Returns'], ['scenarios', 'Scenarios']];
+$('nt').innerHTML = VIEWS.map(([k, l], i) => `<a href="#/${k}" data-v="${k}">${l} <kbd>${i + 1}</kbd></a>`).join('');
+
+let cur = 'home';
+function go() {
+  const k = (location.hash.match(/^#\/(\w+)/) || [])[1];
+  cur = VIEWS.some(v => v[0] === k) ? k : 'home';
+  document.querySelectorAll('.view').forEach(v => {
+    const active = v.id === 'v_' + cur;
+    v.classList.toggle('on', active);
+  });
+  document.querySelectorAll('#nt a').forEach(a => a.classList.toggle('on', a.dataset.v === cur));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+addEventListener('hashchange', go);
+addEventListener('keydown', e => {
+  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName) || e.metaKey || e.ctrlKey) return;
+  const n = +e.key;
+  if (n >= 1 && n <= VIEWS.length) location.hash = '#/' + VIEWS[n - 1][0];
+});
+
+/* Tab System Construction */
+document.querySelectorAll('.pg').forEach(pg => {
+  const ps = [...pg.children].filter(c => c.classList.contains('pane')), bar = document.createElement('div');
+  bar.className = 'tabs'; bar.setAttribute('role', 'tablist');
+  bar.innerHTML = ps.map((p, i) => `<button role="tab" data-i="${i}">${p.dataset.label}</button>`).join('');
+  pg.before(bar);
+  const sel = i => {
+    ps.forEach((p, j) => p.classList.toggle('on', i === j));
+    bar.querySelectorAll('button').forEach((b, j) => b.classList.toggle('on', i === j));
+  };
+  bar.onclick = e => { const b = e.target.closest('button'); if (b) sel(+b.dataset.i); };
+  sel(0);
+});
+
+const _r = render;
+render = function() {
+  _r();
+  $('lv').innerHTML = [['Sponsor MOIC', 'h1v'], ['Sponsor IRR', 'h2v'], ['Revenue CAGR', 'h3v'], ['Rule of 40', 'h4v']].map(([l, i]) => `<div><span>${l}</span><b>${$(i).textContent}</b></div>`).join('');
+};
+
+/* Global Theme Control */
+$('th').onclick = () => {
+  const d = document.documentElement;
+  const isLight = d.dataset.theme === 'light';
+  d.dataset.theme = isLight ? 'dark' : 'light';
+  $('th').textContent = isLight ? 'Light' : 'Dark';
+};
+
+/* ==========================================================================
+   ASCII REBUILD — GENERATIVE MULTI-LAYER WAVEMAP FIELD WITH CURSOR WARP
+   ========================================================================== */
+const cv = $('cv'), cx = cv.getContext('2d');
+let COLS = 60, ROWS = 36;
+let charGrid = [], densityGrid = [];
+let mouse = { x: -999, y: -999, active: false, intensity: 0 };
+let animTime = 0;
+
+const CHAR_MAP = ' .:-=+*#%@';
+const SPECIAL_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@%&*+-=<>~';
+
+function resizeCanvas() {
+  const parent = cv.parentElement;
+  if (!parent) return;
+  const rect = parent.getBoundingClientRect();
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = rect.width * dpr;
+  cv.height = rect.height * dpr;
+  cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  
+  COLS = Math.floor(rect.width / 11);
+  ROWS = Math.floor(rect.height / 18);
+  
+  charGrid = new Array(COLS * ROWS);
+  densityGrid = new Float32Array(COLS * ROWS);
+}
+
+addEventListener('resize', resizeCanvas);
+
+const ascContainer = document.querySelector('.asc-container');
+if (ascContainer) {
+  ascContainer.addEventListener('pointermove', e => {
+    const rect = ascContainer.getBoundingClientRect();
+    mouse.x = (e.clientX - rect.left) / rect.width;
+    mouse.y = (e.clientY - rect.top) / rect.height;
+    mouse.active = true;
+  });
+  
+  ascContainer.addEventListener('pointerleave', () => {
+    mouse.active = false;
+  });
+}
+
+function renderASCII() {
+  requestAnimationFrame(renderASCII);
+  if (cur !== 'home') return;
+
+  animTime += 0.02;
+  
+  // Smoothly build up or ramp down mouse influence
+  if (mouse.active) {
+    mouse.intensity += (1 - mouse.intensity) * 0.08;
+  } else {
+    mouse.intensity += (0 - mouse.intensity) * 0.04;
+  }
+
+  const pX = mouse.x * COLS;
+  const pY = mouse.y * ROWS;
+
+  // Compute Generative Field
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const idx = r * COLS + c;
+      const nx = c / COLS - 0.5;
+      const ny = r / ROWS - 0.5;
+
+      // Base Wave Synthesizer (Harmonic layers)
+      let w1 = Math.sin(nx * 6.0 + animTime * 1.2) * Math.cos(ny * 6.0 + animTime * 0.8);
+      let w2 = Math.sin(Math.sqrt(nx * nx + ny * ny) * 12.0 - animTime * 1.5);
+      let val = (w1 + w2 * 0.5 + 1.5) / 3.0; // Normalize [0, 1]
+
+      // Organic Cursor Displace & Warp Field propagation
+      const dx = c - pX;
+      const dy = r - pY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const radius = 12.0;
+
+      if (dist < radius) {
+        const falloff = Math.pow(1 - dist / radius, 2) * mouse.intensity;
+        const warp = Math.sin(dist * 0.8 - animTime * 4.0) * falloff;
+        val = Math.min(1, Math.max(0, val + warp * 0.6));
+      }
+
+      densityGrid[idx] = val;
+
+      // Character selection based on localized dynamics
+      if (dist < radius * 0.5 && mouse.intensity > 0.3) {
+        const charIdx = Math.floor((c * 7 + r * 13 + Math.floor(animTime * 10)) % SPECIAL_CHARS.length);
+        charGrid[idx] = SPECIAL_CHARS[charIdx];
+      } else {
+        const charIdx = Math.floor(val * (CHAR_MAP.length - 1));
+        charGrid[idx] = CHAR_MAP[charIdx] || ' ';
+      }
+    }
+  }
+
+  // Render Pass
+  const pRect = cv.parentElement.getBoundingClientRect();
+  const cw = pRect.width / COLS;
+  const ch = pRect.height / ROWS;
+
+  cx.clearRect(0, 0, pRect.width, pRect.height);
+  cx.font = `${Math.floor(ch * 0.85)}px ui-monospace, "SF Mono", monospace`;
+  cx.textAlign = 'center';
+  cx.textBaseline = 'middle';
+
+  const isLight = document.documentElement.dataset.theme === 'light';
+
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const idx = r * COLS + c;
+      const den = densityGrid[idx];
+      const char = charGrid[idx];
+      const posX = (c + 0.5) * cw;
+      const posY = (r + 0.5) * ch;
+
+      // Dynamic Champagne Gold Opacity Hierarchy
+      let alpha = 0.15 + den * 0.75;
+      if (isLight) {
+        cx.fillStyle = `rgba(143, 106, 31, ${alpha.toFixed(2)})`;
+      } else {
+        cx.fillStyle = `rgba(212, 175, 106, ${alpha.toFixed(2)})`;
+      }
+
+      cx.fillText(char, posX, posY);
+    }
+  }
+}
+
+// Initial Setup & Invocation
+go();
+resizeCanvas();
+renderASCII();
+render();
+</script>
+</body>
+</html>
