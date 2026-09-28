@@ -5,6 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#02040a">
 <title>finmodel</title>
+<script>
+  // Fast anti-flash system theme initialization
+  (function() {
+    try {
+      var saved = localStorage.getItem('finmodel_theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = saved ? saved : (prefersDark ? 'dark' : 'light');
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+    } catch(e){}
+  })();
+</script>
 <style>
 :root {
   --bg: #02040a;
@@ -371,10 +386,11 @@ main {
   line-height: 1.5;
 }
 
-/* CARDS & CONTAINERS */
+/* RESTRAINED DARK CARDS & CONTAINERS */
 .card {
   background: var(--bg-subtle);
   border: 1px solid var(--line);
+  border-radius: 2px;
   padding: 24px;
   margin-bottom: 24px;
 }
@@ -512,6 +528,7 @@ select, input[type=number] {
   font-family: var(--font-sans);
   font-size: 13px;
   outline: none;
+  border-radius: 2px;
 }
 
 select:focus, input[type=number]:focus {
@@ -547,6 +564,7 @@ select:focus, input[type=number]:focus {
 .kp div {
   background: var(--bg-subtle);
   border: 1px solid var(--line);
+  border-radius: 2px;
   padding: 16px;
 }
 
@@ -686,6 +704,23 @@ footer {
   align-items: center;
 }
 
+/* APPLE-RESTRICTED HOMEPAGE INTRO ANIMATION */
+.intro-element {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.intro-ready .intro-element {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.intro-delay-1 { transition-delay: 0.05s; }
+.intro-delay-2 { transition-delay: 0.15s; }
+.intro-delay-3 { transition-delay: 0.25s; }
+.intro-delay-4 { transition-delay: 0.35s; }
+
 @media(max-width: 1024px) {
   .hero-grid { grid-template-columns: 1fr; }
   .asc-container { height: 380px; }
@@ -712,14 +747,14 @@ footer {
   <div class="view" id="v_home">
     <div class="hero-grid">
       <div class="hero-left">
-        <div class="tag">finmodel / three statements, LBO & DCF</div>
-        <h1>Model the business.<br><span class="editorial">Price the return.</span></h1>
-        <p class="lede">A live financial engine built from scratch. Drivers flow through three statements, debt schedules, and investor returns in real time.</p>
-        <div class="btns">
+        <div class="tag intro-element intro-delay-1">finmodel / three statements, LBO & DCF</div>
+        <h1 class="intro-element intro-delay-2">Model the business.<br><span class="editorial">Price the return.</span></h1>
+        <p class="lede intro-element intro-delay-3">A live financial engine built from scratch. Drivers flow through three statements, debt schedules, and investor returns in real time.</p>
+        <div class="btns intro-element intro-delay-4">
           <a class="b" href="#/model">Open Model</a>
           <a class="b g" href="#/returns">View Returns</a>
         </div>
-        <div class="ms">
+        <div class="ms intro-element intro-delay-4">
           <div><b id="h1v"></b><span>Sponsor MOIC</span></div>
           <div><b id="h2v"></b><span>Sponsor IRR</span></div>
           <div><b id="h3v"></b><span>Revenue CAGR</span></div>
@@ -730,7 +765,7 @@ footer {
         <canvas id="cv"></canvas>
       </div>
     </div>
-    <div class="mods">
+    <div class="mods intro-element intro-delay-4">
       <a class="mod" href="#/model"><span class="tag">/model</span><h3>Model</h3><p>Drivers across growth, margins, cash and capital.</p></a>
       <a class="mod" href="#/statements"><span class="tag">/statements</span><h3>Statements</h3><p>Income, cash flow and balance sheet that tie out.</p></a>
       <a class="mod" href="#/financing"><span class="tag">/financing</span><h3>Financing</h3><p>Revolver, debt sweep, covenants and risk flags.</p></a>
@@ -1000,13 +1035,49 @@ function tbl(ys, rows) {
   return `<table><thead><tr><th>Metric</th>${ys.map(y => `<th>Year ${y.year}</th>`).join('')}</tr></thead><tbody>${rows.map(([l, f, fm, t]) => `<tr class="${t ? 't' : ''}"><td>${l}</td>${ys.map(y => `<td>${(fm || M)(typeof f === 'string' ? y[f] : f(y))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
+/* REWORKED APPLE-STANDARD TECHNICAL CHART ENGINE */
 function chart(ys) {
-  const W = 760, H = 260, pd = 36, n = ys.length, vs = ys.flatMap(y => [y.revenue, y.ebitda, y.fcf]), mx = Math.max(...vs) * 1.1, mn = Math.min(0, ...vs) * 1.1, sy = v => H - pd - (v - mn) / (mx - mn) * (H - 2 * pd), bw = (W - 2 * pd) / n, sx = i => pd + bw * i + bw / 2;
-  const line = (k, c) => `<path d="${ys.map((y, i) => (i ? 'L' : 'M') + sx(i) + ' ' + sy(y[k])).join('')}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>` + ys.map((y, i) => `<circle cx="${sx(i)}" cy="${sy(y[k])}" r="3.5" fill="${c}"/>`).join('');
-  return `<svg viewBox="0 0 ${W} ${H + 24}" width="100%" role="img"><defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity="0.3"/><stop offset="1" stop-color="var(--gold)" stop-opacity="0.05"/></linearGradient></defs>
-  ${ys.map((y, i) => `<rect x="${sx(i) - bw * .24}" y="${sy(Math.max(y.revenue, 0))}" width="${bw * .48}" height="${Math.abs(sy(y.revenue) - sy(0))}" fill="url(#gb)" stroke="var(--gold)" stroke-width="1"/><text x="${sx(i)}" y="${H + 10}" text-anchor="middle" fill="var(--mut)" font-size="11">Y${y.year}</text>`).join('')}
-  <line x1="${pd}" x2="${W - pd}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--line)"/>${line('ebitda', '#7fc4a0')}${line('fcf', '#f2e3bd')}
-  <g font-size="11" fill="var(--mut)"><text x="${pd}" y="16">Bars: Revenue</text><text x="${pd + 110}" y="16" fill="#7fc4a0">Line: EBITDA</text><text x="${pd + 210}" y="16" fill="#f2e3bd">Line: Free Cash Flow</text></g></svg>`;
+  const W = 760, H = 260, pd = 40, pdt = 24, pdb = 32, n = ys.length;
+  const vs = ys.flatMap(y => [y.revenue, y.ebitda, y.fcf]);
+  const mx = Math.max(...vs) * 1.15, mn = Math.min(0, ...vs) * 1.1;
+  const sy = v => (H - pdb) - (v - mn) / (mx - mn + 1e-9) * (H - pdt - pdb);
+  const bw = (W - 2 * pd) / n, sx = i => pd + bw * i + bw / 2;
+
+  // Precise thin grid lines
+  const gridSteps = 4;
+  let gridLines = '';
+  for (let i = 0; i <= gridSteps; i++) {
+    const v = mn + (mx - mn) * (i / gridSteps);
+    const yPos = sy(v);
+    gridLines += `<line x1="${pd}" y1="${yPos}" x2="${W - pd}" y2="${yPos}" stroke="var(--line-subtle)" stroke-dasharray="2,4" stroke-width="1"/>
+    <text x="${pd - 8}" y="${yPos + 3}" text-anchor="end" fill="var(--mut)" font-size="10" font-family="var(--font-sans)" font-weight="400">${Math.round(v)}</text>`;
+  }
+
+  const line = (k, c) => `<path d="${ys.map((y, i) => (i ? 'L' : 'M') + sx(i) + ' ' + sy(y[k])).join('')}" fill="none" stroke="${c}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>` + ys.map((y, i) => `<circle cx="${sx(i)}" cy="${sy(y[k])}" r="2.5" fill="var(--bg-subtle)" stroke="${c}" stroke-width="1.5"/>`).join('');
+
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img">
+  <defs>
+    <linearGradient id="gb" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--gold)" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="var(--gold)" stop-opacity="0.02"/>
+    </linearGradient>
+  </defs>
+  ${gridLines}
+  ${ys.map((y, i) => `
+    <rect x="${sx(i) - bw * .22}" y="${sy(Math.max(y.revenue, 0))}" width="${bw * .44}" height="${Math.abs(sy(y.revenue) - sy(0))}" fill="url(#gb)" stroke="var(--line)" stroke-width="0.75"/>
+    <text x="${sx(i)}" y="${H - 10}" text-anchor="middle" fill="var(--mut)" font-size="11" font-family="var(--font-sans)" font-weight="500">Y${y.year}</text>
+  `).join('')}
+  <line x1="${pd}" x2="${W - pd}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--line)" stroke-width="1"/>
+  ${line('ebitda', 'var(--grn)')}
+  ${line('fcf', 'var(--gold)')}
+  <g font-size="11" font-family="var(--font-sans)" font-weight="500">
+    <rect x="${pd}" y="4" width="8" height="8" fill="url(#gb)" stroke="var(--gold)" stroke-width="0.75"/>
+    <text x="${pd + 14}" y="12" fill="var(--mut)">Revenue</text>
+    <circle cx="${pd + 100}" cy="8" r="3" fill="var(--grn)"/>
+    <text x="${pd + 110}" y="12" fill="var(--mut)">EBITDA</text>
+    <circle cx="${pd + 180}" cy="8" r="3" fill="var(--gold)"/>
+    <text x="${pd + 190}" y="12" fill="var(--mut)">Free Cash Flow</text>
+  </g></svg>`;
 }
 
 let seed = 7;
@@ -1057,7 +1128,7 @@ function render() {
   $('memo').textContent = `${th}\n\nRevenue scales from ${M(a.startingRevenue)} to ${M(L.revenue)} (${P(v.cagr)} CAGR). Final EBITDA reaches ${M(L.ebitda)} (${P(L.margin)} margin).\n\nSponsor equity of ${M(v.eqIn)} yields ${M(v.exitEq)} exit value, generating ${X(v.moic)} MOIC and ${P(v.irr)} IRR. Unlevered DCF benchmark indicates an Enterprise Value of ${M(v.dcf)}.`;
 
   const gs2 = [-10, -5, 0, 5, 10], ms = [-2, -1, 0, 1, 2], g = ms.map(d => gs2.map(e => model({ ...a, exitMultiple: Math.max(1, a.exitMultiple + d), initialGrowth: a.initialGrowth + e }).v.moic)), f = g.flat(), lo = Math.min(...f), hi = Math.max(...f);
-  $('sens').innerHTML = `<table><thead><tr><th>Exit Multiple</th>${gs2.map(e => `<th>${N(a.initialGrowth + e, 0)}% Growth</th>`).join('')}</tr></thead><tbody>${g.map((r, i) => `<tr><td>${N(a.exitMultiple + ms[i])}x</td>${r.map(x => `<td style="background:${x < 1 ? 'rgba(217,103,93,0.2)' : `rgba(212,175,106,${0.08 + .4 * (x - lo) / (hi - lo + 1e-9)})`}">${X(x)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  $('sens').innerHTML = `<table><thead><tr><th>Exit Multiple</th>${gs2.map(e => `<th>${N(a.initialGrowth + e, 0)}% Growth</th>`).join('')}</tr></thead><tbody>${g.map((r, i) => `<tr><td>${N(a.exitMultiple + ms[i])}x</td>${r.map(x => `<td style="background:${x < 1 ? 'rgba(217,103,93,0.15)' : `rgba(212,175,106,${0.05 + .3 * (x - lo) / (hi - lo + 1e-9)})`}">${X(x)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 
   const dr = [['Growth +5%', 'initialGrowth', 5], ['Gross Margin +5%', 'grossMargin', 5], ['Exit Multiple +1x', 'exitMultiple', 1], ['Churn +3%', 'churn', 3], ['Growth Capex +3%', 'growthCapex', 3], ['Entry Multiple +1x', 'entryMultiple', 1]].map(([l, k, d]) => [l, model({ ...a, [k]: a[k] + d }).v.moic - v.moic]).sort((x, y) => Math.abs(y[1]) - Math.abs(x[1])), mx = Math.max(...dr.map(d => Math.abs(d[1])), 1e-4);
   $('torn').innerHTML = dr.map(d => `<div class="bar"><span>${d[0]}</span><span><i style="width:${Math.abs(d[1]) / mx * 100}%;${d[1] < 0 ? 'background:var(--red)' : ''}"></i></span><span>${d[1] >= 0 ? '+' : ''}${N(d[1], 2)}x</span></div>`).join('');
@@ -1132,16 +1203,38 @@ render = function() {
   $('lv').innerHTML = [['Sponsor MOIC', 'h1v'], ['Sponsor IRR', 'h2v'], ['Revenue CAGR', 'h3v'], ['Rule of 40', 'h4v']].map(([l, i]) => `<div><span>${l}</span><b>${$(i).textContent}</b></div>`).join('');
 };
 
-/* Global Theme Control */
+/* SYSTEM-BASED THEME CONTROLLER & BUTTON MANAGEMENT */
+function applyTheme(isLight, save = false) {
+  if (isLight) {
+    document.documentElement.setAttribute('data-theme', 'light');
+    $('th').textContent = 'Dark';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    $('th').textContent = 'Light';
+  }
+  if (save) {
+    localStorage.setItem('finmodel_theme', isLight ? 'light' : 'dark');
+  }
+}
+
+// Sync button text on boot
+const isCurrentLight = document.documentElement.getAttribute('data-theme') === 'light';
+applyTheme(isCurrentLight, false);
+
 $('th').onclick = () => {
-  const d = document.documentElement;
-  const isLight = d.dataset.theme === 'light';
-  d.dataset.theme = isLight ? 'dark' : 'light';
-  $('th').textContent = isLight ? 'Light' : 'Dark';
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  applyTheme(!isLight, true);
 };
 
+// Listen for system theme changes if user hasn't explicitly set a preference
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+  if (!localStorage.getItem('finmodel_theme')) {
+    applyTheme(!e.matches, false);
+  }
+});
+
 /* ==========================================================================
-   ASCII REBUILD — GENERATIVE MULTI-LAYER WAVEMAP FIELD WITH CURSOR WARP
+   ASCII REBUILD — GENERATIVE MULTI-LAYER WAVEMAP FIELD WITH FIELD DISPLACEMENT
    ========================================================================== */
 const cv = $('cv'), cx = cv.getContext('2d');
 let COLS = 60, ROWS = 36;
@@ -1150,7 +1243,6 @@ let mouse = { x: -999, y: -999, active: false, intensity: 0 };
 let animTime = 0;
 
 const CHAR_MAP = ' .:-=+*#%@';
-const SPECIAL_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@%&*+-=<>~';
 
 function resizeCanvas() {
   const parent = cv.parentElement;
@@ -1190,7 +1282,6 @@ function renderASCII() {
 
   animTime += 0.02;
   
-  // Smoothly build up or ramp down mouse influence
   if (mouse.active) {
     mouse.intensity += (1 - mouse.intensity) * 0.08;
   } else {
@@ -1200,40 +1291,36 @@ function renderASCII() {
   const pX = mouse.x * COLS;
   const pY = mouse.y * ROWS;
 
-  // Compute Generative Field
+  // Compute Generative Field with Cursor Field Disturbances
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       const idx = r * COLS + c;
-      const nx = c / COLS - 0.5;
-      const ny = r / ROWS - 0.5;
 
-      // Base Wave Synthesizer (Harmonic layers)
+      // Distance to cursor in cell space
+      const dx = c - pX;
+      const dy = r - pY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const radius = 14.0;
+
+      // Continuous coordinate displacement affecting the underlying wave equations
+      let displaceX = 0, displaceY = 0;
+      if (dist < radius && mouse.intensity > 0.01) {
+        const falloff = Math.pow(1 - dist / radius, 2) * mouse.intensity;
+        displaceX = (dx / (dist + 1e-5)) * falloff * 0.45;
+        displaceY = (dy / (dist + 1e-5)) * falloff * 0.45;
+      }
+
+      const nx = (c + displaceX) / COLS - 0.5;
+      const ny = (r + displaceY) / ROWS - 0.5;
+
+      // Unchanged wave equations calculated at displaced sample coordinates
       let w1 = Math.sin(nx * 6.0 + animTime * 1.2) * Math.cos(ny * 6.0 + animTime * 0.8);
       let w2 = Math.sin(Math.sqrt(nx * nx + ny * ny) * 12.0 - animTime * 1.5);
       let val = (w1 + w2 * 0.5 + 1.5) / 3.0; // Normalize [0, 1]
 
-      // Organic Cursor Displace & Warp Field propagation
-      const dx = c - pX;
-      const dy = r - pY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const radius = 12.0;
-
-      if (dist < radius) {
-        const falloff = Math.pow(1 - dist / radius, 2) * mouse.intensity;
-        const warp = Math.sin(dist * 0.8 - animTime * 4.0) * falloff;
-        val = Math.min(1, Math.max(0, val + warp * 0.6));
-      }
-
-      densityGrid[idx] = val;
-
-      // Character selection based on localized dynamics
-      if (dist < radius * 0.5 && mouse.intensity > 0.3) {
-        const charIdx = Math.floor((c * 7 + r * 13 + Math.floor(animTime * 10)) % SPECIAL_CHARS.length);
-        charGrid[idx] = SPECIAL_CHARS[charIdx];
-      } else {
-        const charIdx = Math.floor(val * (CHAR_MAP.length - 1));
-        charGrid[idx] = CHAR_MAP[charIdx] || ' ';
-      }
+      densityGrid[idx] = Math.min(1, Math.max(0, val));
+      const charIdx = Math.floor(densityGrid[idx] * (CHAR_MAP.length - 1));
+      charGrid[idx] = CHAR_MAP[charIdx] || ' ';
     }
   }
 
@@ -1257,7 +1344,6 @@ function renderASCII() {
       const posX = (c + 0.5) * cw;
       const posY = (r + 0.5) * ch;
 
-      // Dynamic Champagne Gold Opacity Hierarchy
       let alpha = 0.15 + den * 0.75;
       if (isLight) {
         cx.fillStyle = `rgba(143, 106, 31, ${alpha.toFixed(2)})`;
@@ -1269,6 +1355,13 @@ function renderASCII() {
     }
   }
 }
+
+/* APPLE HOMEPAGE RESTRAINED INTRO ANIMATION INITIALIZER */
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    document.body.classList.add('intro-ready');
+  }, 50);
+});
 
 // Initial Setup & Invocation
 go();
