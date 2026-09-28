@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -8,10 +8,10 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..600;1,400..600&display=swap');
 
-:root{
+:root[data-theme="dark"]{
   --bg: #030508;
   --bg2: #07090e;
-  --card: #06080d;
+  --card: #090c12;
   --text: #f0e8d8;
   --mut: #8e887d;
   --line: rgba(212, 175, 106, 0.14);
@@ -19,28 +19,27 @@
   --gold: #d4af6a;
   --gold2: #f2e3bd;
   --gold-dim: rgba(212, 175, 106, 0.4);
-  --gold-bg: rgba(212, 175, 106, 0.04);
+  --gold-bg: rgba(212, 175, 106, 0.05);
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   --font-serif: "EB Garamond", "Times New Roman", Times, Georgia, serif;
   --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
-  box-sizing: border-box;
-  padding-top: env(safe-area-inset-top,0px);
-  padding-bottom: env(safe-area-inset-bottom,0px);
-  scroll-behavior: smooth;
 }
 
 :root[data-theme="light"]{
-  --bg: #f5f3ef;
-  --bg2: #eae7e1;
-  --card: #ffffff;
+  --bg: #f5f2eb;
+  --bg2: #eae5da;
+  --card: #f0ebd9;
   --text: #1a1815;
-  --mut: #6e6a63;
-  --line: rgba(160, 120, 50, 0.22);
-  --line-subtle: rgba(160, 120, 50, 0.1);
+  --mut: #6c665d;
+  --line: rgba(140, 105, 45, 0.22);
+  --line-subtle: rgba(140, 105, 45, 0.11);
   --gold: #9e7830;
-  --gold2: #5c4415;
-  --gold-dim: rgba(158, 120, 48, 0.5);
-  --gold-bg: rgba(158, 120, 48, 0.06);
+  --gold2: #523e13;
+  --gold-dim: rgba(158, 120, 48, 0.45);
+  --gold-bg: rgba(158, 120, 48, 0.08);
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "EB Garamond", "Times New Roman", Times, Georgia, serif;
+  --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 
 *{box-sizing:border-box}
@@ -53,7 +52,7 @@ body{
   -webkit-font-smoothing:antialiased;
   letter-spacing:-.011em;
   overflow-x:hidden;
-  transition: background 0.25s ease, color 0.25s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 nav{
@@ -64,7 +63,10 @@ nav{
   z-index:100;
   padding-top:env(safe-area-inset-top,0px);
   background: var(--bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid var(--line);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 .nb{
   max-width:1300px;
@@ -105,7 +107,7 @@ nav{
   white-space: nowrap;
   padding: 17px 0;
   border-bottom: 1px solid transparent;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
 .nt a:hover{ color: var(--text); }
 .nt a.on{
@@ -117,7 +119,7 @@ kbd{
   font: 10px var(--mono);
   color: var(--gold-dim);
   border: 1px solid var(--line);
-  border-radius: 0;
+  border-radius: 3px;
   padding: 1px 4px;
   margin-left: 6px;
 }
@@ -125,12 +127,12 @@ kbd{
   background: transparent;
   border: 1px solid var(--line);
   color: var(--mut);
-  border-radius: 0;
+  border-radius: 6px;
   padding: 5px 11px;
   font: 11px var(--font-sans);
   letter-spacing: 0.03em;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 .tb:hover{
   color: var(--gold2);
@@ -154,12 +156,16 @@ main{
 .view{
   display:none;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  filter: blur(8px);
+  transform: scale(0.995);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 40px 32px 0;
 }
 .view.on{
   display:block;
   opacity: 1;
+  filter: blur(0px);
+  transform: scale(1);
 }
 
 .tag{
@@ -238,19 +244,18 @@ main{
   align-items:center;
   justify-content:center;
   padding:12px 24px;
-  border-radius:0;
+  border-radius:6px;
   background:var(--gold);
   color:var(--bg);
   font-weight:500;
   text-decoration:none;
   font-size:13px;
   letter-spacing:0.02em;
-  transition:all .2s ease;
-  border:1px solid var(--gold);
+  transition:all .3s ease;
 }
 .b:hover{
   background: var(--gold2);
-  border-color: var(--gold2);
+  transform:translateY(-1px);
 }
 .b.g{
   background:transparent;
@@ -312,7 +317,7 @@ main{
   border-right: 1px solid var(--line);
   text-decoration:none;
   color:inherit;
-  transition: background 0.2s ease;
+  transition: background 0.3s ease;
 }
 .mod:last-child{ border-right: none; }
 .mod:hover{
@@ -332,13 +337,12 @@ main{
   line-height: 1.5;
 }
 
-/* Sharp, precise, zero-radius card containers */
 .card{
   background:var(--card);
   border:1px solid var(--line);
-  border-radius:0;
+  border-radius:0px;
   padding:28px;
-  margin-bottom: 24px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 .card h3{
   margin:0 0 20px;
@@ -348,26 +352,24 @@ main{
   color: var(--gold2);
 }
 
-/* Sharp grid tabs */
 .tabs{
   display:flex;
   gap: 0;
-  margin:0 0 24px;
+  margin:28px 0 24px;
   border-bottom:1px solid var(--line);
   overflow-x:auto;
 }
 .tabs button{
   background:none;
   border:0;
-  border-bottom:1px solid transparent;
   color:var(--mut);
   padding:12px 20px;
   font:13px var(--font-sans);
   cursor:pointer;
+  border-bottom:2px solid transparent;
   margin-bottom:-1px;
   white-space:nowrap;
-  transition: all 0.2s ease;
-  border-radius: 0;
+  transition: all 0.25s ease;
 }
 .tabs button:hover{ color:var(--text); }
 .tabs button.on{
@@ -378,11 +380,13 @@ main{
 .pane{
   display:none;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  filter: blur(4px);
+  transition: opacity 0.3s ease, filter 0.3s ease;
 }
 .pane.on{
   display:block;
   opacity: 1;
+  filter: blur(0px);
 }
 
 .split{
@@ -416,40 +420,39 @@ main{
   font:400 12px var(--mono);
 }
 
-/* Precise Range Sliders */
 input[type=range]{
   -webkit-appearance:none;
   appearance:none;
   width:100%;
-  height:1px;
+  height:2px;
   background:var(--line);
   outline: none;
-  margin: 8px 0;
 }
 input[type=range]::-webkit-slider-thumb{
   -webkit-appearance:none;
-  width:10px;
-  height:10px;
-  border-radius:0;
+  width:12px;
+  height:12px;
+  border-radius:50%;
   background:var(--gold);
   cursor:pointer;
-  transition: background 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 input[type=range]::-webkit-slider-thumb:hover{
+  transform: scale(1.3);
   background: var(--gold2);
 }
 input[type=range]::-moz-range-thumb{
-  width:10px;
-  height:10px;
+  width:12px;
+  height:12px;
   border:0;
-  border-radius:0;
+  border-radius:50%;
   background:var(--gold);
 }
 
 select,input[type=number]{
   width:100%;
   padding:10px 12px;
-  border-radius:0;
+  border-radius:4px;
   border:1px solid var(--line);
   background:var(--bg2);
   color:var(--text);
@@ -466,31 +469,29 @@ select:focus, input[type=number]:focus{
   background:transparent;
   color:var(--gold2);
   padding:10px 18px;
-  border-radius:0;
+  border-radius:4px;
   cursor:pointer;
   font:12px var(--font-sans);
   letter-spacing: 0.03em;
-  transition:all .2s ease;
+  transition:all .3s ease;
 }
 .btn:hover{
   background:var(--gold-bg);
   border-color: var(--gold2);
 }
 
-/* Sharp Key Performance Metric Cards */
 .kp{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:0;
-  border:1px solid var(--line);
-  margin-bottom: 28px;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:16px;
+  margin-top:24px;
+  margin-bottom: 24px;
 }
 .kp div{
   background:var(--card);
+  border:1px solid var(--line);
   padding:20px;
-  border-right:1px solid var(--line);
 }
-.kp div:last-child{ border-right:none; }
 .kp span,.lv span{
   font-size:11px;
   color:var(--mut);
@@ -551,9 +552,9 @@ tr.t td{
   border-top: 1px solid var(--line);
 }
 
-.ok{ color:var(--gold2); font-weight:500; }
-.bad{ color:#e06c60; font-weight:500; }
-.wr{ color:var(--gold); font-weight:500; }
+.ok{ color:var(--gold2); }
+.bad{ color:#e06c60; }
+.wr{ color:var(--gold); }
 
 .chk{
   display:flex;
@@ -562,7 +563,6 @@ tr.t td{
   padding:14px 0;
   border-bottom:1px solid var(--line-subtle);
 }
-.chk:last-child{ border-bottom: none; }
 .chk small{
   display:block;
   color:var(--mut);
@@ -574,6 +574,7 @@ tr.t td{
 .memo{
   white-space:pre-wrap;
   line-height:1.7;
+  font-size:14px;
   color:var(--text);
   font-family: var(--font-serif);
   font-size: 16px;
@@ -589,8 +590,8 @@ tr.t td{
 }
 .bar i{
   display:block;
-  height:2px;
-  border-radius:0;
+  height:4px;
+  border-radius:2px;
   background:var(--gold);
 }
 
@@ -629,8 +630,9 @@ footer{
   kbd{ display:none; }
   .mods{ grid-template-columns: 1fr; }
   .mod{ border-right: none; border-bottom: 1px solid var(--line); }
-  .kp{ grid-template-columns: repeat(2, 1fr); }
-  .kp div{ border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+}
+@media(prefers-reduced-motion:reduce){
+  .view, .pane{ transition: none; }
 }
 </style>
 </head>
@@ -751,16 +753,16 @@ function preset(k,a){const o={...a,...PRE[k][1]},l=$('lock').value;if(l!=='none'
 
 function tbl(ys,rows){return`<table><thead><tr><th></th>${ys.map(y=>`<th>Year ${y.year}</th>`).join('')}</tr></thead><tbody>${rows.map(([l,f,fm,t])=>`<tr class="${t?'t':''}"><td>${l}</td>${ys.map(y=>`<td>${(fm||M)(typeof f==='string'?y[f]:f(y))}</td>`).join('')}</tr>`).join('')}</tbody></table>`}
 function chart(ys){const W=760,H=290,pd=34,n=ys.length,vs=ys.flatMap(y=>[y.revenue,y.ebitda,y.fcf]),mx=Math.max(...vs)*1.12,mn=Math.min(0,...vs)*1.12,sy=v=>H-pd-(v-mn)/(mx-mn)*(H-2*pd),bw=(W-2*pd)/n,sx=i=>pd+bw*i+bw/2;
- const line=(k,c)=>`<path d="${ys.map((y,i)=>(i?'L':'M')+sx(i)+' '+sy(y[k])).join('')}" fill="none" stroke="${c}" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/>`+ys.map((y,i)=>`<rect x="${sx(i)-2.5}" y="${sy(y[k])-2.5}" width="5" height="5" fill="${c}"/>`).join('');
- return`<svg viewBox="0 0 ${W} ${H+24}" width="100%" role="img" aria-label="Revenue, EBITDA and free cash flow by year"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity=".5"/><stop offset="1" stop-color="var(--gold)" stop-opacity=".02"/></linearGradient></defs>
- ${ys.map((y,i)=>`<rect x="${sx(i)-bw*.24}" y="${sy(Math.max(y.revenue,0))}" width="${bw*.48}" height="${Math.abs(sy(y.revenue)-sy(0))}" rx="0" fill="url(#g)"/><text x="${sx(i)}" y="${H+6}" text-anchor="middle" fill="var(--mut)" font-size="11">Y${y.year}</text>`).join('')}
+ const line=(k,c)=>`<path d="${ys.map((y,i)=>(i?'L':'M')+sx(i)+' '+sy(y[k])).join('')}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`+ys.map((y,i)=>`<circle cx="${sx(i)}" cy="${sy(y[k])}" r="3.5" fill="${c}"/>`).join('');
+ return`<svg viewBox="0 0 ${W} ${H+24}" width="100%" role="img" aria-label="Revenue, EBITDA and free cash flow by year"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity=".7"/><stop offset="1" stop-color="var(--gold)" stop-opacity=".05"/></linearGradient></defs>
+ ${ys.map((y,i)=>`<rect x="${sx(i)-bw*.24}" y="${sy(Math.max(y.revenue,0))}" width="${bw*.48}" height="${Math.abs(sy(y.revenue)-sy(0))}" rx="2" fill="url(#g)"/><text x="${sx(i)}" y="${H+6}" text-anchor="middle" fill="var(--mut)" font-size="11">Y${y.year}</text>`).join('')}
  <line x1="${pd}" x2="${W-pd}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--line)"/>${line('ebitda','var(--gold2)')}${line('fcf','var(--gold)')}
  <g font-size="11" fill="var(--mut)"><text x="${pd}" y="14">Bars: revenue</text><text x="${pd+110}" y="14" fill="var(--gold2)">Line: EBITDA</text><text x="${pd+215}" y="14" fill="var(--gold)">Line: free cash flow</text></g></svg>`}
 
 let seed=7;const rnd=()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296},gs=()=>Math.sqrt(-2*Math.log(rnd()+1e-9))*Math.cos(6.2832*rnd());
 function mcRender(a){seed=7;const r=[];for(let i=0;i<300;i++)r.push(model({...a,initialGrowth:a.initialGrowth+gs()*4,grossMargin:Math.min(95,a.grossMargin+gs()*3),exitMultiple:Math.max(3,a.exitMultiple+gs()*1.5),churn:Math.max(1,a.churn+gs()*2)}).v.moic);
  r.sort((x,y)=>x-y);const lo=r[0],hi=r[299],B=14,bins=Array(B).fill(0);r.forEach(v=>bins[Math.min(B-1,Math.floor((v-lo)/(hi-lo+1e-9)*B))]++);const mb=Math.max(...bins);
- $('mc').innerHTML=`<svg viewBox="0 0 400 170" width="100%" role="img" aria-label="Distribution of MOIC outcomes">${bins.map((b,i)=>`<rect x="${i*28.5+4}" y="${150-b/mb*140}" width="22" height="${b/mb*140}" rx="0" fill="${lo+(i+.5)*(hi-lo)/B<1?'#e06c60':'var(--gold)'}" opacity=".85"/>`).join('')}<text x="4" y="166" font-size="10" fill="var(--mut)">${X(lo)}</text><text x="396" y="166" font-size="10" text-anchor="end" fill="var(--mut)">${X(hi)}</text></svg>`;
+ $('mc').innerHTML=`<svg viewBox="0 0 400 170" width="100%" role="img" aria-label="Distribution of MOIC outcomes">${bins.map((b,i)=>`<rect x="${i*28.5+4}" y="${150-b/mb*140}" width="22" height="${b/mb*140}" rx="1" fill="${lo+(i+.5)*(hi-lo)/B<1?'#e06c60':'var(--gold)'}" opacity=".85"/>`).join('')}<text x="4" y="166" font-size="10" fill="var(--mut)">${X(lo)}</text><text x="396" y="166" font-size="10" text-anchor="end" fill="var(--mut)">${X(hi)}</text></svg>`;
  const t=+$('tgt').value;$('mcs').textContent=`Median ${X(r[150])}. Middle 80% between ${X(r[30])} and ${X(r[270])}. Chance of at least ${X(t)}: ${N(r.filter(v=>v>=t).length/3,0)}%. Chance of losing money: ${N(r.filter(v=>v<1).length/3,0)}%.`}
 
 function render(){
@@ -796,7 +798,7 @@ $('solve').addEventListener('click',()=>{const l=$('lock').value,t=+$('tgt').val
 document.addEventListener('input',e=>{if(e.target.type==='range')requestAnimationFrame(render)});
 $('lock').onchange=$('tgt').oninput=()=>{};
 
-/* shell navigation */
+/* Navigation Shell */
 const VIEWS=[['home','Home'],['model','Model'],['statements','Statements'],['financing','Financing'],['returns','Returns'],['scenarios','Scenarios']];
 $('nt').innerHTML=VIEWS.map(([k,l],i)=>`<a href="#/${k}" data-v="${k}">${l}<kbd>${i+1}</kbd></a>`).join('');
 let cur='home';
@@ -818,29 +820,30 @@ document.querySelectorAll('.pg').forEach(pg=>{const ps=[...pg.children].filter(c
  bar.onclick=e=>{const b=e.target.closest('button');if(b)sel(+b.dataset.i)};sel(0)});
 const _r=render;render=function(){_r();$('lv').innerHTML=[['Sponsor MOIC','h1v'],['Sponsor IRR','h2v'],['Revenue CAGR','h3v'],['Rule of 40','h4v']].map(([l,i])=>`<div><span>${l}</span><b>${$(i).textContent}</b></div>`).join('')};
 
-/* Fully Functional Persistent Theme Switcher */
-const setTheme = (t) => {
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('finmodel_theme', t);
-  const themeColor = t === 'light' ? '#f5f3ef' : '#030508';
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if(meta) meta.setAttribute('content', themeColor);
+/* Fully Functional Theme Switcher */
+$('th').onclick=()=>{
+  const root=document.documentElement;
+  const next=root.getAttribute('data-theme')==='light'?'dark':'light';
+  root.setAttribute('data-theme',next);
+  const metaColor = document.querySelector('meta[name="theme-color"]');
+  if(metaColor) metaColor.setAttribute('content', next === 'light' ? '#f5f2eb' : '#030508');
 };
 
-const savedTheme = localStorage.getItem('finmodel_theme') || 'dark';
-setTheme(savedTheme);
-
-$('th').onclick = () => {
-  const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-  setTheme(current === 'light' ? 'dark' : 'light');
-};
-
-/* Interactive Lowlighter.app-style Abstract ASCII Matrix Field */
+/* Coherent Structural Wave ASCII Engine with Continuous Physical Cursor Field Interaction */
 const cv=$('cv'),cx=cv.getContext('2d');
 let COLS=54, ROWS=36;
-const CHARS=' .:-=+*#%@░▒▓█│─┼┴┬┤├┌┐└┘';
-let ms={x:0.5, y:0.5, px:-1000, py:-1000, active:false};
-let grid=[];
+const CHARSET = ' .:-=+*#%@░▒▓█│─┼┴┬┤├┌┐└┘';
+
+let mouseState = {
+  targetX: -1000,
+  targetY: -1000,
+  currX: -1000,
+  currY: -1000,
+  vx: 0,
+  vy: 0,
+  active: false,
+  influence: 0
+};
 
 function initGrid(){
   const p=cv.parentElement;
@@ -854,16 +857,6 @@ function initGrid(){
 
   COLS = Math.floor(w / 14);
   ROWS = Math.floor(h / 18);
-  grid = [];
-  for(let r=0; r<ROWS; r++){
-    for(let c=0; c<COLS; c++){
-      grid.push({
-        baseVal: Math.random(),
-        seed: Math.random() * 100,
-        speed: 0.2 + Math.random() * 0.8
-      });
-    }
-  }
 }
 
 addEventListener('resize', initGrid);
@@ -872,14 +865,12 @@ const ascContainer = document.querySelector('.asc-container');
 if(ascContainer){
   ascContainer.addEventListener('pointermove', e=>{
     const r=cv.getBoundingClientRect();
-    ms.px = e.clientX - r.left;
-    ms.py = e.clientY - r.top;
-    ms.x = ms.px / r.width;
-    ms.y = ms.py / r.height;
-    ms.active = true;
+    mouseState.targetX = e.clientX - r.left;
+    mouseState.targetY = e.clientY - r.top;
+    mouseState.active = true;
   });
   ascContainer.addEventListener('pointerleave', ()=>{
-    ms.active = false;
+    mouseState.active = false;
   });
 }
 
@@ -887,7 +878,7 @@ let time = 0;
 function drawAscii(){
   requestAnimationFrame(drawAscii);
   if(cur !== 'home') return;
-  time += 0.015;
+  time += 0.02;
 
   const p=cv.parentElement;
   if(!p) return;
@@ -896,6 +887,23 @@ function drawAscii(){
 
   cx.clearRect(0, 0, w, h);
 
+  // Smooth mouse interpolation & continuous field recovery
+  if (mouseState.active) {
+    const dx = mouseState.targetX - mouseState.currX;
+    const dy = mouseState.targetY - mouseState.currY;
+    mouseState.vx = mouseState.vx * 0.82 + dx * 0.12;
+    mouseState.vy = mouseState.vy * 0.82 + dy * 0.12;
+    mouseState.currX += mouseState.vx;
+    mouseState.currY += mouseState.vy;
+    mouseState.influence = Math.min(1, mouseState.influence + 0.05);
+  } else {
+    mouseState.currX += mouseState.vx;
+    mouseState.currY += mouseState.vy;
+    mouseState.vx *= 0.92;
+    mouseState.vy *= 0.92;
+    mouseState.influence = Math.max(0, mouseState.influence - 0.03);
+  }
+
   const cellW = w / COLS;
   const cellH = h / ROWS;
 
@@ -903,48 +911,53 @@ function drawAscii(){
   cx.textAlign = 'center';
   cx.textBaseline = 'middle';
 
-  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  const radius = 220;
+  const speedScale = Math.sqrt(mouseState.vx*mouseState.vx + mouseState.vy*mouseState.vy);
 
   for(let r=0; r<ROWS; r++){
     for(let c=0; c<COLS; c++){
-      const idx = r * COLS + c;
-      const item = grid[idx];
-      if(!item) continue;
-
       const x = (c + 0.5) * cellW;
       const y = (r + 0.5) * cellH;
 
-      const dx = x - ms.px;
-      const dy = y - ms.py;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      const hoverRadius = 160;
-      const hoverIntensity = (ms.active && dist < hoverRadius) ? Math.pow(1 - dist / hoverRadius, 1.5) : 0;
+      // Base Mathematical Field Dynamics
+      const nx = c / COLS;
+      const ny = r / ROWS;
+      const wave1 = Math.sin(nx * 6 + time) * Math.cos(ny * 5 - time * 0.8);
+      const wave2 = Math.sin((nx + ny) * 8 - time * 1.2);
+      const wave3 = Math.cos(Math.sqrt((nx-0.5)*(nx-0.5) + (ny-0.5)*(ny-0.5)) * 12 - time * 1.5);
+      let baseVal = (wave1 + wave2 + wave3 + 3) / 6;
 
-      const wave = Math.sin(time * item.speed + item.seed + (c * 0.15) + (r * 0.1));
-      const normalizedWave = (wave + 1) / 2;
+      // Cursor Perturbation Field
+      const cdx = x - mouseState.currX;
+      const cdy = y - mouseState.currY;
+      const dist = Math.sqrt(cdx * cdx + cdy * cdy);
 
-      let val = normalizedWave * 0.5 + hoverIntensity * 0.8;
-      val = Math.min(1, Math.max(0, val));
+      let displacement = 0;
+      if (dist < radius && mouseState.influence > 0.01) {
+        const falloff = Math.pow(1 - dist / radius, 2) * mouseState.influence;
+        const angle = Math.atan2(cdy, cdx);
+        
+        // Physical field deformation
+        const ripple = Math.sin(dist * 0.08 - time * 4 + speedScale * 0.05);
+        displacement = ripple * falloff * 0.65;
+        
+        // Phase shift around cursor
+        baseVal += Math.cos(angle * 2 + time * 2) * falloff * 0.35;
+      }
 
-      const charIdx = Math.floor(val * (CHARS.length - 1));
-      const char = CHARS[charIdx];
+      let val = Math.min(1, Math.max(0, baseVal + displacement));
 
-      if (isLight) {
-        if (hoverIntensity > 0.3) {
-          cx.fillStyle = `rgba(92, 68, 21, ${0.5 + hoverIntensity * 0.5})`;
-        } else if (val > 0.4) {
-          cx.fillStyle = `rgba(158, 120, 48, ${0.3 + val * 0.5})`;
-        } else {
-          cx.fillStyle = `rgba(110, 106, 99, ${0.15 + val * 0.3})`;
-        }
+      const charIdx = Math.floor(val * (CHARSET.length - 1));
+      const char = CHARSET[charIdx];
+
+      // Dynamic Color & Lighting tied to theme and depth
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      if (displacement > 0.15) {
+        cx.fillStyle = isLight ? `rgba(82, 62, 19, ${0.7 + val * 0.3})` : `rgba(242, 227, 189, ${0.7 + val * 0.3})`;
+      } else if (val > 0.45) {
+        cx.fillStyle = isLight ? `rgba(158, 120, 48, ${0.35 + val * 0.5})` : `rgba(212, 175, 106, ${0.35 + val * 0.5})`;
       } else {
-        if (hoverIntensity > 0.3) {
-          cx.fillStyle = `rgba(242, 227, 189, ${0.4 + hoverIntensity * 0.6})`;
-        } else if (val > 0.4) {
-          cx.fillStyle = `rgba(212, 175, 106, ${0.2 + val * 0.5})`;
-        } else {
-          cx.fillStyle = `rgba(142, 136, 125, ${0.08 + val * 0.25})`;
-        }
+        cx.fillStyle = isLight ? `rgba(108, 102, 93, ${0.15 + val * 0.3})` : `rgba(142, 136, 125, ${0.12 + val * 0.35})`;
       }
 
       cx.fillText(char, x, y);
