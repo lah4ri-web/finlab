@@ -8,8 +8,8 @@
 <style>
 :root {
   --bg: #02040a;
-  --bg-subtle: #060913;
-  --bg-elevated: #0a0e1a;
+  --bg-subtle: rgba(6, 9, 19, 0.65);
+  --bg-elevated: rgba(10, 14, 26, 0.7);
   --text: #f4f1ea;
   --mut: #828792;
   --line: rgba(212, 175, 106, 0.12);
@@ -18,6 +18,7 @@
   --gold-dark: #8a6d3b;
   --gold-light: #f2e3bd;
   --gold-muted: rgba(212, 175, 106, 0.25);
+  --gold-line-subtle: rgba(212, 175, 106, 0.4);
   --red: #d9675d;
   --grn: #7fc4a0;
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
@@ -28,8 +29,8 @@
 
 :root[data-theme="light"] {
   --bg: #f5f3ef;
-  --bg-subtle: #eae6dd;
-  --bg-elevated: #ffffff;
+  --bg-subtle: rgba(234, 230, 221, 0.65);
+  --bg-elevated: rgba(255, 255, 255, 0.85);
   --text: #111318;
   --mut: #686e79;
   --line: rgba(143, 106, 31, 0.2);
@@ -38,6 +39,7 @@
   --gold-dark: #5c4210;
   --gold-light: #3d2a08;
   --gold-muted: rgba(143, 106, 31, 0.25);
+  --gold-line-subtle: rgba(143, 106, 31, 0.4);
   --red: #b83d32;
   --grn: #2b7a4f;
 }
@@ -63,6 +65,38 @@ body {
   letter-spacing: -0.01em;
   transition: background 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
+}
+
+/* Homepage Intro Reveal Curtain */
+#intro-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#intro-curtain.hide {
+  opacity: 0;
+}
+
+.intro-line {
+  width: 48px;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  animation: introExpand 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes introExpand {
+  0% { transform: scaleX(0); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: scaleX(2.5); opacity: 0; }
 }
 
 /* Serif Accent Utility */
@@ -146,7 +180,7 @@ kbd {
   font-size: 10px;
   color: var(--mut);
   border: 1px solid var(--line);
-  border-radius: 3px;
+  border-radius: 2px;
   padding: 1px 4px;
   opacity: 0.7;
 }
@@ -155,7 +189,7 @@ kbd {
   background: transparent;
   border: 1px solid var(--line);
   color: var(--text);
-  border-radius: 4px;
+  border-radius: 2px;
   padding: 6px 12px;
   font-family: var(--font-sans);
   font-size: 12px;
@@ -223,7 +257,7 @@ main {
   max-width: 640px;
 }
 
-/* HOMEPAGE 50/50 GRID */
+/* HOMEPAGE GRID */
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -316,12 +350,12 @@ main {
   color: var(--mut);
 }
 
-/* HOMEPAGE ASCII CONTAINMENT (Structural 50%) */
+/* ASCII FIELD CONTAINMENT */
 .asc-container {
   width: 100%;
   height: 100%;
   position: relative;
-  background: #000;
+  background: transparent;
   overflow: hidden;
 }
 
@@ -331,7 +365,7 @@ main {
   display: block;
 }
 
-/* HOMEPAGE MODS GRID */
+/* MODULES GRID */
 .mods {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -371,10 +405,11 @@ main {
   line-height: 1.5;
 }
 
-/* CARDS & CONTAINERS */
+/* CARDS & CONTAINERS — TRANSPARENT & SUBTLE */
 .card {
   background: var(--bg-subtle);
   border: 1px solid var(--line);
+  border-radius: 0px;
   padding: 24px;
   margin-bottom: 24px;
 }
@@ -458,7 +493,7 @@ main {
   gap: 20px;
 }
 
-/* FORM & INPUT CONTROL STYLING */
+/* FORM CONTROLS */
 .f {
   margin-bottom: 16px;
 }
@@ -483,7 +518,7 @@ input[type=range] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 2px;
+  height: 1px;
   border-radius: 0;
   background: var(--line);
   outline: none;
@@ -491,11 +526,11 @@ input[type=range] {
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   background: var(--gold);
   cursor: pointer;
-  border-radius: 50%;
+  border-radius: 0%;
   transition: transform 0.1s ease;
 }
 
@@ -511,6 +546,7 @@ select, input[type=number] {
   color: var(--text);
   font-family: var(--font-sans);
   font-size: 13px;
+  border-radius: 0;
   outline: none;
 }
 
@@ -523,7 +559,7 @@ select:focus, input[type=number]:focus {
   background: transparent;
   color: var(--gold);
   padding: 10px 16px;
-  border-radius: 2px;
+  border-radius: 0px;
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
@@ -536,7 +572,7 @@ select:focus, input[type=number]:focus {
   background: var(--gold-muted);
 }
 
-/* KPI DASHBOARD TILES */
+/* KPI TILES */
 .kp {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -625,7 +661,7 @@ tr.t td {
   border-bottom: 1px solid var(--line);
 }
 
-.ok { color: var(--grn); font-weight: 500; }
+.ok { color: var(--gold); font-weight: 500; }
 .bad { color: var(--red); font-weight: 500; }
 
 .chk {
@@ -664,7 +700,7 @@ tr.t td {
 
 .bar i {
   display: block;
-  height: 4px;
+  height: 2px;
   background: var(--gold);
 }
 
@@ -699,11 +735,13 @@ footer {
 </head>
 <body>
 
+<div id="intro-curtain"><div class="intro-line"></div></div>
+
 <nav>
   <div class="nb">
     <a class="logo" href="#/home"><i></i>finmodel</a>
     <div class="nt" id="nt"></div>
-    <button class="tb" id="th">Light</button>
+    <button class="tb" id="th">Theme</button>
   </div>
 </nav>
 
@@ -858,6 +896,36 @@ const M = v => (v < 0 ? '(' : '') + '$' + N(Math.abs(v)) + 'm' + (v < 0 ? ')' : 
 const P = v => N(v * 100) + '%';
 const X = v => N(v, 2) + 'x';
 
+/* 1. INITIALIZE SYSTEM THEME PREFERENCE */
+function applySystemTheme() {
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.dataset.theme = prefersDark ? 'dark' : 'light';
+  $('th').textContent = prefersDark ? 'Light' : 'Dark';
+}
+applySystemTheme();
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+  document.documentElement.dataset.theme = e.matches ? 'dark' : 'light';
+  $('th').textContent = e.matches ? 'Light' : 'Dark';
+});
+
+$('th').onclick = () => {
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  document.documentElement.dataset.theme = isDark ? 'light' : 'dark';
+  $('th').textContent = isDark ? 'Dark' : 'Light';
+};
+
+/* 2. HOMEPAGE REVEAL INTRO ANIMATION */
+window.addEventListener('DOMContentLoaded', () => {
+  const curtain = $('intro-curtain');
+  if (curtain) {
+    setTimeout(() => {
+      curtain.classList.add('hide');
+      setTimeout(() => curtain.style.display = 'none', 850);
+    }, 450);
+  }
+});
+
 const G = [
   ['Growth engine', [
     ['startingRevenue', 'Starting revenue', 100, 20, 500, 5, '$m'],
@@ -1000,13 +1068,29 @@ function tbl(ys, rows) {
   return `<table><thead><tr><th>Metric</th>${ys.map(y => `<th>Year ${y.year}</th>`).join('')}</tr></thead><tbody>${rows.map(([l, f, fm, t]) => `<tr class="${t ? 't' : ''}"><td>${l}</td>${ys.map(y => `<td>${(fm || M)(typeof f === 'string' ? y[f] : f(y))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
+/* 3. APPLE DESIGN SYSTEM REBUILT CHARTS */
 function chart(ys) {
   const W = 760, H = 260, pd = 36, n = ys.length, vs = ys.flatMap(y => [y.revenue, y.ebitda, y.fcf]), mx = Math.max(...vs) * 1.1, mn = Math.min(0, ...vs) * 1.1, sy = v => H - pd - (v - mn) / (mx - mn) * (H - 2 * pd), bw = (W - 2 * pd) / n, sx = i => pd + bw * i + bw / 2;
-  const line = (k, c) => `<path d="${ys.map((y, i) => (i ? 'L' : 'M') + sx(i) + ' ' + sy(y[k])).join('')}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>` + ys.map((y, i) => `<circle cx="${sx(i)}" cy="${sy(y[k])}" r="3.5" fill="${c}"/>`).join('');
-  return `<svg viewBox="0 0 ${W} ${H + 24}" width="100%" role="img"><defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity="0.3"/><stop offset="1" stop-color="var(--gold)" stop-opacity="0.05"/></linearGradient></defs>
-  ${ys.map((y, i) => `<rect x="${sx(i) - bw * .24}" y="${sy(Math.max(y.revenue, 0))}" width="${bw * .48}" height="${Math.abs(sy(y.revenue) - sy(0))}" fill="url(#gb)" stroke="var(--gold)" stroke-width="1"/><text x="${sx(i)}" y="${H + 10}" text-anchor="middle" fill="var(--mut)" font-size="11">Y${y.year}</text>`).join('')}
-  <line x1="${pd}" x2="${W - pd}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--line)"/>${line('ebitda', '#7fc4a0')}${line('fcf', '#f2e3bd')}
-  <g font-size="11" fill="var(--mut)"><text x="${pd}" y="16">Bars: Revenue</text><text x="${pd + 110}" y="16" fill="#7fc4a0">Line: EBITDA</text><text x="${pd + 210}" y="16" fill="#f2e3bd">Line: Free Cash Flow</text></g></svg>`;
+  
+  // Refined Champagne Colors
+  const lineGoldLight = "var(--gold-light)";
+  const lineGoldDark = "var(--gold-dark)";
+  
+  const line = (k, c, dash = false) => `<path d="${ys.map((y, i) => (i ? 'L' : 'M') + sx(i) + ' ' + sy(y[k])).join('')}" fill="none" stroke="${c}" stroke-width="1.75" ${dash ? 'stroke-dasharray="3 3"' : ''} stroke-linecap="square"/>` + ys.map((y, i) => `<rect x="${sx(i) - 2}" y="${sy(y[k]) - 2}" width="4" height="4" fill="${c}"/>`).join('');
+  
+  return `<svg viewBox="0 0 ${W} ${H + 24}" width="100%" role="img" style="background:transparent; font-family:var(--font-sans);">
+  <line x1="${pd}" x2="${W - pd}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--line)" stroke-width="1"/>
+  ${ys.map((y, i) => `
+    <rect x="${sx(i) - bw * .22}" y="${sy(Math.max(y.revenue, 0))}" width="${bw * .44}" height="${Math.max(1, Math.abs(sy(y.revenue) - sy(0)))}" fill="none" stroke="var(--gold-line-subtle)" stroke-width="1"/>
+    <text x="${sx(i)}" y="${H + 10}" text-anchor="middle" fill="var(--mut)" font-size="11" font-weight="500">Y${y.year}</text>
+  `).join('')}
+  ${line('ebitda', lineGoldLight)}
+  ${line('fcf', lineGoldDark, true)}
+  <g font-size="11" fill="var(--mut)" font-weight="500">
+    <text x="${pd}" y="16">Outlines: Revenue</text>
+    <text x="${pd + 130}" y="16" fill="${lineGoldLight}">Solid: EBITDA</text>
+    <text x="${pd + 240}" y="16" fill="${lineGoldDark}">Dashed: Free Cash Flow</text>
+  </g></svg>`;
 }
 
 let seed = 7;
@@ -1019,7 +1103,7 @@ function mcRender(a) {
   r.sort((x, y) => x - y); const lo = r[0], hi = r[299], B = 14, bins = Array(B).fill(0);
   r.forEach(v => bins[Math.min(B - 1, Math.floor((v - lo) / (hi - lo + 1e-9) * B))]++);
   const mb = Math.max(...bins);
-  $('mc').innerHTML = `<svg viewBox="0 0 400 160" width="100%">${bins.map((b, i) => `<rect x="${i * 28.5 + 4}" y="${140 - b / mb * 130}" width="22" height="${b / mb * 130}" fill="${lo + (i + .5) * (hi - lo) / B < 1 ? 'var(--red)' : 'var(--gold)'}" opacity="0.8"/>`).join('')}<text x="4" y="156" font-size="10" fill="var(--mut)">${X(lo)}</text><text x="396" y="156" font-size="10" text-anchor="end" fill="var(--mut)">${X(hi)}</text></svg>`;
+  $('mc').innerHTML = `<svg viewBox="0 0 400 160" width="100%">${bins.map((b, i) => `<rect x="${i * 28.5 + 4}" y="${140 - b / mb * 130}" width="22" height="${b / mb * 130}" fill="none" stroke="${lo + (i + .5) * (hi - lo) / B < 1 ? 'var(--red)' : 'var(--gold)'}" stroke-width="1"/>`).join('')}<text x="4" y="156" font-size="10" fill="var(--mut)">${X(lo)}</text><text x="396" y="156" font-size="10" text-anchor="end" fill="var(--mut)">${X(hi)}</text></svg>`;
   const t = +$('tgt').value;
   $('mcs').textContent = `Median ${X(r[150])}. Middle 80% range: ${X(r[30])} to ${X(r[270])}. Chance of ≥ ${X(t)} MOIC: ${N(r.filter(v => v >= t).length / 3, 0)}%. Downside loss risk: ${N(r.filter(v => v < 1).length / 3, 0)}%.`;
 }
@@ -1057,7 +1141,7 @@ function render() {
   $('memo').textContent = `${th}\n\nRevenue scales from ${M(a.startingRevenue)} to ${M(L.revenue)} (${P(v.cagr)} CAGR). Final EBITDA reaches ${M(L.ebitda)} (${P(L.margin)} margin).\n\nSponsor equity of ${M(v.eqIn)} yields ${M(v.exitEq)} exit value, generating ${X(v.moic)} MOIC and ${P(v.irr)} IRR. Unlevered DCF benchmark indicates an Enterprise Value of ${M(v.dcf)}.`;
 
   const gs2 = [-10, -5, 0, 5, 10], ms = [-2, -1, 0, 1, 2], g = ms.map(d => gs2.map(e => model({ ...a, exitMultiple: Math.max(1, a.exitMultiple + d), initialGrowth: a.initialGrowth + e }).v.moic)), f = g.flat(), lo = Math.min(...f), hi = Math.max(...f);
-  $('sens').innerHTML = `<table><thead><tr><th>Exit Multiple</th>${gs2.map(e => `<th>${N(a.initialGrowth + e, 0)}% Growth</th>`).join('')}</tr></thead><tbody>${g.map((r, i) => `<tr><td>${N(a.exitMultiple + ms[i])}x</td>${r.map(x => `<td style="background:${x < 1 ? 'rgba(217,103,93,0.2)' : `rgba(212,175,106,${0.08 + .4 * (x - lo) / (hi - lo + 1e-9)})`}">${X(x)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  $('sens').innerHTML = `<table><thead><tr><th>Exit Multiple</th>${gs2.map(e => `<th>${N(a.initialGrowth + e, 0)}% Growth</th>`).join('')}</tr></thead><tbody>${g.map((r, i) => `<tr><td>${N(a.exitMultiple + ms[i])}x</td>${r.map(x => `<td style="background:${x < 1 ? 'rgba(217,103,93,0.15)' : `rgba(212,175,106,${0.05 + .3 * (x - lo) / (hi - lo + 1e-9)})`}">${X(x)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 
   const dr = [['Growth +5%', 'initialGrowth', 5], ['Gross Margin +5%', 'grossMargin', 5], ['Exit Multiple +1x', 'exitMultiple', 1], ['Churn +3%', 'churn', 3], ['Growth Capex +3%', 'growthCapex', 3], ['Entry Multiple +1x', 'entryMultiple', 1]].map(([l, k, d]) => [l, model({ ...a, [k]: a[k] + d }).v.moic - v.moic]).sort((x, y) => Math.abs(y[1]) - Math.abs(x[1])), mx = Math.max(...dr.map(d => Math.abs(d[1])), 1e-4);
   $('torn').innerHTML = dr.map(d => `<div class="bar"><span>${d[0]}</span><span><i style="width:${Math.abs(d[1]) / mx * 100}%;${d[1] < 0 ? 'background:var(--red)' : ''}"></i></span><span>${d[1] >= 0 ? '+' : ''}${N(d[1], 2)}x</span></div>`).join('');
@@ -1089,7 +1173,7 @@ $('solve').addEventListener('click', () => {
 
 document.addEventListener('input', e => { if (e.target.type === 'range') requestAnimationFrame(render); });
 
-/* Navigation & Views Routing */
+/* Navigation & Routing */
 const VIEWS = [['home', 'Home'], ['model', 'Model'], ['statements', 'Statements'], ['financing', 'Financing'], ['returns', 'Returns'], ['scenarios', 'Scenarios']];
 $('nt').innerHTML = VIEWS.map(([k, l], i) => `<a href="#/${k}" data-v="${k}">${l} <kbd>${i + 1}</kbd></a>`).join('');
 
@@ -1112,7 +1196,7 @@ addEventListener('keydown', e => {
   if (n >= 1 && n <= VIEWS.length) location.hash = '#/' + VIEWS[n - 1][0];
 });
 
-/* Tab System Construction */
+/* Tab System */
 document.querySelectorAll('.pg').forEach(pg => {
   const ps = [...pg.children].filter(c => c.classList.contains('pane')), bar = document.createElement('div');
   bar.className = 'tabs'; bar.setAttribute('role', 'tablist');
@@ -1132,25 +1216,23 @@ render = function() {
   $('lv').innerHTML = [['Sponsor MOIC', 'h1v'], ['Sponsor IRR', 'h2v'], ['Revenue CAGR', 'h3v'], ['Rule of 40', 'h4v']].map(([l, i]) => `<div><span>${l}</span><b>${$(i).textContent}</b></div>`).join('');
 };
 
-/* Global Theme Control */
-$('th').onclick = () => {
-  const d = document.documentElement;
-  const isLight = d.dataset.theme === 'light';
-  d.dataset.theme = isLight ? 'dark' : 'light';
-  $('th').textContent = isLight ? 'Light' : 'Dark';
-};
-
-/* ==========================================================================
-   ASCII REBUILD — GENERATIVE MULTI-LAYER WAVEMAP FIELD WITH CURSOR WARP
-   ========================================================================== */
+/* 4. ASCII ENGINE — PHYSICAL CHARACTER FIELD DISPLACEMENT */
 const cv = $('cv'), cx = cv.getContext('2d');
 let COLS = 60, ROWS = 36;
-let charGrid = [], densityGrid = [];
-let mouse = { x: -999, y: -999, active: false, intensity: 0 };
+let densityGrid = [];
 let animTime = 0;
 
+// Cursor physical field tracker
+let cursorState = {
+  currentX: -999,
+  currentY: -999,
+  targetX: -999,
+  targetY: -999,
+  intensity: 0,
+  targetIntensity: 0
+};
+
 const CHAR_MAP = ' .:-=+*#%@';
-const SPECIAL_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@%&*+-=<>~';
 
 function resizeCanvas() {
   const parent = cv.parentElement;
@@ -1163,8 +1245,6 @@ function resizeCanvas() {
   
   COLS = Math.floor(rect.width / 11);
   ROWS = Math.floor(rect.height / 18);
-  
-  charGrid = new Array(COLS * ROWS);
   densityGrid = new Float32Array(COLS * ROWS);
 }
 
@@ -1174,13 +1254,13 @@ const ascContainer = document.querySelector('.asc-container');
 if (ascContainer) {
   ascContainer.addEventListener('pointermove', e => {
     const rect = ascContainer.getBoundingClientRect();
-    mouse.x = (e.clientX - rect.left) / rect.width;
-    mouse.y = (e.clientY - rect.top) / rect.height;
-    mouse.active = true;
+    cursorState.targetX = (e.clientX - rect.left) / rect.width * COLS;
+    cursorState.targetY = (e.clientY - rect.top) / rect.height * ROWS;
+    cursorState.targetIntensity = 1.0;
   });
   
   ascContainer.addEventListener('pointerleave', () => {
-    mouse.active = false;
+    cursorState.targetIntensity = 0.0;
   });
 }
 
@@ -1189,55 +1269,12 @@ function renderASCII() {
   if (cur !== 'home') return;
 
   animTime += 0.02;
-  
-  // Smoothly build up or ramp down mouse influence
-  if (mouse.active) {
-    mouse.intensity += (1 - mouse.intensity) * 0.08;
-  } else {
-    mouse.intensity += (0 - mouse.intensity) * 0.04;
-  }
 
-  const pX = mouse.x * COLS;
-  const pY = mouse.y * ROWS;
+  // Smooth physical cursor interpolation
+  cursorState.currentX += (cursorState.targetX - cursorState.currentX) * 0.1;
+  cursorState.currentY += (cursorState.targetY - cursorState.currentY) * 0.1;
+  cursorState.intensity += (cursorState.targetIntensity - cursorState.intensity) * 0.05;
 
-  // Compute Generative Field
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      const idx = r * COLS + c;
-      const nx = c / COLS - 0.5;
-      const ny = r / ROWS - 0.5;
-
-      // Base Wave Synthesizer (Harmonic layers)
-      let w1 = Math.sin(nx * 6.0 + animTime * 1.2) * Math.cos(ny * 6.0 + animTime * 0.8);
-      let w2 = Math.sin(Math.sqrt(nx * nx + ny * ny) * 12.0 - animTime * 1.5);
-      let val = (w1 + w2 * 0.5 + 1.5) / 3.0; // Normalize [0, 1]
-
-      // Organic Cursor Displace & Warp Field propagation
-      const dx = c - pX;
-      const dy = r - pY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const radius = 12.0;
-
-      if (dist < radius) {
-        const falloff = Math.pow(1 - dist / radius, 2) * mouse.intensity;
-        const warp = Math.sin(dist * 0.8 - animTime * 4.0) * falloff;
-        val = Math.min(1, Math.max(0, val + warp * 0.6));
-      }
-
-      densityGrid[idx] = val;
-
-      // Character selection based on localized dynamics
-      if (dist < radius * 0.5 && mouse.intensity > 0.3) {
-        const charIdx = Math.floor((c * 7 + r * 13 + Math.floor(animTime * 10)) % SPECIAL_CHARS.length);
-        charGrid[idx] = SPECIAL_CHARS[charIdx];
-      } else {
-        const charIdx = Math.floor(val * (CHAR_MAP.length - 1));
-        charGrid[idx] = CHAR_MAP[charIdx] || ' ';
-      }
-    }
-  }
-
-  // Render Pass
   const pRect = cv.parentElement.getBoundingClientRect();
   const cw = pRect.width / COLS;
   const ch = pRect.height / ROWS;
@@ -1252,13 +1289,40 @@ function renderASCII() {
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       const idx = r * COLS + c;
-      const den = densityGrid[idx];
-      const char = charGrid[idx];
-      const posX = (c + 0.5) * cw;
-      const posY = (r + 0.5) * ch;
+      const nx = c / COLS - 0.5;
+      const ny = r / ROWS - 0.5;
 
-      // Dynamic Champagne Gold Opacity Hierarchy
-      let alpha = 0.15 + den * 0.75;
+      // Base Wave Structure
+      let w1 = Math.sin(nx * 6.0 + animTime * 1.2) * Math.cos(ny * 6.0 + animTime * 0.8);
+      let w2 = Math.sin(Math.sqrt(nx * nx + ny * ny) * 12.0 - animTime * 1.5);
+      let baseVal = (w1 + w2 * 0.5 + 1.5) / 3.0;
+
+      // Displacement & Character Physical Dispersion
+      let posX = (c + 0.5) * cw;
+      let posY = (r + 0.5) * ch;
+
+      const dx = c - cursorState.currentX;
+      const dy = r - cursorState.currentY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const fieldRadius = 10.0;
+
+      if (dist < fieldRadius && cursorState.intensity > 0.01) {
+        const falloff = Math.pow(1 - dist / fieldRadius, 2) * cursorState.intensity;
+        
+        // Push characters away physically along the gradient vector
+        const angle = Math.atan2(dy, dx);
+        const push = falloff * cw * 1.8;
+        posX += Math.cos(angle) * push;
+        posY += Math.sin(angle) * push;
+
+        // Density modulation
+        baseVal = Math.min(1, Math.max(0, baseVal + Math.sin(dist - animTime * 3.0) * falloff * 0.4));
+      }
+
+      const charIdx = Math.floor(baseVal * (CHAR_MAP.length - 1));
+      const char = CHAR_MAP[charIdx] || ' ';
+
+      let alpha = 0.15 + baseVal * 0.75;
       if (isLight) {
         cx.fillStyle = `rgba(143, 106, 31, ${alpha.toFixed(2)})`;
       } else {
@@ -1270,7 +1334,7 @@ function renderASCII() {
   }
 }
 
-// Initial Setup & Invocation
+/* Initialization */
 go();
 resizeCanvas();
 renderASCII();
