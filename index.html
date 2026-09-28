@@ -8,17 +8,16 @@
 <style>
 :root {
   --bg: #02040a;
-  --bg-subtle: rgba(6, 9, 19, 0.4);
-  --bg-elevated: rgba(10, 14, 26, 0.5);
+  --bg-subtle: #060913;
+  --bg-elevated: #0a0e1a;
   --text: #f4f1ea;
   --mut: #828792;
-  --line: rgba(212, 175, 106, 0.15);
+  --line: rgba(212, 175, 106, 0.12);
   --line-subtle: rgba(255, 255, 255, 0.05);
   --gold: #d4af6a;
   --gold-dark: #8a6d3b;
   --gold-light: #f2e3bd;
-  --gold-muted: rgba(212, 175, 106, 0.2);
-  --gold-line-subtle: rgba(212, 175, 106, 0.35);
+  --gold-muted: rgba(212, 175, 106, 0.25);
   --red: #d9675d;
   --grn: #7fc4a0;
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
@@ -28,18 +27,17 @@
 }
 
 :root[data-theme="light"] {
-  --bg: #f6f4ef;
-  --bg-subtle: rgba(238, 234, 225, 0.4);
-  --bg-elevated: rgba(255, 255, 255, 0.6);
-  --text: #1a1c23;
+  --bg: #f5f3ef;
+  --bg-subtle: #eae6dd;
+  --bg-elevated: #ffffff;
+  --text: #111318;
   --mut: #686e79;
-  --line: rgba(143, 106, 31, 0.22);
-  --line-subtle: rgba(0, 0, 0, 0.08);
+  --line: rgba(143, 106, 31, 0.2);
+  --line-subtle: rgba(0, 0, 0, 0.07);
   --gold: #8f6a1f;
   --gold-dark: #5c4210;
-  --gold-light: #a37b28;
-  --gold-muted: rgba(143, 106, 31, 0.18);
-  --gold-line-subtle: rgba(143, 106, 31, 0.4);
+  --gold-light: #3d2a08;
+  --gold-muted: rgba(143, 106, 31, 0.25);
   --red: #b83d32;
   --grn: #2b7a4f;
 }
@@ -63,26 +61,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: -0.01em;
-  transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
 }
 
-/* 3. SIMPLIFIED HOMEPAGE OPENING BLUR-IN */
-.home-blur-in {
-  animation: blurInReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes blurInReveal {
-  0% {
-    filter: blur(12px);
-    opacity: 0;
-  }
-  100% {
-    filter: blur(0px);
-    opacity: 1;
-  }
-}
-
+/* Serif Accent Utility */
 .editorial {
   font-family: var(--font-serif);
   font-style: italic;
@@ -97,9 +80,9 @@ nav {
   left: 0;
   right: 0;
   z-index: 100;
-  background: color-mix(in srgb, var(--bg) 80%, transparent);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--line);
 }
 
@@ -163,7 +146,7 @@ kbd {
   font-size: 10px;
   color: var(--mut);
   border: 1px solid var(--line);
-  border-radius: 2px;
+  border-radius: 3px;
   padding: 1px 4px;
   opacity: 0.7;
 }
@@ -172,7 +155,7 @@ kbd {
   background: transparent;
   border: 1px solid var(--line);
   color: var(--text);
-  border-radius: 2px;
+  border-radius: 4px;
   padding: 6px 12px;
   font-family: var(--font-sans);
   font-size: 12px;
@@ -195,22 +178,18 @@ main {
   padding: 80px 24px 60px;
 }
 
-/* 2. iOS-STYLE BLUR TRANSITION BETWEEN VIEWS */
+/* View Switcher & Transitions */
 .view {
   display: none;
   opacity: 0;
-  filter: blur(10px);
-  transform: scale(0.995);
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(6px);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .view.on {
   display: block;
   opacity: 1;
-  filter: blur(0px);
-  transform: scale(1);
+  transform: translateY(0);
 }
 
 /* Structural Header */
@@ -244,7 +223,7 @@ main {
   max-width: 640px;
 }
 
-/* HOMEPAGE GRID */
+/* HOMEPAGE 50/50 GRID */
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -337,12 +316,12 @@ main {
   color: var(--mut);
 }
 
-/* ASCII FIELD CONTAINMENT */
+/* HOMEPAGE ASCII CONTAINMENT (Structural 50%) */
 .asc-container {
   width: 100%;
   height: 100%;
   position: relative;
-  background: transparent;
+  background: #000;
   overflow: hidden;
 }
 
@@ -352,7 +331,7 @@ main {
   display: block;
 }
 
-/* MODULES GRID */
+/* HOMEPAGE MODS GRID */
 .mods {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -392,11 +371,10 @@ main {
   line-height: 1.5;
 }
 
-/* 10. TRANSPARENT CARDS & CONTAINERS */
+/* CARDS & CONTAINERS */
 .card {
   background: var(--bg-subtle);
   border: 1px solid var(--line);
-  border-radius: 0px;
   padding: 24px;
   margin-bottom: 24px;
 }
@@ -408,7 +386,7 @@ main {
   letter-spacing: -0.01em;
 }
 
-/* TAB NAVIGATION WITH iOS BLUR CROSSFADE */
+/* TAB NAVIGATION SYSTEM */
 .tabs {
   display: flex;
   gap: 0;
@@ -442,14 +420,14 @@ main {
 .pane {
   display: none;
   opacity: 0;
-  filter: blur(8px);
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 .pane.on {
   display: block;
   opacity: 1;
-  filter: blur(0px);
+  transform: translateY(0);
 }
 
 /* GRID SPLITS */
@@ -480,7 +458,7 @@ main {
   gap: 20px;
 }
 
-/* FORM CONTROLS */
+/* FORM & INPUT CONTROL STYLING */
 .f {
   margin-bottom: 16px;
 }
@@ -505,7 +483,7 @@ input[type=range] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 1px;
+  height: 2px;
   border-radius: 0;
   background: var(--line);
   outline: none;
@@ -513,11 +491,11 @@ input[type=range] {
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background: var(--gold);
   cursor: pointer;
-  border-radius: 0%;
+  border-radius: 50%;
   transition: transform 0.1s ease;
 }
 
@@ -533,7 +511,6 @@ select, input[type=number] {
   color: var(--text);
   font-family: var(--font-sans);
   font-size: 13px;
-  border-radius: 0;
   outline: none;
 }
 
@@ -546,7 +523,7 @@ select:focus, input[type=number]:focus {
   background: transparent;
   color: var(--gold);
   padding: 10px 16px;
-  border-radius: 0px;
+  border-radius: 2px;
   cursor: pointer;
   font-size: 12px;
   font-weight: 600;
@@ -559,7 +536,7 @@ select:focus, input[type=number]:focus {
   background: var(--gold-muted);
 }
 
-/* KPI TILES */
+/* KPI DASHBOARD TILES */
 .kp {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -648,7 +625,7 @@ tr.t td {
   border-bottom: 1px solid var(--line);
 }
 
-.ok { color: var(--gold); font-weight: 500; }
+.ok { color: var(--grn); font-weight: 500; }
 .bad { color: var(--red); font-weight: 500; }
 
 .chk {
@@ -687,7 +664,7 @@ tr.t td {
 
 .bar i {
   display: block;
-  height: 2px;
+  height: 4px;
   background: var(--gold);
 }
 
@@ -726,13 +703,13 @@ footer {
   <div class="nb">
     <a class="logo" href="#/home"><i></i>finmodel</a>
     <div class="nt" id="nt"></div>
-    <button class="tb" id="th">Theme</button>
+    <button class="tb" id="th">Light</button>
   </div>
 </nav>
 
 <main>
   <!-- HOME VIEW -->
-  <div class="view home-blur-in" id="v_home">
+  <div class="view" id="v_home">
     <div class="hero-grid">
       <div class="hero-left">
         <div class="tag">finmodel / three statements, LBO & DCF</div>
@@ -881,25 +858,6 @@ const M = v => (v < 0 ? '(' : '') + '$' + N(Math.abs(v)) + 'm' + (v < 0 ? ')' : 
 const P = v => N(v * 100) + '%';
 const X = v => N(v, 2) + 'x';
 
-/* 1. REFINED LIGHT MODE SYSTEM ACCORDING TO OPERATING SYSTEM PREFERENCE */
-function applySystemTheme() {
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  document.documentElement.dataset.theme = prefersDark ? 'dark' : 'light';
-  $('th').textContent = prefersDark ? 'Light' : 'Dark';
-}
-applySystemTheme();
-
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-  document.documentElement.dataset.theme = e.matches ? 'dark' : 'light';
-  $('th').textContent = e.matches ? 'Light' : 'Dark';
-});
-
-$('th').onclick = () => {
-  const isDark = document.documentElement.dataset.theme === 'dark';
-  document.documentElement.dataset.theme = isDark ? 'light' : 'dark';
-  $('th').textContent = isDark ? 'Dark' : 'Light';
-};
-
 const G = [
   ['Growth engine', [
     ['startingRevenue', 'Starting revenue', 100, 20, 500, 5, '$m'],
@@ -1042,53 +1000,13 @@ function tbl(ys, rows) {
   return `<table><thead><tr><th>Metric</th>${ys.map(y => `<th>Year ${y.year}</th>`).join('')}</tr></thead><tbody>${rows.map(([l, f, fm, t]) => `<tr class="${t ? 't' : ''}"><td>${l}</td>${ys.map(y => `<td>${(fm || M)(typeof f === 'string' ? y[f] : f(y))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
-/* 11 & 12. REBUILT GRAPH PRESENTATION WITH FULL FUNCTIONAL Y-AXIS & DECLUTTERED HIERARCHY */
 function chart(ys) {
-  const W = 780, H = 280, pdL = 60, pdR = 30, pdT = 32, pdB = 40;
-  const n = ys.length;
-  const vs = ys.flatMap(y => [y.revenue, y.ebitda, y.fcf]);
-  const rawMax = Math.max(...vs);
-  const rawMin = Math.min(0, ...vs);
-  
-  // Clean Y-axis scale calculation
-  const yMax = Math.ceil(rawMax / 50) * 50 || 100;
-  const yMin = Math.floor(rawMin / 50) * 50;
-  const yTicks = 4;
-  const step = (yMax - yMin) / yTicks;
-
-  const sy = v => H - pdB - (v - yMin) / (yMax - yMin) * (H - pdT - pdB);
-  const bw = (W - pdL - pdR) / n;
-  const sx = i => pdL + bw * i + bw / 2;
-
-  const lineLight = "var(--gold)";
-  const lineDark = "var(--gold-dark)";
-
-  const line = (k, c, dash = false) => `<path d="${ys.map((y, i) => (i ? 'L' : 'M') + sx(i) + ' ' + sy(y[k])).join('')}" fill="none" stroke="${c}" stroke-width="2" ${dash ? 'stroke-dasharray="4 4"' : ''}/>` + 
-    ys.map((y, i) => `<circle cx="${sx(i)}" cy="${sy(y[k])}" r="3" fill="var(--bg)" stroke="${c}" stroke-width="1.5"/>`).join('');
-
-  let gridHTML = '';
-  for (let i = 0; i <= yTicks; i++) {
-    const val = yMin + step * i;
-    const yPos = sy(val);
-    gridHTML += `
-      <line x1="${pdL}" x2="${W - pdR}" y1="${yPos}" y2="${yPos}" stroke="var(--line-subtle)" stroke-width="1"/>
-      <text x="${pdL - 10}" y="${yPos + 4}" text-anchor="end" fill="var(--mut)" font-size="11" font-family="var(--font-sans)">$${val}m</text>
-    `;
-  }
-
-  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" style="background:transparent; font-family:var(--font-sans);">
-  ${gridHTML}
-  ${ys.map((y, i) => `
-    <rect x="${sx(i) - bw * .2}" y="${sy(Math.max(y.revenue, 0))}" width="${bw * .4}" height="${Math.max(1, Math.abs(sy(y.revenue) - sy(0)))}" fill="none" stroke="var(--gold-line-subtle)" stroke-width="1"/>
-    <text x="${sx(i)}" y="${H - 12}" text-anchor="middle" fill="var(--mut)" font-size="11" font-weight="500">Year ${y.year}</text>
-  `).join('')}
-  ${line('ebitda', lineLight)}
-  ${line('fcf', lineDark, true)}
-  <g font-size="11" fill="var(--mut)" font-weight="500">
-    <text x="${pdL}" y="18">Outlines: Revenue</text>
-    <text x="${pdL + 140}" y="18" fill="${lineLight}">Solid: EBITDA</text>
-    <text x="${pdL + 250}" y="18" fill="${lineDark}">Dashed: Free Cash Flow</text>
-  </g></svg>`;
+  const W = 760, H = 260, pd = 36, n = ys.length, vs = ys.flatMap(y => [y.revenue, y.ebitda, y.fcf]), mx = Math.max(...vs) * 1.1, mn = Math.min(0, ...vs) * 1.1, sy = v => H - pd - (v - mn) / (mx - mn) * (H - 2 * pd), bw = (W - 2 * pd) / n, sx = i => pd + bw * i + bw / 2;
+  const line = (k, c) => `<path d="${ys.map((y, i) => (i ? 'L' : 'M') + sx(i) + ' ' + sy(y[k])).join('')}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>` + ys.map((y, i) => `<circle cx="${sx(i)}" cy="${sy(y[k])}" r="3.5" fill="${c}"/>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H + 24}" width="100%" role="img"><defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity="0.3"/><stop offset="1" stop-color="var(--gold)" stop-opacity="0.05"/></linearGradient></defs>
+  ${ys.map((y, i) => `<rect x="${sx(i) - bw * .24}" y="${sy(Math.max(y.revenue, 0))}" width="${bw * .48}" height="${Math.abs(sy(y.revenue) - sy(0))}" fill="url(#gb)" stroke="var(--gold)" stroke-width="1"/><text x="${sx(i)}" y="${H + 10}" text-anchor="middle" fill="var(--mut)" font-size="11">Y${y.year}</text>`).join('')}
+  <line x1="${pd}" x2="${W - pd}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--line)"/>${line('ebitda', '#7fc4a0')}${line('fcf', '#f2e3bd')}
+  <g font-size="11" fill="var(--mut)"><text x="${pd}" y="16">Bars: Revenue</text><text x="${pd + 110}" y="16" fill="#7fc4a0">Line: EBITDA</text><text x="${pd + 210}" y="16" fill="#f2e3bd">Line: Free Cash Flow</text></g></svg>`;
 }
 
 let seed = 7;
@@ -1101,7 +1019,7 @@ function mcRender(a) {
   r.sort((x, y) => x - y); const lo = r[0], hi = r[299], B = 14, bins = Array(B).fill(0);
   r.forEach(v => bins[Math.min(B - 1, Math.floor((v - lo) / (hi - lo + 1e-9) * B))]++);
   const mb = Math.max(...bins);
-  $('mc').innerHTML = `<svg viewBox="0 0 400 160" width="100%">${bins.map((b, i) => `<rect x="${i * 28.5 + 4}" y="${140 - b / mb * 130}" width="22" height="${b / mb * 130}" fill="none" stroke="${lo + (i + .5) * (hi - lo) / B < 1 ? 'var(--red)' : 'var(--gold)'}" stroke-width="1"/>`).join('')}<text x="4" y="156" font-size="10" fill="var(--mut)">${X(lo)}</text><text x="396" y="156" font-size="10" text-anchor="end" fill="var(--mut)">${X(hi)}</text></svg>`;
+  $('mc').innerHTML = `<svg viewBox="0 0 400 160" width="100%">${bins.map((b, i) => `<rect x="${i * 28.5 + 4}" y="${140 - b / mb * 130}" width="22" height="${b / mb * 130}" fill="${lo + (i + .5) * (hi - lo) / B < 1 ? 'var(--red)' : 'var(--gold)'}" opacity="0.8"/>`).join('')}<text x="4" y="156" font-size="10" fill="var(--mut)">${X(lo)}</text><text x="396" y="156" font-size="10" text-anchor="end" fill="var(--mut)">${X(hi)}</text></svg>`;
   const t = +$('tgt').value;
   $('mcs').textContent = `Median ${X(r[150])}. Middle 80% range: ${X(r[30])} to ${X(r[270])}. Chance of ≥ ${X(t)} MOIC: ${N(r.filter(v => v >= t).length / 3, 0)}%. Downside loss risk: ${N(r.filter(v => v < 1).length / 3, 0)}%.`;
 }
@@ -1139,7 +1057,7 @@ function render() {
   $('memo').textContent = `${th}\n\nRevenue scales from ${M(a.startingRevenue)} to ${M(L.revenue)} (${P(v.cagr)} CAGR). Final EBITDA reaches ${M(L.ebitda)} (${P(L.margin)} margin).\n\nSponsor equity of ${M(v.eqIn)} yields ${M(v.exitEq)} exit value, generating ${X(v.moic)} MOIC and ${P(v.irr)} IRR. Unlevered DCF benchmark indicates an Enterprise Value of ${M(v.dcf)}.`;
 
   const gs2 = [-10, -5, 0, 5, 10], ms = [-2, -1, 0, 1, 2], g = ms.map(d => gs2.map(e => model({ ...a, exitMultiple: Math.max(1, a.exitMultiple + d), initialGrowth: a.initialGrowth + e }).v.moic)), f = g.flat(), lo = Math.min(...f), hi = Math.max(...f);
-  $('sens').innerHTML = `<table><thead><tr><th>Exit Multiple</th>${gs2.map(e => `<th>${N(a.initialGrowth + e, 0)}% Growth</th>`).join('')}</tr></thead><tbody>${g.map((r, i) => `<tr><td>${N(a.exitMultiple + ms[i])}x</td>${r.map(x => `<td style="background:${x < 1 ? 'rgba(217,103,93,0.15)' : `rgba(212,175,106,${0.05 + .3 * (x - lo) / (hi - lo + 1e-9)})`}">${X(x)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  $('sens').innerHTML = `<table><thead><tr><th>Exit Multiple</th>${gs2.map(e => `<th>${N(a.initialGrowth + e, 0)}% Growth</th>`).join('')}</tr></thead><tbody>${g.map((r, i) => `<tr><td>${N(a.exitMultiple + ms[i])}x</td>${r.map(x => `<td style="background:${x < 1 ? 'rgba(217,103,93,0.2)' : `rgba(212,175,106,${0.08 + .4 * (x - lo) / (hi - lo + 1e-9)})`}">${X(x)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 
   const dr = [['Growth +5%', 'initialGrowth', 5], ['Gross Margin +5%', 'grossMargin', 5], ['Exit Multiple +1x', 'exitMultiple', 1], ['Churn +3%', 'churn', 3], ['Growth Capex +3%', 'growthCapex', 3], ['Entry Multiple +1x', 'entryMultiple', 1]].map(([l, k, d]) => [l, model({ ...a, [k]: a[k] + d }).v.moic - v.moic]).sort((x, y) => Math.abs(y[1]) - Math.abs(x[1])), mx = Math.max(...dr.map(d => Math.abs(d[1])), 1e-4);
   $('torn').innerHTML = dr.map(d => `<div class="bar"><span>${d[0]}</span><span><i style="width:${Math.abs(d[1]) / mx * 100}%;${d[1] < 0 ? 'background:var(--red)' : ''}"></i></span><span>${d[1] >= 0 ? '+' : ''}${N(d[1], 2)}x</span></div>`).join('');
@@ -1171,7 +1089,7 @@ $('solve').addEventListener('click', () => {
 
 document.addEventListener('input', e => { if (e.target.type === 'range') requestAnimationFrame(render); });
 
-/* Navigation & Routing */
+/* Navigation & Views Routing */
 const VIEWS = [['home', 'Home'], ['model', 'Model'], ['statements', 'Statements'], ['financing', 'Financing'], ['returns', 'Returns'], ['scenarios', 'Scenarios']];
 $('nt').innerHTML = VIEWS.map(([k, l], i) => `<a href="#/${k}" data-v="${k}">${l} <kbd>${i + 1}</kbd></a>`).join('');
 
@@ -1194,7 +1112,7 @@ addEventListener('keydown', e => {
   if (n >= 1 && n <= VIEWS.length) location.hash = '#/' + VIEWS[n - 1][0];
 });
 
-/* Tab System with iOS Blur Transition */
+/* Tab System Construction */
 document.querySelectorAll('.pg').forEach(pg => {
   const ps = [...pg.children].filter(c => c.classList.contains('pane')), bar = document.createElement('div');
   bar.className = 'tabs'; bar.setAttribute('role', 'tablist');
@@ -1214,23 +1132,25 @@ render = function() {
   $('lv').innerHTML = [['Sponsor MOIC', 'h1v'], ['Sponsor IRR', 'h2v'], ['Revenue CAGR', 'h3v'], ['Rule of 40', 'h4v']].map(([l, i]) => `<div><span>${l}</span><b>${$(i).textContent}</b></div>`).join('');
 };
 
-/* 5, 6, 7, 8, 9. HIGH-DENSITY ATMOSPHERIC ASCII ENGINE WITH CIRCULAR SWIRL INTERACTION */
-const cv = $('cv'), cx = cv.getContext('2d');
-let COLS = 72, ROWS = 48;
-let animTime = 0;
-
-// Circular mouse field tracker (NO VISIBLE CIRCLE)
-let cursorState = {
-  currentX: -999,
-  currentY: -999,
-  targetX: -999,
-  targetY: -999,
-  intensity: 0,
-  targetIntensity: 0
+/* Global Theme Control */
+$('th').onclick = () => {
+  const d = document.documentElement;
+  const isLight = d.dataset.theme === 'light';
+  d.dataset.theme = isLight ? 'dark' : 'light';
+  $('th').textContent = isLight ? 'Light' : 'Dark';
 };
 
-// Rich character set for heavy Rothko density gradients
-const CHAR_MAP = '  .·:-=+*#%@█';
+/* ==========================================================================
+   ASCII REBUILD — GENERATIVE MULTI-LAYER WAVEMAP FIELD WITH CURSOR WARP
+   ========================================================================== */
+const cv = $('cv'), cx = cv.getContext('2d');
+let COLS = 60, ROWS = 36;
+let charGrid = [], densityGrid = [];
+let mouse = { x: -999, y: -999, active: false, intensity: 0 };
+let animTime = 0;
+
+const CHAR_MAP = ' .:-=+*#%@';
+const SPECIAL_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@%&*+-=<>~';
 
 function resizeCanvas() {
   const parent = cv.parentElement;
@@ -1241,8 +1161,11 @@ function resizeCanvas() {
   cv.height = rect.height * dpr;
   cx.setTransform(dpr, 0, 0, dpr, 0, 0);
   
-  COLS = Math.floor(rect.width / 9);
-  ROWS = Math.floor(rect.height / 15);
+  COLS = Math.floor(rect.width / 11);
+  ROWS = Math.floor(rect.height / 18);
+  
+  charGrid = new Array(COLS * ROWS);
+  densityGrid = new Float32Array(COLS * ROWS);
 }
 
 addEventListener('resize', resizeCanvas);
@@ -1251,13 +1174,13 @@ const ascContainer = document.querySelector('.asc-container');
 if (ascContainer) {
   ascContainer.addEventListener('pointermove', e => {
     const rect = ascContainer.getBoundingClientRect();
-    cursorState.targetX = (e.clientX - rect.left) / rect.width * COLS;
-    cursorState.targetY = (e.clientY - rect.top) / rect.height * ROWS;
-    cursorState.targetIntensity = 1.0;
+    mouse.x = (e.clientX - rect.left) / rect.width;
+    mouse.y = (e.clientY - rect.top) / rect.height;
+    mouse.active = true;
   });
   
   ascContainer.addEventListener('pointerleave', () => {
-    cursorState.targetIntensity = 0.0;
+    mouse.active = false;
   });
 }
 
@@ -1265,82 +1188,89 @@ function renderASCII() {
   requestAnimationFrame(renderASCII);
   if (cur !== 'home') return;
 
-  animTime += 0.015;
+  animTime += 0.02;
+  
+  // Smoothly build up or ramp down mouse influence
+  if (mouse.active) {
+    mouse.intensity += (1 - mouse.intensity) * 0.08;
+  } else {
+    mouse.intensity += (0 - mouse.intensity) * 0.04;
+  }
 
-  // Smooth continuous cursor field tracking
-  cursorState.currentX += (cursorState.targetX - cursorState.currentX) * 0.08;
-  cursorState.currentY += (cursorState.targetY - cursorState.currentY) * 0.08;
-  cursorState.intensity += (cursorState.targetIntensity - cursorState.intensity) * 0.05;
+  const pX = mouse.x * COLS;
+  const pY = mouse.y * ROWS;
 
+  // Compute Generative Field
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const idx = r * COLS + c;
+      const nx = c / COLS - 0.5;
+      const ny = r / ROWS - 0.5;
+
+      // Base Wave Synthesizer (Harmonic layers)
+      let w1 = Math.sin(nx * 6.0 + animTime * 1.2) * Math.cos(ny * 6.0 + animTime * 0.8);
+      let w2 = Math.sin(Math.sqrt(nx * nx + ny * ny) * 12.0 - animTime * 1.5);
+      let val = (w1 + w2 * 0.5 + 1.5) / 3.0; // Normalize [0, 1]
+
+      // Organic Cursor Displace & Warp Field propagation
+      const dx = c - pX;
+      const dy = r - pY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const radius = 12.0;
+
+      if (dist < radius) {
+        const falloff = Math.pow(1 - dist / radius, 2) * mouse.intensity;
+        const warp = Math.sin(dist * 0.8 - animTime * 4.0) * falloff;
+        val = Math.min(1, Math.max(0, val + warp * 0.6));
+      }
+
+      densityGrid[idx] = val;
+
+      // Character selection based on localized dynamics
+      if (dist < radius * 0.5 && mouse.intensity > 0.3) {
+        const charIdx = Math.floor((c * 7 + r * 13 + Math.floor(animTime * 10)) % SPECIAL_CHARS.length);
+        charGrid[idx] = SPECIAL_CHARS[charIdx];
+      } else {
+        const charIdx = Math.floor(val * (CHAR_MAP.length - 1));
+        charGrid[idx] = CHAR_MAP[charIdx] || ' ';
+      }
+    }
+  }
+
+  // Render Pass
   const pRect = cv.parentElement.getBoundingClientRect();
   const cw = pRect.width / COLS;
   const ch = pRect.height / ROWS;
 
   cx.clearRect(0, 0, pRect.width, pRect.height);
-  cx.font = `${Math.floor(ch * 0.9)}px ui-monospace, "SF Mono", monospace`;
+  cx.font = `${Math.floor(ch * 0.85)}px ui-monospace, "SF Mono", monospace`;
   cx.textAlign = 'center';
   cx.textBaseline = 'middle';
 
   const isLight = document.documentElement.dataset.theme === 'light';
-  const circularRadius = 14.0;
 
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
-      let sampleX = c;
-      let sampleY = r;
+      const idx = r * COLS + c;
+      const den = densityGrid[idx];
+      const char = charGrid[idx];
+      const posX = (c + 0.5) * cw;
+      const posY = (r + 0.5) * ch;
 
-      // Distance from cursor field
-      const dx = c - cursorState.currentX;
-      const dy = r - cursorState.currentY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      // Lowlighter Swirl/Tangential Vector Flow Effect
-      if (dist < circularRadius && cursorState.intensity > 0.001) {
-        const falloff = Math.pow(1 - dist / circularRadius, 2.5) * cursorState.intensity;
-        const swirlAngle = Math.atan2(dy, dx) + falloff * Math.PI * 1.5;
-        const swirlMag = falloff * 8.0;
-
-        sampleX += Math.cos(swirlAngle) * swirlMag;
-        sampleY += Math.sin(swirlAngle) * swirlMag;
-      }
-
-      // Atmospheric Multi-Frequency Field
-      const nx = sampleX / COLS - 0.5;
-      const ny = sampleY / ROWS - 0.5;
-
-      let v1 = Math.sin(nx * 4.5 + animTime * 0.8) * Math.cos(ny * 4.5 - animTime * 0.6);
-      let v2 = Math.cos(Math.sqrt(nx * nx + ny * ny) * 8.0 - animTime * 1.2);
-      let v3 = Math.sin((nx + ny) * 5.0 + animTime);
-
-      let val = (v1 + v2 + v3 * 0.5 + 2.5) / 5.0;
-      val = Math.min(1, Math.max(0, val));
-
-      // 8. Subtle Background Dot Grid Texture
-      let char = '·';
-      let isBgDot = true;
-
-      if (val > 0.15) {
-        const charIdx = Math.floor(val * (CHAR_MAP.length - 1));
-        char = CHAR_MAP[charIdx];
-        isBgDot = false;
-      }
-
-      const drawX = (c + 0.5) * cw;
-      const drawY = (r + 0.5) * ch;
-
-      let alpha = isBgDot ? 0.08 : 0.2 + val * 0.75;
+      // Dynamic Champagne Gold Opacity Hierarchy
+      let alpha = 0.15 + den * 0.75;
       if (isLight) {
         cx.fillStyle = `rgba(143, 106, 31, ${alpha.toFixed(2)})`;
       } else {
         cx.fillStyle = `rgba(212, 175, 106, ${alpha.toFixed(2)})`;
       }
 
-      cx.fillText(char, drawX, drawY);
+      cx.fillText(char, posX, posY);
     }
   }
 }
 
-/* Initialization */
+// Initial Setup & Invocation
 go();
 resizeCanvas();
 renderASCII();
