@@ -974,7 +974,7 @@ function run(a) {
     const rep = Math.min(rev, Math.max(0, cash - a.minimumCash)); rev -= rep; cash -= rep;
     const sweep = Math.min(term, Math.max(0, cash - a.minimumCash) * q('cashSweep')); term -= sweep; cash -= sweep;
     const debt = term + rev, netDebt = debt - cash, equity = p.equity + ni, assets = cash + ar + inv + on + ppe, liab = debt + ap;
-    const ltv = a.arpc * q('grossMargin') / q('churn'), cac = adds > 0 ? sm * 1e6 / adds : NaN;
+    const ltv = ea * q('grossMargin') / q('churn'), cac = adds > 0 ? sm * 1e6 / adds : NaN;
     const y = { year: i + 1, revenue, growth, gp, ebitda, margin: ebitda / revenue, dep, ebit, interest, taxes, ni, dnwc, capex, cfo, fcf, ufcf, cash, term, rev, debt, netDebt, draw, mand, rep, sweep, bt: p.termDebt, br: p.revolver, ar, inv, ap, on, ppe, equity, assets, liab, check: assets - liab - equity, lev: ebitda > 0 ? netDebt / ebitda : Infinity, cov: interest > 0 ? ebitda / interest : Infinity, customers: ec, arpc: ea, ltvcac: ltv / cac, r40: growth + ebitda / revenue, cA: bc, cA2: adds, cogs, rnd, sm, oth, nwc, cac, ltv };
     ys.push(y);
     p = { endCustomers: ec, endARPC: ea, revenue, nwc, ppe, equity, termDebt: term, revolver: rev, cash };
@@ -1002,8 +1002,10 @@ const PRE = {
   comp: ['Compounder', { initialGrowth: 20, growthDecay: 1, churn: 5, grossMargin: 80, smPct: 15, exitMultiple: 13, customerGrowth: 24, priceIncrease: 4 }]
 };
 
+const RESET = { growthCapex: 8, priceIncrease: 3 };
+
 function preset(k, a) {
-  const o = { ...a, ...PRE[k][1] }, l = $('lock').value;
+  const o = { ...a, ...RESET, ...PRE[k][1] }, l = $('lock').value;
   if (l !== 'none') o[l] = a[l];
   return o;
 }
@@ -1097,11 +1099,11 @@ function render() {
   $('is').innerHTML = tbl(ys, [['Revenue', 'revenue', M, 1], ['Growth', 'growth', P], ['Cost of revenue', y => -y.cogs], ['Gross profit', 'gp', M, 1], ['R&D', y => -y.rnd], ['Sales & marketing', y => -y.sm], ['Other costs', y => -y.oth], ['EBITDA', 'ebitda', M, 1], ['Depreciation', y => -y.dep], ['EBIT', 'ebit', M], ['Interest', y => -y.interest], ['Taxes', y => -y.taxes], ['Net income', 'ni', M, 1]]);$('cf').innerHTML = tbl(ys, [['Net income', 'ni'], ['Depreciation', 'dep'], ['Change in working capital', y => -y.dnwc], ['Operating cash flow', 'cfo', M, 1], ['Capital spending', y => -y.capex], ['Free cash flow', 'fcf', M, 1], ['Unlevered free cash flow', 'ufcf']]);
   $('bs').innerHTML = tbl(ys, [['Cash', 'cash'], ['Receivables', 'ar'], ['Inventory', 'inv'], ['Other working capital', 'on'], ['Net PP&E', 'ppe'], ['Total assets', 'assets', M, 1], ['Payables', 'ap'], ['Debt', 'debt'], ['Equity', 'equity'], ['Imbalance Check', 'check', x => N(x, 4)]]);$('ue').innerHTML = tbl(ys, [['Customers', 'customers', x => Math.round(x).toLocaleString()], ['ARPC', 'arpc', x => '$' + Math.round(x).toLocaleString()], ['LTV / CAC', 'ltvcac', x => N(x) + 'x'], ['Rule of 40', 'r40', P]]);$('dt').innerHTML = tbl(ys, [['Opening Term Loan', 'bt'], ['Opening Revolver', 'br'], ['Interest', 'interest'], ['Revolver Draw', 'draw'], ['Mandatory Paydown', 'mand'], ['Revolver Repayment', 'rep'], ['Cash Sweep', 'sweep'], ['Closing Term Loan', 'term', M, 1], ['Closing Revolver', 'rev', M, 1], ['Cash', 'cash'], ['Net Debt / EBITDA', 'lev', X], ['Interest Coverage', 'cov', X]]);
 
-  const bal = ys.every(y => Math.abs(y.check) < 1e-6), liq = ys.every(y => y.cash >= a.minimumCash - 1e-6 || y.rev >= a.revolverCapacity - 1e-6), cov = ys.every(y => y.lev <= a.maxLeverage && y.cov >= a.minCoverage);
+  const bal = ys.every(y => Math.abs(y.check) < 1e-6), liq = ys.every(y => y.cash >= a.minimumCash - 1e-6 || ys.every(y => y.cash >= a.minimumCash - 1e-6), cov = ys.every(y => y.lev <= a.maxLeverage && y.cov >= a.minCoverage);
   const ck = (ok, t, d) => `<div class="chk"><div>${t}<small>${d}</small></div>${c(ok ? 'Pass' : 'Flag', ok)}</div>`;
   $('chks').innerHTML = ck(bal, 'Balance Sheet Integrity', 'Assets equal liabilities plus equity across all forecast years.') + ck(liq, 'Liquidity Buffer', 'Cash balances satisfy minimum operational cash constraints.') + ck(cov, 'Credit Covenants', 'Leverage ratio and interest coverage stay within bounds.');
 
-  $('val').innerHTML = `<table><tbody>${[['Entry EBITDA', M(v.ltm)], ['Entry Enterprise Value', M(v.entryEV)], ['Fees', M(v.fees)], ['Sponsor Equity Invested', M(v.eqIn)], ['Exit EBITDA', M(L.ebitda)], ['Exit Enterprise Value', M(v.exitEV)], ['Net Debt at Exit', M(L.netDebt)], ['Exit Equity Value', M(L.exitEq)], ['DCF Enterprise Value', M(v.dcf)], ['Terminal Value Share', P(v.tvShare)]].map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table>`;
+  $('val').innerHTML = `<table><tbody>${[['Entry EBITDA', M(v.ltm)], ['Entry Enterprise Value', M(v.entryEV)], ['Fees', M(v.fees)], ['Sponsor Equity Invested', M(v.eqIn)], ['Exit EBITDA', M(L.ebitda)], ['Exit Enterprise Value', M(v.exitEV)], ['Net Debt at Exit', M(L.netDebt)], ['Exit Equity Value', M(v.exitEq)], ['DCF Enterprise Value', M(v.dcf)], ['Terminal Value Share', P(v.tvShare)]].map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table>`;
 
   const risks = [];
   if (L.margin < .1) risks.push('EBITDA margin compresses below 10%');
@@ -1130,20 +1132,20 @@ function render() {
 $('scn').addEventListener('click', e => {
   const k = e.target.dataset.k; if (!k) return;
   const o = preset(k, read());
-  Object.keys(PRE[k][1]).forEach(i => { if ($(i))$(i).value = o[i]; });
+  IDS.forEach(i => { $(i).value = o[i]; });
   render();
 });
 
 $('solve').addEventListener('click', () => {
   const l = $('lock').value, t = +$('tgt').value;
   if (l === 'none') { $('sres').textContent = 'Please select a protected assumption first.'; return; }
-  const k = l === 'initialGrowth' ? 'exitMultiple' : 'exitMultiple';
-  const a = read(); let lo = 1, hi = 30, mid;
-  for (let i = 0; i < 50; i++) {
-    mid = (lo + hi) / 2;
-    model({ ...a, [k]: mid }).v.moic < t ? lo = mid : hi = mid;
-  }
-  $(k).value = mid; render();$('sres').textContent = `Target reached. Set ${k} to ${N(mid, 2)}.`;
+  const k = ['exitMultiple', 'grossMargin', 'initialGrowth'].find(x => x !== l);
+  const e = $(k), a = read(), f = x => model({ ...a, [k]: x }).v.moic;
+  let lo = +e.min, hi = +e.max;
+  if (f(lo) > t || f(hi) < t) { $('sres').textContent = `Target not reachable by adjusting ${k} alone.`; return; }
+  for (let i = 0; i < 50; i++) { const mid = (lo + hi) / 2; f(mid) < t ? lo = mid : hi = mid; }
+  e.value = hi; render();
+  $('sres').textContent = `Set ${k} to ${e.value}. MOIC is now ${X(model(read()).v.moic)}.`;
 });
 
 document.addEventListener('input', e => { if (e.target.type === 'range') requestAnimationFrame(render); });
