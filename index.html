@@ -866,9 +866,9 @@ footer {
 <script>
 const $ = i => document.getElementById(i);
 const N = (x, d = 1) => Number.isFinite(x) ? x.toFixed(d) : 'n/a';
-const M = v => (v < 0 ? '(' : '') + '$' + N(Math.abs(v)) + 'm' + (v < 0 ? ')' : '');
-const P = v => N(v * 100) + '%';
-const X = v => N(v, 2) + 'x';
+const M = v => !Number.isFinite(v) ? 'n/a' : (v < 0 ? '(' : '') + '$' + N(Math.abs(v)) + 'm' + (v < 0 ? ')' : '');
+const P = v => Number.isFinite(v) ? N(v * 100) + '%' : 'n/a';
+const X = v => Number.isFinite(v) ? N(v, 2) + 'x' : 'n/a';
 
 const G = [
   ['Growth engine', [
@@ -1099,7 +1099,7 @@ function render() {
   $('is').innerHTML = tbl(ys, [['Revenue', 'revenue', M, 1], ['Growth', 'growth', P], ['Cost of revenue', y => -y.cogs], ['Gross profit', 'gp', M, 1], ['R&D', y => -y.rnd], ['Sales & marketing', y => -y.sm], ['Other costs', y => -y.oth], ['EBITDA', 'ebitda', M, 1], ['Depreciation', y => -y.dep], ['EBIT', 'ebit', M], ['Interest', y => -y.interest], ['Taxes', y => -y.taxes], ['Net income', 'ni', M, 1]]);$('cf').innerHTML = tbl(ys, [['Net income', 'ni'], ['Depreciation', 'dep'], ['Change in working capital', y => -y.dnwc], ['Operating cash flow', 'cfo', M, 1], ['Capital spending', y => -y.capex], ['Free cash flow', 'fcf', M, 1], ['Unlevered free cash flow', 'ufcf']]);
   $('bs').innerHTML = tbl(ys, [['Cash', 'cash'], ['Receivables', 'ar'], ['Inventory', 'inv'], ['Other working capital', 'on'], ['Net PP&E', 'ppe'], ['Total assets', 'assets', M, 1], ['Payables', 'ap'], ['Debt', 'debt'], ['Equity', 'equity'], ['Imbalance Check', 'check', x => N(x, 4)]]);$('ue').innerHTML = tbl(ys, [['Customers', 'customers', x => Math.round(x).toLocaleString()], ['ARPC', 'arpc', x => '$' + Math.round(x).toLocaleString()], ['LTV / CAC', 'ltvcac', x => N(x) + 'x'], ['Rule of 40', 'r40', P]]);$('dt').innerHTML = tbl(ys, [['Opening Term Loan', 'bt'], ['Opening Revolver', 'br'], ['Interest', 'interest'], ['Revolver Draw', 'draw'], ['Mandatory Paydown', 'mand'], ['Revolver Repayment', 'rep'], ['Cash Sweep', 'sweep'], ['Closing Term Loan', 'term', M, 1], ['Closing Revolver', 'rev', M, 1], ['Cash', 'cash'], ['Net Debt / EBITDA', 'lev', X], ['Interest Coverage', 'cov', X]]);
 
-  const bal = ys.every(y => Math.abs(y.check) < 1e-6), liq = ys.every(y => y.cash >= a.minimumCash - 1e-6 || ys.every(y => y.cash >= a.minimumCash - 1e-6), cov = ys.every(y => y.lev <= a.maxLeverage && y.cov >= a.minCoverage);
+  const bal = ys.every(y => Math.abs(y.check) < 1e-6), liq = ys.every(y => y.cash >= a.minimumCash - 1e-6), cov = ys.every(y => y.lev <= a.maxLeverage && y.cov >= a.minCoverage);
   const ck = (ok, t, d) => `<div class="chk"><div>${t}<small>${d}</small></div>${c(ok ? 'Pass' : 'Flag', ok)}</div>`;
   $('chks').innerHTML = ck(bal, 'Balance Sheet Integrity', 'Assets equal liabilities plus equity across all forecast years.') + ck(liq, 'Liquidity Buffer', 'Cash balances satisfy minimum operational cash constraints.') + ck(cov, 'Credit Covenants', 'Leverage ratio and interest coverage stay within bounds.');
 
