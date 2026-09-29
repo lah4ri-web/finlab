@@ -775,6 +775,7 @@ footer {
           <p class="small" style="margin-bottom: 16px;">Goal seek adjusts unprotected drivers to hit the target return.</p>
           <button class="btn" id="solve">Solve Target</button>
           <p class="small" id="sres" style="margin-top: 12px; color: var(--gold);"></p>
+          <button class="btn" id="reset" style="margin-top:8px">Reset to defaults</button>
         </div>
       </aside>
     </div>
@@ -825,6 +826,7 @@ footer {
           <div class="card"><h3>Valuation Bridge</h3><div class="tw" id="val"></div></div>
           <div class="card"><h3>Investment Memo</h3><div class="memo" id="memo"></div></div>
         </div>
+        <div class="card"><h3>Value Creation Bridge</h3><div id="vcb"></div></div>
       </div>
       <div class="pane" data-label="sensitivity">
         <div class="g2">
@@ -935,6 +937,7 @@ $('ctl').innerHTML = G.map(([t, it]) => `
 `).join('');
 
 const IDS = G.flatMap(g => g[1].map(i => i[0]));
+const DEF = {}; IDS.forEach(i => DEF[i] = $(i).value);
 const disp = (v, u) => u === '$' ? '$' + v.toLocaleString() : u === '$m' ? '$' + v + 'm' : v.toLocaleString() + u;
 
 function read() {
@@ -1137,15 +1140,9 @@ $('scn').addEventListener('click', e => {
 });
 
 $('solve').addEventListener('click', () => {
-  const l = $('lock').value, t = +$('tgt').value;
-  if (l === 'none') { $('sres').textContent = 'Please select a protected assumption first.'; return; }
-  const k = ['exitMultiple', 'grossMargin', 'initialGrowth'].find(x => x !== l);
-  const e = $(k), a = read(), f = x => model({ ...a, [k]: x }).v.moic;
-  let lo = +e.min, hi = +e.max;
-  if (f(lo) > t || f(hi) < t) { $('sres').textContent = `Target not reachable by adjusting ${k} alone.`; return; }
-  for (let i = 0; i < 50; i++) { const mid = (lo + hi) / 2; f(mid) < t ? lo = mid : hi = mid; }
-  e.value = hi; render();
-  $('sres').textContent = `Set ${k} to ${e.value}. MOIC is now ${X(model(read()).v.moic)}.`;
+  IDS.forEach(i => $(i).value = DEF[i]);
+  $('sres').textContent = '';
+  render();
 });
 
 document.addEventListener('input', e => { if (e.target.type === 'range') requestAnimationFrame(render); });
@@ -1187,9 +1184,23 @@ document.querySelectorAll('.pg').forEach(pg => {
 
 const _r = render;
 render = function() {
-  _r();
-  $('lv').innerHTML = [['Sponsor MOIC', 'h1v'], ['Sponsor IRR', 'h2v'], ['Revenue CAGR', 'h3v'], ['Rule of 40', 'h4v']].map(([l, i]) => `<div><span>${l}</span><b>${$(i).textContent}</b></div>`).join('');
+    const m = model(read()), v = m.v, L = m.ys.at(-1), a = m.a;
+    const it = [['EBITDA growth', (L.ebitda - v.ltm) * a.entryMultiple], ['Multiple change', (a.exitMultiple - a.entryMultiple) * L.ebitda],
+                ['Net debt paydown', (a.existingDebt - a.startingCash) - L.netDebt], ['Fees', -v.fees]];
+    const mx = Math.max(...it.map(d => Math.abs(d[1])), 1e-4);
+    $('vcb').innerHTML = it.map(d => `<div class="bar"><span>${d[0]}</span><span><i style="width:${Math.abs(d[1]) / mx * 100}%;${d[1] < 0 ? 'background:var(--red)' : ''}"></i></span><span>${M(d[1])}</span></div>`).join('') +
+      `<p class="small">Total sponsor gain: ${M(v.exitEq - v.eqIn)}</p>`;
+  }
 };
+
+{
+  const m = model(read()), v = m.v, L = m.ys.at(-1), a = m.a;
+  const it = [['EBITDA growth', (L.ebitda - v.ltm) * a.entryMultiple], ['Multiple change', (a.exitMultiple - a.entryMultiple) * L.ebitda],
+              ['Net debt paydown', (a.existingDebt - a.startingCash) - L.netDebt], ['Fees', -v.fees]];
+  const mx = Math.max(...it.map(d => Math.abs(d[1])), 1e-4);
+  $('vcb').innerHTML = it.map(d => `<div class="bar"><span>${d[0]}</span><span><i style="width:${Math.abs(d[1]) / mx * 100}%;${d[1] < 0 ? 'background:var(--red)' : ''}"></i></span><span>${M(d[1])}</span></div>`).join('') +
+    `<p class="small">Total sponsor gain: ${M(v.exitEq - v.eqIn)}</p>`;
+}
 
 const cv = $('cv'), cx = cv.getContext('2d');
 let COLS = 110, ROWS = 54;
